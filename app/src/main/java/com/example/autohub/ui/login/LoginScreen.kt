@@ -1,16 +1,22 @@
 package com.example.autohub.ui.login
 
+import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,25 +29,51 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.example.autohub.R
 import com.example.autohub.ui.componets.CustomButton
+import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.RoundedCornerTextField
 import com.example.autohub.ui.theme.containerColor
+import com.example.autohub.ui.theme.focusedTextFieldColor
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun LoginScreen(
     isProgressBarWork: Boolean,
     onLoginClick: (String, String) -> Unit,
-    onRegisterClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onRegisterClick: () -> Unit
 ) {
     val context = LocalContext.current
 
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
 
+    val showDialog = remember { mutableStateOf(false) }
+
+    // Забыли пароль
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(
+            text = "Забыли пароль?",
+            color = Color.Blue,
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier
+                .padding(16.dp)
+                .clickable {
+                    showDialog.value = true
+                }
+        )
+    }
+
+    // Логотип
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -106,6 +138,69 @@ fun LoginScreen(
             CircularProgressIndicator(
                 color = Color.Black,
             )
+        }
+    }
+
+    if (showDialog.value) {
+        ChangePasswordDialog(
+            context = context,
+            onHideDialogClick = { showDialog.value = false }
+        )
+    }
+}
+
+@Composable
+fun ChangePasswordDialog(
+    context: Context,
+    onHideDialogClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val emailToResetPassword = remember { mutableStateOf("") }
+    val fsAuth = Firebase.auth
+
+    Dialog(onHideDialogClick) {
+        Card(
+            border = BorderStroke(1.dp, Color.Black),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            modifier = modifier
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                ) {
+                    InputField(
+                        text = "Почта",
+                        onValueChange = { emailToResetPassword.value = it },
+                        value = emailToResetPassword.value
+                    )
+                }
+                CustomButton(
+                    text = "Изменить пароль",
+                    onClick = {
+                        if (emailToResetPassword.value.isNotEmpty()) {
+                            fsAuth.sendPasswordResetEmail(emailToResetPassword.value).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    onHideDialogClick()
+                                    Toast.makeText(context, "Чтобы сменить пароль, перейдите по ссылке, отправленной на Вашу почту.", Toast.LENGTH_LONG).show()
+                                } else {
+                                    Toast.makeText(context, "Ошибка: ${task.exception?.message ?: "unknown"}", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        } else {
+                            Toast.makeText(context, "Введите почту аккаунта", Toast.LENGTH_LONG).show()
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .fillMaxWidth(0.7f)
+                )
+            }
         }
     }
 }

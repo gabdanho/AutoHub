@@ -58,11 +58,13 @@ fun AuthUserAccountScreen(
 ) {
     val userUID = Firebase.auth.currentUser?.uid
     val userData = remember { mutableStateOf(User()) }
-    Firebase.firestore.collection("users").document(userUID!!).get().addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            userData.value = task.result.toObject(User::class.java)!!
+    if (userUID != null) {
+        Firebase.firestore.collection("users").document(userUID).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                userData.value = task.result.toObject(User::class.java)!!
+            }
+            else Log.e("USER_INFO", task.exception?.message.toString())
         }
-        else Log.e("USER_INFO", task.exception?.message.toString())
     }
 
     Scaffold(
