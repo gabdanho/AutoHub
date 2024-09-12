@@ -11,6 +11,7 @@ composeBom = "2024.04.01"
 gmsVerison = "4.4.2"
 bomVersion = "33.2.0"
 coilVersion = "2.6.0"
+navigation = "2.8.0"
 
 [libraries]
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "bomVersion" }
@@ -19,6 +20,9 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
 
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilVersion" }
+
+navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

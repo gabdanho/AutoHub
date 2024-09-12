@@ -62,6 +62,9 @@ dependencies {
     implementation(libs.firebase.auth)
     // Coil
     implementation(libs.coil)
+    // Navigation
+    implementation(libs.navigation.compose)
+    implementation(libs.navigation.runtime)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

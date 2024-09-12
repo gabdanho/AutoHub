@@ -1,6 +1,8 @@
 package com.example.autohub.ui.account
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,38 +21,68 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.autohub.data.CarAd
+import com.example.autohub.data.User
 import com.example.autohub.data.mock.CarAdMock
+import com.example.autohub.ui.componets.BottomNavBar
 import com.example.autohub.ui.componets.CarAdCard
 import com.example.autohub.ui.componets.CustomButton
-import com.example.autohub.ui.componets.TopAdAppBar
+import com.example.autohub.ui.theme.barColor
 import com.example.autohub.ui.theme.containerColor
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 
 @Composable
 fun AuthUserAccountScreen(
     yourAds: List<CarAd>,
-    onBackButtonClick: () -> Unit,
     onChangeInfoClick: () -> Unit,
-    onQuitClick: () -> Unit,
-    onAddClick: () -> Unit,
+    onSignOutClick: () -> Unit,
+    onAdClick: () -> Unit,
+    onAccountClick: () -> Unit,
+    onMessageClick: () -> Unit,
+    onAdListClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val userUID = Firebase.auth.currentUser?.uid
+    val userData = remember { mutableStateOf(User()) }
+    Firebase.firestore.collection("users").document(userUID!!).get().addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            userData.value = task.result.toObject(User::class.java)!!
+        }
+        else Log.e("USER_INFO", task.exception?.message.toString())
+    }
+
     Scaffold(
         topBar = {
-            TopAdAppBar(
-                titleText = "Аккаунт",
-                onBackButtonClick = onBackButtonClick
-            )
-        }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .background(color = barColor)
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = "Аккаунт",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        bottomBar = { BottomNavBar(onAdListClick, onAccountClick, onMessageClick) }
     ) { innerPadding ->
         Column(
             modifier = modifier
@@ -66,7 +98,7 @@ fun AuthUserAccountScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     AsyncImage(
-                        model = "https://redbrickworks.com/wp-content/uploads/2021/02/business-man.png",
+                        model = userData.value.image,
                         contentDescription = "Account image",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -78,12 +110,13 @@ fun AuthUserAccountScreen(
                         modifier = Modifier.padding(start = 16.dp)
                     ) {
                         Text(
-                            text = "Вася Лютый",
-                            style = MaterialTheme.typography.displaySmall,
+                            text = "${userData.value.firstName} ${userData.value.secondName}",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Text(
-                            text = "г. Санкт-Петербург",
+                            text = userData.value.city,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -95,11 +128,11 @@ fun AuthUserAccountScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Почта: test@pochta.dote",
+                    text = "Почта: ${userData.value.email}",
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "Номер телефона: +79998887766"
+                    text = "Номер телефона: ${userData.value.phoneNumber}"
                 )
             }
             Row(
@@ -122,7 +155,7 @@ fun AuthUserAccountScreen(
                 )
                 CustomButton(
                     text = "Выход",
-                    onClick = { onQuitClick() },
+                    onClick = { onSignOutClick() },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -140,7 +173,7 @@ fun AuthUserAccountScreen(
                 items(yourAds) { ad ->
                     CarAdCard(
                         ad = ad,
-                        onAdClick = onAddClick
+                        onAdClick = onAdClick
                     )
                 }
             }
@@ -153,9 +186,6 @@ fun AuthUserAccountScreen(
 private fun AuthUserAccountScreenPreview() {
     AuthUserAccountScreen(
         yourAds = CarAdMock.ads,
-        onBackButtonClick = { },
-        onChangeInfoClick = { },
-        onQuitClick = { },
-        onAddClick = { }
+        { }, { }, { }, { }, { }, { }
     )
 }

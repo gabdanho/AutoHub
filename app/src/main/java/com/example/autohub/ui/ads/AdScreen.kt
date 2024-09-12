@@ -43,7 +43,8 @@ import com.example.autohub.ui.theme.containerColor
 fun AdScreen(
     carAd: CarAd,
     onBackButtonClick: () -> Unit,
-    onChangeInfoClick: () -> Unit,
+    onMessageClick: () -> Unit,
+    onCallClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -98,13 +99,22 @@ fun AdScreen(
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.bodyLarge,
                         )
-                        CustomButton(
-                            text = "Написать",
-                            onClick = { onChangeInfoClick() },
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth()
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            CustomButton(
+                                text = "Написать",
+                                onClick = { onMessageClick() },
+                                modifier = Modifier
+                                    .padding(end = 4.dp)
+                                    .weight(1f)
+                            )
+                            CustomButton(
+                                text = "Позвонить",
+                                onClick = { onCallClick() },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
                 }
                 LazyVerticalGrid(
@@ -336,7 +346,6 @@ fun AdScreen(
 private fun AdScreenPreview() {
     AdScreen(
         CarAdMock.ads[0],
-        { },
-        { }
+        { }, { }, { }
     )
 }

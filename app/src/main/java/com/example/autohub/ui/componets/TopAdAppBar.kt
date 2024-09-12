@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.autohub.ui.theme.topBarColor
+import com.example.autohub.ui.theme.barColor
 
 @Composable
 fun TopAdAppBar(
@@ -26,9 +26,9 @@ fun TopAdAppBar(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .background(color = topBarColor)
+            .background(color = barColor)
     ) {
-        BackButton({ })
+        BackButton({ onBackButtonClick() })
         Text(
             text = titleText,
             style = MaterialTheme.typography.titleLarge,

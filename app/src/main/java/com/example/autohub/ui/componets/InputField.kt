@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -22,6 +26,7 @@ fun InputField(
     value: String,
     onValueChange: (String) -> Unit,
     placeHolder: String = "",
+    isError: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -36,7 +41,9 @@ fun InputField(
         )
         TextField(
             value = value,
-            onValueChange = { onValueChange(it) },
+            onValueChange = {
+                onValueChange(it)
+            },
             shape = RoundedCornerShape(20.dp),
             placeholder = {
                 Text(
@@ -52,6 +59,7 @@ fun InputField(
                 unfocusedIndicatorColor = labelColor,
                 focusedIndicatorColor = labelColor
             ),
+            trailingIcon = { if (isError) Icon(imageVector = Icons.Filled.Warning, contentDescription = "Необходимо заполнить поле") },
             modifier = Modifier.weight(3f)
         )
     }
