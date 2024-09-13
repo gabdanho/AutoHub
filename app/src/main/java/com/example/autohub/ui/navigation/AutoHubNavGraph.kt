@@ -35,6 +35,7 @@ fun AutoHubNavGraph(
     ) {
         composable(route = "LoginScreen") {
             val isLoading = remember { mutableStateOf(false) }
+            val isShowSendEmailText = remember { mutableStateOf(false) }
 
             LoginScreen(
                 onRegisterClick = { navController.navigate(route = "RegisterScreen") },
@@ -43,18 +44,30 @@ fun AutoHubNavGraph(
                     fsAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                         if (!task.isSuccessful) {
                             isLoading.value = false
+                            isShowSendEmailText.value = false
                             Toast.makeText(context, "Ошибка: ${task.exception?.message ?: "unknown"}", Toast.LENGTH_SHORT).show()
                         } else {
-                            navController.navigate("AdsMainScreen") {
-                                popUpTo(0) {
-                                    inclusive = true
+                            if (!fsAuth.currentUser!!.isEmailVerified) {
+                                Toast.makeText(context, "Аккаунт не верифицирован. Проверьте почту", Toast.LENGTH_SHORT).show()
+                                isShowSendEmailText.value = true
+                                fsAuth.signOut()
+                                isLoading.value = false
+                            } else {
+                                navController.navigate("AdsMainScreen") {
+                                    popUpTo(0) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+
+                                    isLoading.value = false
+                                    isShowSendEmailText.value = false
                                 }
-                                launchSingleTop = true
                             }
                         }
                     }
                 },
-                isProgressBarWork = isLoading.value
+                isProgressBarWork = isLoading.value,
+                isShowSendEmailText = isShowSendEmailText.value
             )
         }
         composable(route = "RegisterScreen") {
@@ -63,15 +76,16 @@ fun AutoHubNavGraph(
                 onRegisterClick = { email, password, user ->
                     fsAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Toast.makeText(context, "Вы успешно зарегистрировались!", Toast.LENGTH_SHORT).show()
-
                             val userUID = fsAuth.currentUser?.uid
                             val docReference = fsStore.collection("users").document(userUID!!)
                             docReference.set(user).addOnSuccessListener {
-                                Log.d("USER_INFO", "Created document for user: $userUID\n$user")
+                                Log.d("USER_INFO", "Created document for user: $userUID")
                             }
 
-                            navController.navigate(route = "AdsMainScreen") {
+                            fsAuth.currentUser!!.sendEmailVerification()
+                            Toast.makeText(context, "Для завершения регистрации перейдите по ссылке, отправленной на Вашу почту", Toast.LENGTH_SHORT).show()
+
+                            navController.navigate(route = "LoginScreen") {
                                 popUpTo(0) {
                                     inclusive = true
                                 }

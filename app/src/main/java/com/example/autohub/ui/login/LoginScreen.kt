@@ -15,9 +15,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,12 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogWindowProvider
 import com.example.autohub.R
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
@@ -45,15 +50,23 @@ import com.google.firebase.auth.auth
 @Composable
 fun LoginScreen(
     isProgressBarWork: Boolean,
+    isShowSendEmailText: Boolean,
     onLoginClick: (String, String) -> Unit,
     onRegisterClick: () -> Unit
 ) {
     val context = LocalContext.current
-
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
-
     val showDialog = remember { mutableStateOf(false) }
+    val fsAuth = Firebase.auth
+
+    // Диалог со сменой пароля
+    if (showDialog.value) {
+        ChangePasswordDialog(
+            context = context,
+            onHideDialogClick = { showDialog.value = false }
+        )
+    }
 
     // Забыли пароль
     Box(
@@ -112,8 +125,6 @@ fun LoginScreen(
         CustomButton(
             text = "Войти",
             onClick = {
-
-
                 if (emailState.value.isEmpty()) {
                     Toast.makeText(context, "Введите почту", Toast.LENGTH_LONG).show()
                 }
@@ -134,18 +145,31 @@ fun LoginScreen(
             onClick = { onRegisterClick() },
             modifier = Modifier.padding(bottom = 32.dp)
         )
+        // Повторно отправить письмо
+        if (isShowSendEmailText) {
+            Text(
+                text = "Отправить письмо повторно",
+                color = Color.Blue,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clickable {
+                        fsAuth.signInWithEmailAndPassword(emailState.value, passwordState.value).addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                fsAuth.currentUser!!.sendEmailVerification()
+                                fsAuth.signOut()
+                                Toast.makeText(context, "Письмо отправлено на почту. Если его нет, проверьте папку \"Спам\"", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+            )
+        }
+        // Прогресс бар
         if (isProgressBarWork) {
             CircularProgressIndicator(
                 color = Color.Black,
             )
         }
-    }
-
-    if (showDialog.value) {
-        ChangePasswordDialog(
-            context = context,
-            onHideDialogClick = { showDialog.value = false }
-        )
     }
 }
 
@@ -160,7 +184,6 @@ fun ChangePasswordDialog(
 
     Dialog(onHideDialogClick) {
         Card(
-            border = BorderStroke(1.dp, Color.Black),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             modifier = modifier
         ) {
@@ -208,5 +231,5 @@ fun ChangePasswordDialog(
 @Preview(showBackground = true)
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen(false, { _, _ -> }, { })
+    LoginScreen(false, true, { _, _ -> }, { })
 }
