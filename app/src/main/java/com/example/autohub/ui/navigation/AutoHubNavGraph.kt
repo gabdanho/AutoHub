@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.autohub.ui.account.AccountSettings
 import com.example.autohub.ui.account.AuthUserAccountScreen
 import com.example.autohub.ui.ads.AdsMainScreen
 import com.example.autohub.ui.login.LoginScreen
@@ -131,7 +132,12 @@ fun AutoHubNavGraph(
                         launchSingleTop = true
                     }
                 },
-                onChangeInfoClick = { } // TODO()
+                onChangeInfoClick = { navController.navigate("AccountSettings") }
+            )
+        }
+        composable(route = "AccountSettings") {
+            AccountSettings(
+                onBackButtonClick = { navController.popBackStack() }
             )
         }
     }
