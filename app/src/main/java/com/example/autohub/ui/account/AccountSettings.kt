@@ -1,14 +1,25 @@
 package com.example.autohub.ui.account
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -26,19 +37,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import coil.compose.AsyncImage
+import com.example.autohub.data.User
 import com.example.autohub.ui.componets.CustomButton
+import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.TopAdAppBar
 import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.ui.theme.labelColor
+import com.example.autohub.utils.getUserData
+import com.example.autohub.utils.uploadImageToFirebase
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
+import okhttp3.internal.notify
+import okhttp3.internal.wait
 
 @Composable
 fun AccountSettings(
@@ -47,6 +68,28 @@ fun AccountSettings(
 ) {
     val context = LocalContext.current
     val isShowDialog = remember { mutableStateOf(false) }
+    val isButtonEnabled = remember { mutableStateOf(false) }
+    val firstNameState = remember { mutableStateOf("") }
+    val secondNameState = remember { mutableStateOf("") }
+    val userUID = Firebase.auth.currentUser?.uid!!
+    val userData = remember { mutableStateOf(User()) }
+    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            uploadImageToFirebase(context, uri)
+
+        } else {
+            Toast.makeText(context, "Изображение не было выбрано", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    val listener = Firebase.firestore.collection("users").document(userUID).addSnapshotListener { value, error ->
+        userData.value = value?.toObject(User::class.java) ?: User()
+    }
+
+    BackHandler {
+        listener.remove()
+        onBackButtonClick()
+    }
 
     if (isShowDialog.value) {
         ChangePasswordDialog(
@@ -59,7 +102,10 @@ fun AccountSettings(
         topBar = {
             TopAdAppBar(
                 titleText = "Настройки аккаунта",
-                onBackButtonClick = onBackButtonClick
+                onBackButtonClick = {
+                    listener.remove()
+                    onBackButtonClick()
+                }
             )
         }
     ) { innerPadding ->
@@ -69,6 +115,76 @@ fun AccountSettings(
                 .padding(8.dp)
                 .fillMaxSize()
         ) {
+            // Имя фамилия
+            Text(
+                text = "Имя и фамилия",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .fillMaxWidth()
+            )
+            HorizontalDivider()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                InputField(
+                    text = "Имя",
+                    value = firstNameState.value,
+                    onValueChange = { firstNameState.value = it; isButtonEnabled.value = true },
+                    placeHolder = userData.value.firstName
+                )
+                InputField(
+                    text = "Фамилия",
+                    value = secondNameState.value,
+                    onValueChange = { secondNameState.value = it; isButtonEnabled.value = true },
+                    placeHolder = userData.value.secondName
+                )
+                CustomButton(
+                    text = "Принять изменения",
+                    isEnabled = isButtonEnabled.value,
+                    onClick = {
+                        // TODO()
+                    },
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+            // Фото профиля
+            Text(
+                text = "Фото профиля",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .fillMaxWidth()
+            )
+            HorizontalDivider()
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                AsyncImage(
+                    model = userData.value.image,
+                    contentDescription = "Фото профиля",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, containerColor, CircleShape)
+                )
+                CustomButton(
+                    text = "Сменить фото профиля",
+                    onClick = {
+                        galleryLauncher.launch("image/*")
+                    },
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .weight(1f)
+                )
+            }
+            // Смена пароля
             Text(
                 text = "Пароль",
                 textAlign = TextAlign.Center,

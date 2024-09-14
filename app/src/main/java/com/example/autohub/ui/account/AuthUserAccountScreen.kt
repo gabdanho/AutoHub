@@ -1,6 +1,5 @@
 package com.example.autohub.ui.account
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,9 +40,9 @@ import com.example.autohub.ui.componets.CarAdCard
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.theme.barColor
 import com.example.autohub.ui.theme.containerColor
+import com.example.autohub.utils.getUserData
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
 
 @Composable
 fun AuthUserAccountScreen(
@@ -56,16 +55,9 @@ fun AuthUserAccountScreen(
     onAdListClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val userUID = Firebase.auth.currentUser?.uid
+    val userUID = Firebase.auth.currentUser?.uid!!
     val userData = remember { mutableStateOf(User()) }
-    if (userUID != null) {
-        Firebase.firestore.collection("users").document(userUID).get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                userData.value = task.result.toObject(User::class.java)!!
-            }
-            else Log.e("USER_INFO", task.exception?.message.toString())
-        }
-    }
+    getUserData(userUID) { user -> userData.value = user }
 
     Scaffold(
         topBar = {

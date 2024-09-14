@@ -18,6 +18,7 @@ import com.example.autohub.ui.theme.containerColor
 fun CustomButton(
     text: String,
     onClick: () -> Unit,
+    isEnabled: Boolean = true,
     border: BorderStroke = BorderStroke(0.dp, Color.Transparent),
     colorButton: ButtonColors = buttonColors(
         containerColor = containerColor
@@ -30,6 +31,7 @@ fun CustomButton(
         shape = RoundedCornerShape(topStart = 25.dp, bottomEnd = 25.dp),
         colors = colorButton,
         border = border,
+        enabled = isEnabled,
         modifier = modifier.fillMaxWidth(0.5f)
     ) {
         Text(

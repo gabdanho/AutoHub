@@ -3,6 +3,7 @@ package com.example.autohub.ui.navigation
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -10,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.autohub.data.User
 import com.example.autohub.ui.account.AccountSettings
 import com.example.autohub.ui.account.AuthUserAccountScreen
 import com.example.autohub.ui.ads.AdsMainScreen
@@ -25,6 +27,7 @@ fun AutoHubNavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val isLoginSuccess = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val fsAuth = Firebase.auth
     val fsStore = Firebase.firestore
@@ -54,6 +57,7 @@ fun AutoHubNavGraph(
                                 fsAuth.signOut()
                                 isLoading.value = false
                             } else {
+                                isLoginSuccess.value = true
                                 navController.navigate("AdsMainScreen") {
                                     popUpTo(0) {
                                         inclusive = true
