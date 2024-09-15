@@ -12,7 +12,6 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.storage
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
 
 fun getUserData(uid: String, callBack: (User) -> Unit) {
     Firebase.firestore.collection("users").document(uid).get().addOnCompleteListener { task ->
@@ -45,5 +44,42 @@ fun uploadImageToFirebase(context: Context, uri: Uri) {
         }
     }.addOnFailureListener { failure ->
         Toast.makeText(context, "Ошибка загрузки: ${failure.message ?: "unknown"}", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun updateFirstAnsSecondName(context: Context, firstName: String, secondName: String) {
+    val user = Firebase.auth.currentUser!!
+    val fbStoreRef = Firebase.firestore.collection("users").document(user.uid)
+
+    if (firstName.isNotBlank()) {
+        fbStoreRef.update("firstName", firstName).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(context, "Имя успешно изменено", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Ошибка: ${task.exception?.message ?: "unknown"}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    if (secondName.isNotBlank()) {
+        fbStoreRef.update("secondName", secondName).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(context, "Фамилия успешно изменена", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Ошибка: ${task.exception?.message ?: "unknown"}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+}
+
+fun updateCity(context: Context, city: String) {
+    val user = Firebase.auth.currentUser!!
+    val fbStoreRef = Firebase.firestore.collection("users").document(user.uid)
+
+    fbStoreRef.update("city", city).addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            Toast.makeText(context, "Город успешно изменен", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Ошибка: ${task.exception?.message ?: "unknown"}", Toast.LENGTH_SHORT).show()
+        }
     }
 }

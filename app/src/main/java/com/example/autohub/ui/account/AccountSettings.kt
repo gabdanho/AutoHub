@@ -1,14 +1,9 @@
 package com.example.autohub.ui.account
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -53,13 +48,12 @@ import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.TopAdAppBar
 import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.ui.theme.labelColor
-import com.example.autohub.utils.getUserData
+import com.example.autohub.utils.updateCity
+import com.example.autohub.utils.updateFirstAnsSecondName
 import com.example.autohub.utils.uploadImageToFirebase
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
-import okhttp3.internal.notify
-import okhttp3.internal.wait
 
 @Composable
 fun AccountSettings(
@@ -68,9 +62,11 @@ fun AccountSettings(
 ) {
     val context = LocalContext.current
     val isShowDialog = remember { mutableStateOf(false) }
-    val isButtonEnabled = remember { mutableStateOf(false) }
     val firstNameState = remember { mutableStateOf("") }
     val secondNameState = remember { mutableStateOf("") }
+    val cityState = remember { mutableStateOf("") }
+    val isNamesButtonEnabled = remember { mutableStateOf(false) }
+    val isCityButtonEnabled = remember { mutableStateOf(false) }
     val userUID = Firebase.auth.currentUser?.uid!!
     val userData = remember { mutableStateOf(User()) }
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -85,6 +81,9 @@ fun AccountSettings(
     val listener = Firebase.firestore.collection("users").document(userUID).addSnapshotListener { value, error ->
         userData.value = value?.toObject(User::class.java) ?: User()
     }
+
+    isNamesButtonEnabled.value = firstNameState.value.isNotBlank() || secondNameState.value.isNotBlank()
+    isCityButtonEnabled.value = cityState.value.isNotBlank()
 
     BackHandler {
         listener.remove()
@@ -132,20 +131,52 @@ fun AccountSettings(
                 InputField(
                     text = "Имя",
                     value = firstNameState.value,
-                    onValueChange = { firstNameState.value = it; isButtonEnabled.value = true },
+                    onValueChange = { firstNameState.value = it },
                     placeHolder = userData.value.firstName
                 )
                 InputField(
                     text = "Фамилия",
                     value = secondNameState.value,
-                    onValueChange = { secondNameState.value = it; isButtonEnabled.value = true },
+                    onValueChange = { secondNameState.value = it },
                     placeHolder = userData.value.secondName
                 )
                 CustomButton(
                     text = "Принять изменения",
-                    isEnabled = isButtonEnabled.value,
+                    isEnabled = isNamesButtonEnabled.value,
                     onClick = {
-                        // TODO()
+                        updateFirstAnsSecondName(context, firstNameState.value, secondNameState.value)
+                        firstNameState.value = ""
+                        secondNameState.value = ""
+                    },
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+            // Город
+            Text(
+                text = "Город",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .fillMaxWidth()
+            )
+            HorizontalDivider()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                InputField(
+                    text = "Город",
+                    value = cityState.value,
+                    onValueChange = { cityState.value = it },
+                    placeHolder = userData.value.city
+                )
+                CustomButton(
+                    text = "Принять изменения",
+                    isEnabled = isCityButtonEnabled.value,
+                    onClick = {
+                        updateCity(context, cityState.value)
+                        cityState.value = ""
                     },
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -166,7 +197,7 @@ fun AccountSettings(
                     .padding(8.dp)
             ) {
                 AsyncImage(
-                    model = userData.value.image,
+                    model = userData.value.image ,
                     contentDescription = "Фото профиля",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
