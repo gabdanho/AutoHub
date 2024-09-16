@@ -1,44 +1,39 @@
 package com.example.autohub.ui.ads
 
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.R
+import com.example.autohub.data.CarAd
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.PhotosList
 import com.example.autohub.ui.componets.TopAdAppBar
-import com.example.autohub.ui.theme.cardColor
-import com.example.autohub.ui.theme.containerColor
 
 @Composable
 fun AdCreateScreen(
-    onCreateAdClick: () -> Unit,
+    onCreateAdClick: (CarAd) -> Unit,
     onBackButtonClick: () -> Unit,
+    onImageClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     val imagesState = remember { mutableStateOf(listOf(R.drawable.add_img)) }
     val brandState = remember { mutableStateOf("") }
@@ -68,16 +63,19 @@ fun AdCreateScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(scrollState)
         ) {
             Column(modifier = Modifier.weight(1.4f)) {
                 Text(
                     text = "Фотографии автомобиля",
                     modifier = Modifier.padding(16.dp)
                 )
-                PhotosList(imagesState.value, { })
+                PhotosList(imagesState.value, onImageClick)
             }
-            Column(modifier = Modifier.weight(3f)) {
+            Column(
+                modifier = Modifier
+                    .weight(3f)
+                    .verticalScroll(scrollState)
+            ) {
                 InputField(
                     text = "Бренд",
                     value = brandState.value,
@@ -143,10 +141,45 @@ fun AdCreateScreen(
                     value = priceState.value,
                     onValueChange = { priceState.value = it }
                 )
-                CustomButton(
-                    text = "Создать",
-                    onClick = { onCreateAdClick() }
-                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    CustomButton(
+                        text = "Создать",
+                        onClick = {
+                            if (brandState.value.isNotBlank() && modelState.value.isNotBlank() &&
+                                colorState.value.isNotBlank() && realiseYearState.value.isNotBlank() &&
+                                bodyState.value.isNotBlank() && typeEngineState.value.isNotBlank() &&
+                                engineCapacityState.value.isNotBlank() && transmissionState.value.isNotBlank() &&
+                                driveState.value.isNotBlank() && steeringWheelSideState.value.isNotBlank() &&
+                                mileageState.value.isNotBlank() && conditionState.value.isNotBlank() &&
+                                priceState.value.isNotBlank()) {
+
+                                val carAd = CarAd(
+                                    brand = brandState.value,
+                                    model = modelState.value,
+                                    color = colorState.value,
+                                    realiseYear = realiseYearState.value,
+                                    body = bodyState.value,
+                                    typeEngine = typeEngineState.value,
+                                    engineCapacity = engineCapacityState.value,
+                                    transmission = transmissionState.value,
+                                    drive = driveState.value,
+                                    steeringWheelSide = steeringWheelSideState.value,
+                                    mileage = mileageState.value,
+                                    condition = conditionState.value,
+                                    price = priceState.value
+                                )
+                                onCreateAdClick(carAd)
+                            } else {
+                                Toast.makeText(context, "Заполните все поля", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    )
+                }
             }
         }
     }
@@ -155,5 +188,5 @@ fun AdCreateScreen(
 @Preview(showBackground = true)
 @Composable
 private fun AdCreateScreenPreview() {
-    AdCreateScreen({ }, { })
+    AdCreateScreen({ _ -> }, { }, { })
 }

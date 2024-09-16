@@ -53,6 +53,7 @@ fun AuthUserAccountScreen(
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
+    onAdCreateClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val userUID = Firebase.auth.currentUser?.uid!!
@@ -161,6 +162,17 @@ fun AuthUserAccountScreen(
                     .padding(horizontal = 8.dp)
             )
             HorizontalDivider()
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            ) {
+                CustomButton(
+                    text = "Создать",
+                    onClick = { onAdCreateClick() }
+                )
+            }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2)
             ) {
@@ -180,6 +192,6 @@ fun AuthUserAccountScreen(
 private fun AuthUserAccountScreenPreview() {
     AuthUserAccountScreen(
         yourAds = CarAdMock.ads,
-        { }, { }, { }, { }, { }, { }
+        { }, { }, { }, { }, { }, { }, { }
     )
 }

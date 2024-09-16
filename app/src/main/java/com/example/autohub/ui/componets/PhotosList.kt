@@ -20,7 +20,7 @@ import com.example.autohub.ui.theme.cardColor
 @Composable
 fun PhotosList(
     @DrawableRes images: List<Int>,
-    onAddImageClick: () -> Unit,
+    onImageClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -36,7 +36,7 @@ fun PhotosList(
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        if (imageId == R.drawable.add_img) onAddImageClick()
+                        if (imageId == R.drawable.add_img) onImageClick()
                     }
                     .padding(horizontal = 4.dp)
             )

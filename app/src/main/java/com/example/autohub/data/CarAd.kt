@@ -1,7 +1,8 @@
 package com.example.autohub.data
 
 data class CarAd(
-    val dateAddPublished: String = "",
+    val userUID: String = "",
+    val dateAdPublished: String = "",
     val city: String = "",
     val brand: String = "",
     val model: String = "",

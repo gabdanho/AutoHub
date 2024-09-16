@@ -28,15 +28,18 @@ import com.example.autohub.data.mock.CarAdMock
 import com.example.autohub.ui.componets.BottomNavBar
 import com.example.autohub.ui.componets.CarAdCard
 import com.example.autohub.ui.theme.containerColor
+import com.example.autohub.utils.getAllAds
 
 @Composable
 fun AdsMainScreen(
-    adsList: List<CarAd>,
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var adsList = remember { mutableStateOf(listOf<CarAd>()) }
+    getAllAds { dataList -> adsList.value = dataList }
+
      Scaffold(
          topBar = { SearchAdsBar() },
          bottomBar = { BottomNavBar(onAdListClick, onAccountClick, onMessageClick) }
@@ -47,7 +50,7 @@ fun AdsMainScreen(
                  .padding(8.dp)
                  .padding(innerPadding)
          ) {
-             items(adsList) { carAd ->
+             items(adsList.value) { carAd ->
                  CarAdCard(carAd, { })
              }
          }
@@ -98,7 +101,6 @@ fun SearchAdsBar(modifier: Modifier = Modifier) {
 @Composable
 private fun AdsMainScreenPreview() {
     AdsMainScreen(
-        adsList = CarAdMock.ads,
         { }, { }, { }
     )
 }

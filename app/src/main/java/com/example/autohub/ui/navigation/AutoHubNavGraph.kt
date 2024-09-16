@@ -3,7 +3,6 @@ package com.example.autohub.ui.navigation
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -14,13 +13,21 @@ import androidx.navigation.compose.composable
 import com.example.autohub.data.User
 import com.example.autohub.ui.account.AccountSettings
 import com.example.autohub.ui.account.AuthUserAccountScreen
+import com.example.autohub.ui.ads.AdCreateScreen
 import com.example.autohub.ui.ads.AdsMainScreen
 import com.example.autohub.ui.login.LoginScreen
 import com.example.autohub.ui.login.RegisterScreen
 import com.example.autohub.ui.messenger.MessengerScreen
+import com.example.autohub.utils.getUserData
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 fun AutoHubNavGraph(
@@ -31,6 +38,13 @@ fun AutoHubNavGraph(
     val context = LocalContext.current
     val fsAuth = Firebase.auth
     val fsStore = Firebase.firestore
+
+    val user = remember { mutableStateOf(User()) }
+    if (fsAuth.currentUser != null) {
+        getUserData(fsAuth.currentUser?.uid!!) { data ->
+            user.value = data
+        }
+    }
 
     NavHost(
         navController = navController,
@@ -105,7 +119,6 @@ fun AutoHubNavGraph(
         }
         composable(route = "AdsMainScreen") {
             AdsMainScreen(
-                adsList = listOf(),
                 onAdListClick = { },
                 onMessageClick = { navController.navigate("MessengerScreen") },
                 onAccountClick = { navController.navigate("AuthUserAccountScreen") }
@@ -136,12 +149,41 @@ fun AutoHubNavGraph(
                         launchSingleTop = true
                     }
                 },
-                onChangeInfoClick = { navController.navigate("AccountSettings") }
+                onChangeInfoClick = { navController.navigate("AccountSettings") },
+                onAdCreateClick = { navController.navigate("AdCreateScreen") }
             )
         }
         composable(route = "AccountSettings") {
             AccountSettings(
                 onBackButtonClick = { navController.popBackStack() }
+            )
+        }
+        composable(route = "AdCreateScreen") {
+            AdCreateScreen(
+                onBackButtonClick = { navController.popBackStack() },
+                onCreateAdClick = { carAd ->
+                    val userUID = fsAuth.currentUser?.uid!!
+                    val docReference = fsStore
+                        .collection("ads")
+                        .document("${userUID}_${carAd.brand.lowercase()}_${carAd.model.lowercase()}")
+
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.getDefault())
+                    val currentDate = dateFormat.format(Date())
+
+                    docReference
+                        .set(carAd.copy(
+                            userUID = userUID,
+                            city = user.value.city,
+                            dateAdPublished = currentDate))
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d("AD_INFO", "Ad is created: ${carAd.brand} ${carAd.model}")
+                            } else {
+                                Log.d("AD_INFO", "Error: ${task.exception?.message ?: "unknown"}")
+                            }
+                    }
+                },
+                onImageClick = { } // TODO()
             )
         }
     }

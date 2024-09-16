@@ -5,7 +5,7 @@ import com.example.autohub.data.CarAd
 object CarAdMock {
     val ads = listOf(
         CarAd(
-            dateAddPublished = "15.06.2024",
+            dateAdPublished = "15.06.2024",
             city = "Ростов-на-Дону",
             brand = "BMW 5",
             model = "E60",
@@ -29,7 +29,7 @@ object CarAdMock {
             )
         ),
         CarAd(
-            dateAddPublished = "30.09.2024",
+            dateAdPublished = "30.09.2024",
             city = "Нижний Новгород",
             brand = "Audi",
             model = "A5",

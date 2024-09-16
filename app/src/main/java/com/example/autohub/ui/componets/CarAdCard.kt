@@ -35,7 +35,7 @@ fun CarAdCard(
     ) {
         Column {
             AsyncImage(
-                model = ad.imagesUrl[0],
+                model = "", // TODO()
                 contentDescription = "Фотография ${ad.brand} ${ad.model}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -53,7 +53,7 @@ fun CarAdCard(
                 modifier = Modifier.padding(8.dp)
             )
             Text(
-                text = "${ad.city}\n${ad.dateAddPublished}",
+                text = "${ad.city}\n${ad.dateAdPublished}",
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.padding(8.dp)
             )
