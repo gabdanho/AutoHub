@@ -58,6 +58,7 @@ fun AuthUserAccountScreen(
 ) {
     val userUID = Firebase.auth.currentUser?.uid!!
     val userData = remember { mutableStateOf(User()) }
+
     getUserData(userUID) { user -> userData.value = user }
 
     Scaffold(

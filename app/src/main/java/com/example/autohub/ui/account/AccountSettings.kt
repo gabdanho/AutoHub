@@ -50,7 +50,7 @@ import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.ui.theme.labelColor
 import com.example.autohub.utils.updateCity
 import com.example.autohub.utils.updateFirstAnsSecondName
-import com.example.autohub.utils.uploadImageToFirebase
+import com.example.autohub.utils.uploadUserProfileImageToFirebase
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
@@ -71,7 +71,7 @@ fun AccountSettings(
     val userData = remember { mutableStateOf(User()) }
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
-            uploadImageToFirebase(context, uri)
+            uploadUserProfileImageToFirebase(context, uri)
 
         } else {
             Toast.makeText(context, "Изображение не было выбрано", Toast.LENGTH_SHORT).show()

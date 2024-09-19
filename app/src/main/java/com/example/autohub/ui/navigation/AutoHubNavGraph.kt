@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.autohub.data.CarAd
 import com.example.autohub.data.User
 import com.example.autohub.ui.account.AccountSettings
 import com.example.autohub.ui.account.AuthUserAccountScreen
@@ -18,16 +19,15 @@ import com.example.autohub.ui.ads.AdsMainScreen
 import com.example.autohub.ui.login.LoginScreen
 import com.example.autohub.ui.login.RegisterScreen
 import com.example.autohub.ui.messenger.MessengerScreen
+import com.example.autohub.utils.getCurrentUserAds
 import com.example.autohub.utils.getUserData
+import com.example.autohub.utils.uploadAdsImagesToFirebase
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
 @Composable
 fun AutoHubNavGraph(
@@ -134,8 +134,12 @@ fun AutoHubNavGraph(
             )
         }
         composable(route = "AuthUserAccountScreen") {
+            val ads = remember { mutableStateOf(listOf<CarAd>()) }
+
+            getCurrentUserAds(fsAuth.currentUser?.uid!!) { ads.value = it }
+
             AuthUserAccountScreen(
-                yourAds = listOf(),
+                yourAds = ads.value,
                 onMessageClick = { navController.navigate("MessengerScreen") },
                 onAccountClick = { },
                 onAdListClick = { navController.navigate("AdsMainScreen") },
@@ -161,17 +165,19 @@ fun AutoHubNavGraph(
         composable(route = "AdCreateScreen") {
             AdCreateScreen(
                 onBackButtonClick = { navController.popBackStack() },
-                onCreateAdClick = { carAd ->
+                onCreateAdClick = { carAd, images ->
                     val userUID = fsAuth.currentUser?.uid!!
+                    val adReference = "${userUID}_${System.currentTimeMillis()}"
                     val docReference = fsStore
                         .collection("ads")
-                        .document("${userUID}_${carAd.brand.lowercase()}_${carAd.model.lowercase()}")
+                        .document(adReference)
 
                     val dateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.getDefault())
                     val currentDate = dateFormat.format(Date())
 
                     docReference
                         .set(carAd.copy(
+                            adId = adReference,
                             userUID = userUID,
                             city = user.value.city,
                             dateAdPublished = currentDate))
@@ -182,8 +188,11 @@ fun AutoHubNavGraph(
                                 Log.d("AD_INFO", "Error: ${task.exception?.message ?: "unknown"}")
                             }
                     }
-                },
-                onImageClick = { } // TODO()
+
+                    uploadAdsImagesToFirebase(context, images, adReference)
+
+                    navController.navigate(route = "AuthUserAccountScreen")
+                }
             )
         }
     }

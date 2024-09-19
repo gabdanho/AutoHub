@@ -1,6 +1,10 @@
 package com.example.autohub.ui.ads
 
+import android.content.ContentResolver
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,13 +16,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.autohub.R
 import com.example.autohub.data.CarAd
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
@@ -27,15 +31,13 @@ import com.example.autohub.ui.componets.TopAdAppBar
 
 @Composable
 fun AdCreateScreen(
-    onCreateAdClick: (CarAd) -> Unit,
+    onCreateAdClick: (CarAd, List<Uri>) -> Unit,
     onBackButtonClick: () -> Unit,
-    onImageClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
 
-    val imagesState = remember { mutableStateOf(listOf(R.drawable.add_img)) }
     val brandState = remember { mutableStateOf("") }
     val modelState = remember { mutableStateOf("") }
     val colorState = remember { mutableStateOf("") }
@@ -49,6 +51,21 @@ fun AdCreateScreen(
     val mileageState = remember { mutableStateOf("") }
     val conditionState = remember { mutableStateOf("") }
     val priceState = remember { mutableStateOf("") }
+
+    val addImageUri = Uri.Builder()
+        .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+        .authority(context.packageName)
+        .appendPath("drawable")
+        .appendPath("add_img")
+        .build()
+    val images = remember { mutableStateListOf<Uri>(addImageUri) }
+    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            images.add(0, uri)
+        } else {
+            Toast.makeText(context, "Изображение не было выбрано", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -69,7 +86,12 @@ fun AdCreateScreen(
                     text = "Фотографии автомобиля",
                     modifier = Modifier.padding(16.dp)
                 )
-                PhotosList(imagesState.value, onImageClick)
+                PhotosList(
+                    images = images.toList(),
+                    onAddImageClick = {
+                        galleryLauncher.launch("image/*")
+                    }
+                )
             }
             Column(
                 modifier = Modifier
@@ -150,14 +172,17 @@ fun AdCreateScreen(
                     CustomButton(
                         text = "Создать",
                         onClick = {
-                            if (brandState.value.isNotBlank() && modelState.value.isNotBlank() &&
-                                colorState.value.isNotBlank() && realiseYearState.value.isNotBlank() &&
-                                bodyState.value.isNotBlank() && typeEngineState.value.isNotBlank() &&
-                                engineCapacityState.value.isNotBlank() && transmissionState.value.isNotBlank() &&
-                                driveState.value.isNotBlank() && steeringWheelSideState.value.isNotBlank() &&
-                                mileageState.value.isNotBlank() && conditionState.value.isNotBlank() &&
-                                priceState.value.isNotBlank()) {
-
+                            if (images.size == 1) {
+                                Toast.makeText(context, "Добавьте изображения", Toast.LENGTH_LONG).show()
+                            } else if (brandState.value.isBlank() || modelState.value.isBlank() ||
+                                colorState.value.isBlank() || realiseYearState.value.isBlank() ||
+                                bodyState.value.isBlank() || typeEngineState.value.isBlank() ||
+                                engineCapacityState.value.isBlank() || transmissionState.value.isBlank() ||
+                                driveState.value.isBlank() || steeringWheelSideState.value.isBlank() ||
+                                mileageState.value.isBlank() || conditionState.value.isBlank() ||
+                                priceState.value.isBlank()) {
+                                Toast.makeText(context, "Заполните все поля", Toast.LENGTH_LONG).show()
+                            } else {
                                 val carAd = CarAd(
                                     brand = brandState.value,
                                     model = modelState.value,
@@ -173,9 +198,7 @@ fun AdCreateScreen(
                                     condition = conditionState.value,
                                     price = priceState.value
                                 )
-                                onCreateAdClick(carAd)
-                            } else {
-                                Toast.makeText(context, "Заполните все поля", Toast.LENGTH_LONG).show()
+                                onCreateAdClick(carAd, images.toList().dropLast(1))
                             }
                         }
                     )
@@ -188,5 +211,5 @@ fun AdCreateScreen(
 @Preview(showBackground = true)
 @Composable
 private fun AdCreateScreenPreview() {
-    AdCreateScreen({ _ -> }, { }, { })
+    AdCreateScreen({ _, _ -> }, { })
 }

@@ -24,7 +24,7 @@ fun getUserData(uid: String, callBack: (User) -> Unit) {
     }
 }
 
-fun uploadImageToFirebase(context: Context, uri: Uri) {
+fun uploadUserProfileImageToFirebase(context: Context, uri: Uri) {
     val user = Firebase.auth.currentUser!!
     val fbStorage = Firebase.storage.reference.child("users/${user.uid}/profileImage.jpg")
     val fbStoreRef = Firebase.firestore.collection("users").document(user.uid)

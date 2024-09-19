@@ -35,8 +35,8 @@ fun CarAdCard(
     ) {
         Column {
             AsyncImage(
-                model = "", // TODO()
-                contentDescription = "Фотография ${ad.brand} ${ad.model}",
+                model = if (ad.imagesUrl.isNotEmpty()) ad.imagesUrl.first() else "",
+                contentDescription = "Фотография",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
