@@ -156,9 +156,12 @@ fun LoginScreen(
                     .clickable {
                         fsAuth.signInWithEmailAndPassword(emailState.value, passwordState.value).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                fsAuth.currentUser!!.sendEmailVerification()
-                                fsAuth.signOut()
-                                Toast.makeText(context, "Письмо отправлено на почту. Если его нет, проверьте папку \"Спам\"", Toast.LENGTH_LONG).show()
+                                val currentUser = fsAuth.currentUser
+                                if (currentUser != null) {
+                                    currentUser.sendEmailVerification()
+                                    fsAuth.signOut()
+                                    Toast.makeText(context, "Письмо отправлено на почту. Если его нет, проверьте папку \"Спам\"", Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }

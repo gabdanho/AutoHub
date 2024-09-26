@@ -49,17 +49,19 @@ fun AuthUserAccountScreen(
     yourAds: List<CarAd>,
     onChangeInfoClick: () -> Unit,
     onSignOutClick: () -> Unit,
-    onAdClick: () -> Unit,
+    onAdClick: (CarAd) -> Unit,
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
     onAdCreateClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val userUID = Firebase.auth.currentUser?.uid!!
     val userData = remember { mutableStateOf(User()) }
 
-    getUserData(userUID) { user -> userData.value = user }
+    val userUID = Firebase.auth.currentUser?.uid
+    if (userUID != null) {
+        getUserData(userUID) { user -> userData.value = user }
+    }
 
     Scaffold(
         topBar = {
@@ -180,7 +182,7 @@ fun AuthUserAccountScreen(
                 items(yourAds) { ad ->
                     CarAdCard(
                         ad = ad,
-                        onAdClick = onAdClick
+                        onAdClick = { onAdClick(ad) }
                     )
                 }
             }

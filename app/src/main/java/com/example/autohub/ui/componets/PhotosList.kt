@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -42,7 +43,7 @@ fun PhotosList(
                 contentDescription = "Изображение автомобиля",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .size(300.dp)
                     .clickable {
                         if (imageUri == images.last()) {
                             onAddImageClick()
@@ -60,21 +61,6 @@ fun PhotosList(
         ShowImageDialog(
             uri = imageUriToShowImage.value,
             closeDialog = { isShowImageDialog.value = false }
-        )
-    }
-}
-
-@Composable
-fun ShowImageDialog(
-    uri: Uri,
-    closeDialog: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Dialog(closeDialog) {
-        AsyncImage(
-            model = uri,
-            contentDescription = "Изображение",
-            modifier = modifier.fillMaxWidth()
         )
     }
 }

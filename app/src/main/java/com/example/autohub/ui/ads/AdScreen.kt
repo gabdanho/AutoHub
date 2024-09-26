@@ -1,8 +1,8 @@
 package com.example.autohub.ui.ads
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,16 +15,16 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,22 +32,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.autohub.data.CarAd
+import com.example.autohub.data.User
 import com.example.autohub.data.mock.CarAdMock
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.PhotosUrlList
 import com.example.autohub.ui.componets.TopAdAppBar
 import com.example.autohub.ui.theme.cardColor
 import com.example.autohub.ui.theme.containerColor
+import com.example.autohub.utils.getAdsBySearchText
+import com.example.autohub.utils.getUserData
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun AdScreen(
+    user: User,
     carAd: CarAd,
+    onUserClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     onMessageClick: () -> Unit,
     onCallClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+
+    val currentUserUID = Firebase.auth.currentUser?.uid ?: ""
 
     Scaffold(
         topBar = {
@@ -65,7 +74,7 @@ fun AdScreen(
                 .verticalScroll(scrollState)
         ) {
             PhotosUrlList(
-                carAd.imagesUrl, { },
+                carAd.imagesUrl,
                 modifier = Modifier.weight(1.4f)
             )
             Column(modifier = Modifier.weight(3f)) {
@@ -75,45 +84,50 @@ fun AdScreen(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(8.dp)
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                ) {
-                    AsyncImage(
-                        model = "https://redbrickworks.com/wp-content/uploads/2021/02/business-man.png",
-                        contentDescription = "Account image",
-                        contentScale = ContentScale.Crop,
+
+                if (currentUserUID != carAd.userUID) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .size(70.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, containerColor, CircleShape)
-                    )
-                    Column(
-                        modifier = Modifier.padding(start = 16.dp)
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                     ) {
-                        Text(
-                            text = "Вася Лютый, Санкт-Петербург",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyLarge,
+                        AsyncImage(
+                            model = user.image,
+                            contentDescription = "Account image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(70.dp)
+                                .clip(CircleShape)
+                                .border(2.dp, containerColor, CircleShape)
+                                .clickable { onUserClick() }
                         )
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
+                        Column(
+                            modifier = Modifier.padding(start = 16.dp)
                         ) {
-                            CustomButton(
-                                text = "Написать",
-                                onClick = { onMessageClick() },
-                                modifier = Modifier
-                                    .padding(end = 4.dp)
-                                    .weight(1f)
+                            Text(
+                                text = "${user.firstName} ${user.secondName}, ${user.city}",
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.clickable { onUserClick() }
                             )
-                            CustomButton(
-                                text = "Позвонить",
-                                onClick = { onCallClick() },
-                                modifier = Modifier.weight(1f)
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                CustomButton(
+                                    text = "Написать",
+                                    onClick = { onMessageClick() },
+                                    modifier = Modifier
+                                        .padding(end = 4.dp)
+                                        .weight(1f)
+                                )
+                                CustomButton(
+                                    text = "Позвонить",
+                                    onClick = { onCallClick() },
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
                         }
                     }
                 }
@@ -345,7 +359,8 @@ fun AdScreen(
 @Composable
 private fun AdScreenPreview() {
     AdScreen(
-        CarAdMock.ads[0],
-        { }, { }, { }
+        User(),
+        CarAd(),
+        { }, { }, { }, { }
     )
 }

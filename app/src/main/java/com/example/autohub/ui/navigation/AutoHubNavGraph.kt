@@ -1,7 +1,8 @@
 package com.example.autohub.ui.navigation
 
-import android.util.Log
-import android.widget.Toast
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,187 +14,201 @@ import androidx.navigation.compose.composable
 import com.example.autohub.data.CarAd
 import com.example.autohub.data.User
 import com.example.autohub.ui.account.AccountSettings
+import com.example.autohub.ui.account.AnotherAccountScreen
 import com.example.autohub.ui.account.AuthUserAccountScreen
 import com.example.autohub.ui.ads.AdCreateScreen
+import com.example.autohub.ui.ads.AdScreen
 import com.example.autohub.ui.ads.AdsMainScreen
 import com.example.autohub.ui.login.LoginScreen
 import com.example.autohub.ui.login.RegisterScreen
+import com.example.autohub.ui.messenger.ChattingScreen
 import com.example.autohub.ui.messenger.MessengerScreen
+import com.example.autohub.utils.createAd
+import com.example.autohub.utils.getAllAds
+import com.example.autohub.utils.getAuthUserUID
 import com.example.autohub.utils.getCurrentUserAds
 import com.example.autohub.utils.getUserData
-import com.example.autohub.utils.uploadAdsImagesToFirebase
+import com.example.autohub.utils.loginUser
+import com.example.autohub.utils.registerUser
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
 fun AutoHubNavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    val isLoginSuccess = remember { mutableStateOf(false) }
     val context = LocalContext.current
     val fsAuth = Firebase.auth
-    val fsStore = Firebase.firestore
+    val adsOnMainScreen = remember { mutableStateOf(listOf<CarAd>()) }
+    val ads = remember { mutableStateOf(listOf<CarAd>()) }
+    val selectedAd = remember { mutableStateOf(CarAd()) }
+    val userData = remember { mutableStateOf(User()) }
+    val buyerUID = remember { mutableStateOf("") }
+    val authUserData = remember { mutableStateOf(User()) }
+    val authUser = fsAuth.currentUser
 
-    val user = remember { mutableStateOf(User()) }
-    if (fsAuth.currentUser != null) {
-        getUserData(fsAuth.currentUser?.uid!!) { data ->
-            user.value = data
+    if (authUser != null) {
+        getUserData(authUser.uid) { data ->
+            authUserData.value = data
         }
     }
+    getAllAds { dataList -> adsOnMainScreen.value = dataList }
 
     NavHost(
         navController = navController,
-        startDestination = if (fsAuth.currentUser == null) "LoginScreen" else "AdsMainScreen",
+        startDestination = if (authUser == null) ScreenRoutes.LOGIN.name else ScreenRoutes.ALL_ADS.name,
         modifier = modifier
     ) {
-        composable(route = "LoginScreen") {
+        composable(route = ScreenRoutes.LOGIN.name) {
             val isLoading = remember { mutableStateOf(false) }
-            val isShowSendEmailText = remember { mutableStateOf(false) }
+            val isShowSendMessageEmailText = remember { mutableStateOf(false) }
 
             LoginScreen(
-                onRegisterClick = { navController.navigate(route = "RegisterScreen") },
+                onRegisterClick = { navController.navigate(route = ScreenRoutes.REGISTER.name) },
                 onLoginClick = { email, password ->
-                    isLoading.value = true
-                    fsAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                        if (!task.isSuccessful) {
-                            isLoading.value = false
-                            isShowSendEmailText.value = false
-                            Toast.makeText(context, "Ошибка: ${task.exception?.message ?: "unknown"}", Toast.LENGTH_SHORT).show()
-                        } else {
-                            if (!fsAuth.currentUser!!.isEmailVerified) {
-                                Toast.makeText(context, "Аккаунт не верифицирован. Проверьте почту", Toast.LENGTH_SHORT).show()
-                                isShowSendEmailText.value = true
-                                fsAuth.signOut()
-                                isLoading.value = false
-                            } else {
-                                isLoginSuccess.value = true
-                                navController.navigate("AdsMainScreen") {
-                                    popUpTo(0) {
-                                        inclusive = true
-                                    }
-                                    launchSingleTop = true
-
-                                    isLoading.value = false
-                                    isShowSendEmailText.value = false
-                                }
-                            }
-                        }
-                    }
+                    loginUser(
+                        navController = navController,
+                        context = context,
+                        email = email,
+                        password = password,
+                        changeLoadingState = { isLoading.value = it },
+                        changeShowTextToSendMessageToEmail = { isShowSendMessageEmailText.value = it }
+                    )
                 },
                 isProgressBarWork = isLoading.value,
-                isShowSendEmailText = isShowSendEmailText.value
+                isShowSendEmailText = isShowSendMessageEmailText.value
             )
         }
-        composable(route = "RegisterScreen") {
+        composable(route = ScreenRoutes.REGISTER.name) {
             RegisterScreen(
                 onBackClick = { navController.popBackStack() },
                 onRegisterClick = { email, password, user ->
-                    fsAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val userUID = fsAuth.currentUser?.uid
-                            val docReference = fsStore.collection("users").document(userUID!!)
-                            docReference.set(user).addOnSuccessListener {
-                                Log.d("USER_INFO", "Created document for user: $userUID")
-                            }
-
-                            fsAuth.currentUser!!.sendEmailVerification()
-                            Toast.makeText(context, "Для завершения регистрации перейдите по ссылке, отправленной на Вашу почту", Toast.LENGTH_SHORT).show()
-
-                            navController.navigate(route = "LoginScreen") {
-                                popUpTo(0) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
-                            }
-                        } else {
-                            Toast.makeText(context, "Ошибка: ${task.exception?.message ?: "unknown"}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                    registerUser(
+                        email = email,
+                        password = password,
+                        user = user,
+                        navController = navController,
+                        context = context
+                    )
                 }
             )
         }
-        composable(route = "AdsMainScreen") {
+        composable(route = ScreenRoutes.ALL_ADS.name) {
             AdsMainScreen(
-                onAdListClick = { },
-                onMessageClick = { navController.navigate("MessengerScreen") },
-                onAccountClick = { navController.navigate("AuthUserAccountScreen") }
+                adsList = adsOnMainScreen.value,
+                onAdListClick = {
+                    getAllAds { dataList -> adsOnMainScreen.value = dataList }
+                },
+                onAdClick = { ad ->
+                    selectedAd.value = ad
+                    navController.navigate(route = ScreenRoutes.AD_INFO.name)
+                },
+                onMessageClick = { navController.navigate(ScreenRoutes.MESSENGER.name) },
+                onAccountClick = { navController.navigate(ScreenRoutes.AUTH_USER_ACCOUNT.name) },
+                onDoneClick = {
+                    adsOnMainScreen.value = it
+                }
             )
         }
-        composable(route = "MessengerScreen") {
+        composable(route = ScreenRoutes.MESSENGER.name) {
             MessengerScreen(
-                buyers = listOf(),
                 onMessageClick = { },
-                onAccountClick = { navController.navigate("AuthUserAccountScreen") },
-                onAdListClick = { navController.navigate("AdsMainScreen") },
-                onAnswerClick = { }, // TODO()
+                onAccountClick = { navController.navigate(ScreenRoutes.AUTH_USER_ACCOUNT.name) },
+                onAdListClick = { navController.navigate(ScreenRoutes.ALL_ADS.name) },
+                onAnswerClick = {
+                    println(it)
+                    buyerUID.value = it
+                    navController.navigate(route = ScreenRoutes.CHATTING.name)
+                }
             )
         }
-        composable(route = "AuthUserAccountScreen") {
-            val ads = remember { mutableStateOf(listOf<CarAd>()) }
-
-            getCurrentUserAds(fsAuth.currentUser?.uid!!) { ads.value = it }
+        composable(route = ScreenRoutes.AUTH_USER_ACCOUNT.name) {
+            getCurrentUserAds(getAuthUserUID()) { ads.value = it }
 
             AuthUserAccountScreen(
                 yourAds = ads.value,
-                onMessageClick = { navController.navigate("MessengerScreen") },
+                onMessageClick = { navController.navigate(ScreenRoutes.MESSENGER.name) },
                 onAccountClick = { },
-                onAdListClick = { navController.navigate("AdsMainScreen") },
-                onAdClick = { }, // TODO()
+                onAdListClick = { navController.navigate(ScreenRoutes.ALL_ADS.name) },
+                onAdClick = { carAd ->
+                    selectedAd.value = carAd
+                    navController.navigate(route = ScreenRoutes.AD_INFO.name)
+                },
                 onSignOutClick = {
                     fsAuth.signOut()
-                    navController.navigate("LoginScreen") {
+                    navController.navigate(ScreenRoutes.LOGIN.name) {
                         popUpTo(0) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     }
                 },
-                onChangeInfoClick = { navController.navigate("AccountSettings") },
-                onAdCreateClick = { navController.navigate("AdCreateScreen") }
+                onChangeInfoClick = { navController.navigate(ScreenRoutes.ACCOUNT_SETTINGS.name) },
+                onAdCreateClick = { navController.navigate(ScreenRoutes.AD_CREATE.name) }
             )
         }
-        composable(route = "AccountSettings") {
+        composable(route = ScreenRoutes.ACCOUNT_SETTINGS.name) {
             AccountSettings(
                 onBackButtonClick = { navController.popBackStack() }
             )
         }
-        composable(route = "AdCreateScreen") {
+        composable(route = ScreenRoutes.AD_CREATE.name) {
             AdCreateScreen(
                 onBackButtonClick = { navController.popBackStack() },
                 onCreateAdClick = { carAd, images ->
-                    val userUID = fsAuth.currentUser?.uid!!
-                    val adReference = "${userUID}_${System.currentTimeMillis()}"
-                    val docReference = fsStore
-                        .collection("ads")
-                        .document(adReference)
-
-                    val dateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.getDefault())
-                    val currentDate = dateFormat.format(Date())
-
-                    docReference
-                        .set(carAd.copy(
-                            adId = adReference,
-                            userUID = userUID,
-                            city = user.value.city,
-                            dateAdPublished = currentDate))
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Log.d("AD_INFO", "Ad is created: ${carAd.brand} ${carAd.model}")
-                            } else {
-                                Log.d("AD_INFO", "Error: ${task.exception?.message ?: "unknown"}")
-                            }
-                    }
-
-                    uploadAdsImagesToFirebase(context, images, adReference)
-
-                    navController.navigate(route = "AuthUserAccountScreen")
+                    createAd(carAd, authUserData.value, context, images, navController)
                 }
             )
         }
+        composable(route = ScreenRoutes.AD_INFO.name) {
+            getUserData(selectedAd.value.userUID) {
+                userData.value = it
+            }
+            buyerUID.value = selectedAd.value.userUID
+
+            AdScreen(
+                user = userData.value,
+                carAd = selectedAd.value,
+                onBackButtonClick = { navController.popBackStack() },
+                onCallClick = { startCalling(context, userData.value.phoneNumber) },
+                onMessageClick = { navController.navigate(ScreenRoutes.CHATTING.name) }, // TODO()
+                onUserClick = { navController.navigate(ScreenRoutes.ANOTHER_ACCOUNT.name) }
+            )
+        }
+        composable(route = ScreenRoutes.ANOTHER_ACCOUNT.name) {
+            getCurrentUserAds(selectedAd.value.userUID) {
+                ads.value = it
+            }
+            buyerUID.value = selectedAd.value.userUID
+
+            AnotherAccountScreen(
+                user = userData.value,
+                ads = ads.value,
+                onAddClick = {
+                    selectedAd.value = it
+                    navController.navigate(ScreenRoutes.AD_INFO.name)
+                },
+                onBackButtonClick = { navController.popBackStack() },
+                onCallClick = { startCalling(context, userData.value.phoneNumber) },
+                onWriteClick = { navController.navigate(ScreenRoutes.CHATTING.name) }
+            )
+        }
+
+        composable(route = ScreenRoutes.CHATTING.name) {
+            ChattingScreen(
+                buyerUID = buyerUID.value,
+                onBackButtonClick = { navController.popBackStack() }
+            )
+        }
+    }
+}
+
+fun startCalling(context: Context, phoneNumber: String) {
+    val callIntent = Intent(Intent.ACTION_CALL, Uri.fromParts("tel", phoneNumber, null))
+
+    if (callIntent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(callIntent)
     }
 }

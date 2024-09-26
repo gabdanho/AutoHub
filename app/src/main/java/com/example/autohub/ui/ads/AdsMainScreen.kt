@@ -1,6 +1,7 @@
 package com.example.autohub.ui.ads
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -24,41 +26,58 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.data.CarAd
-import com.example.autohub.data.mock.CarAdMock
 import com.example.autohub.ui.componets.BottomNavBar
 import com.example.autohub.ui.componets.CarAdCard
 import com.example.autohub.ui.theme.containerColor
-import com.example.autohub.utils.getAllAds
+import com.example.autohub.utils.getAdsBySearchText
 
 @Composable
 fun AdsMainScreen(
+    adsList: List<CarAd>,
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
+    onAdClick: (CarAd) -> Unit,
+    onDoneClick: (List<CarAd>) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var adsList = remember { mutableStateOf(listOf<CarAd>()) }
-    getAllAds { dataList -> adsList.value = dataList }
-
      Scaffold(
-         topBar = { SearchAdsBar() },
+         topBar = { SearchAdsBar(onDoneClick) },
          bottomBar = { BottomNavBar(onAdListClick, onAccountClick, onMessageClick) }
      ) { innerPadding ->
-         LazyVerticalGrid(
-             columns = GridCells.Fixed(2),
-             modifier = modifier
-                 .padding(8.dp)
-                 .padding(innerPadding)
-         ) {
-             items(adsList.value) { carAd ->
-                 CarAdCard(carAd, { })
+         if (adsList.isNotEmpty()) {
+             LazyVerticalGrid(
+                 columns = GridCells.Fixed(2),
+                 modifier = modifier
+                     .padding(8.dp)
+                     .padding(innerPadding)
+             ) {
+                 items(adsList) { carAd ->
+                     CarAdCard(carAd, { onAdClick(carAd) })
+                 }
+             }
+         } else {
+             Row(
+                 horizontalArrangement = Arrangement.Center,
+                 modifier = Modifier
+                     .fillMaxWidth()
+                     .padding(innerPadding)
+                     .padding(8.dp)
+             ) {
+                 Text(
+                     text = "Объявлений не найдено",
+                     color = Color.LightGray
+                 )
              }
          }
      }
 }
 
 @Composable
-fun SearchAdsBar(modifier: Modifier = Modifier) {
+fun SearchAdsBar(
+    onDoneClick: (List<CarAd>) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val searchTextState = remember { mutableStateOf("") }
 
     Row(
@@ -92,6 +111,11 @@ fun SearchAdsBar(modifier: Modifier = Modifier) {
                 unfocusedIndicatorColor = containerColor,
                 focusedIndicatorColor = containerColor
             ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    getAdsBySearchText(searchTextState.value, onDoneClick)
+                }
+            ),
             modifier = Modifier.fillMaxWidth(0.8f)
         )
     }
@@ -101,6 +125,6 @@ fun SearchAdsBar(modifier: Modifier = Modifier) {
 @Composable
 private fun AdsMainScreenPreview() {
     AdsMainScreen(
-        { }, { }, { }
+        listOf(CarAd()), { }, { }, { }, { }, { }
     )
 }

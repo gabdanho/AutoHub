@@ -17,7 +17,7 @@ fun getUserData(uid: String, callBack: (User) -> Unit) {
     Firebase.firestore.collection("users").document(uid).get().addOnCompleteListener { task ->
         if (task.isSuccessful) {
             val user = task.result.toObject(User::class.java)
-            callBack(user!!)
+            callBack(user ?: User())
         } else {
             Log.e("USER_DATA", "Ошибка: ${task.exception?.message}")
         }
@@ -25,9 +25,9 @@ fun getUserData(uid: String, callBack: (User) -> Unit) {
 }
 
 fun uploadUserProfileImageToFirebase(context: Context, uri: Uri) {
-    val user = Firebase.auth.currentUser!!
-    val fbStorage = Firebase.storage.reference.child("users/${user.uid}/profileImage.jpg")
-    val fbStoreRef = Firebase.firestore.collection("users").document(user.uid)
+    val user = Firebase.auth.currentUser
+    val fbStorage = Firebase.storage.reference.child("users/${user?.uid ?: ""}/profileImage.jpg")
+    val fbStoreRef = Firebase.firestore.collection("users").document(user?.uid ?: "")
 
     val inputStream = context.contentResolver.openInputStream(uri)
     val bitmap = BitmapFactory.decodeStream(inputStream)
@@ -48,8 +48,8 @@ fun uploadUserProfileImageToFirebase(context: Context, uri: Uri) {
 }
 
 fun updateFirstAnsSecondName(context: Context, firstName: String, secondName: String) {
-    val user = Firebase.auth.currentUser!!
-    val fbStoreRef = Firebase.firestore.collection("users").document(user.uid)
+    val user = Firebase.auth.currentUser
+    val fbStoreRef = Firebase.firestore.collection("users").document(user?.uid ?: "")
 
     if (firstName.isNotBlank()) {
         fbStoreRef.update("firstName", firstName).addOnCompleteListener { task ->
@@ -72,8 +72,8 @@ fun updateFirstAnsSecondName(context: Context, firstName: String, secondName: St
 }
 
 fun updateCity(context: Context, city: String) {
-    val user = Firebase.auth.currentUser!!
-    val fbStoreRef = Firebase.firestore.collection("users").document(user.uid)
+    val user = Firebase.auth.currentUser
+    val fbStoreRef = Firebase.firestore.collection("users").document(user?.uid ?: "")
 
     fbStoreRef.update("city", city).addOnCompleteListener { task ->
         if (task.isSuccessful) {

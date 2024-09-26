@@ -16,30 +16,34 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.autohub.ui.ChatViewModel
 import com.example.autohub.ui.componets.BottomNavBar
-import com.example.autohub.ui.componets.TopAdAppBar
 import com.example.autohub.ui.theme.barColor
 import com.example.autohub.ui.theme.containerColor
 
 @Composable
 fun MessengerScreen(
-    buyers: List<String>,
-    onAnswerClick: () -> Unit,
+    onAnswerClick: (String) -> Unit,
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
+    viewModel: ChatViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
+    val buyers by viewModel.getBuyers().observeAsState(initial = emptyList())
+
     Scaffold(
         topBar = {
             Row(
@@ -70,10 +74,10 @@ fun MessengerScreen(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .padding(bottom = 8.dp)
-                        .clickable { onAnswerClick() }
+                        .clickable { onAnswerClick(buyer.uid) }
                 ) {
                     AsyncImage(
-                        model = "https://redbrickworks.com/wp-content/uploads/2021/02/business-man.png",
+                        model = buyer.image,
                         contentDescription = "Фото покупателя",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -87,14 +91,14 @@ fun MessengerScreen(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = buyer,
+                            text = buyer.name,
                             style = MaterialTheme.typography.titleMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Сейчас куплю",
+                            text = buyer.lastMessage,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -109,7 +113,6 @@ fun MessengerScreen(
 @Composable
 private fun MessengerScreenPreview() {
     MessengerScreen(
-        buyers = listOf("Вася Жесткий", "Женя Алблак"),
         { }, { }, { }, { }
     )
 }

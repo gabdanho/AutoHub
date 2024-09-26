@@ -52,6 +52,7 @@ import com.example.autohub.utils.updateCity
 import com.example.autohub.utils.updateFirstAnsSecondName
 import com.example.autohub.utils.uploadUserProfileImageToFirebase
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 
@@ -67,7 +68,7 @@ fun AccountSettings(
     val cityState = remember { mutableStateOf("") }
     val isNamesButtonEnabled = remember { mutableStateOf(false) }
     val isCityButtonEnabled = remember { mutableStateOf(false) }
-    val userUID = Firebase.auth.currentUser?.uid!!
+    val userUID = Firebase.auth.currentUser?.uid ?: ""
     val userData = remember { mutableStateOf(User()) }
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
@@ -241,7 +242,6 @@ fun ChangePasswordDialog(
     hideDialog: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val user = Firebase.auth.currentUser!!
     val passwordState = remember { mutableStateOf("") }
     val isInputError = remember { mutableStateOf(false) }
 
@@ -293,34 +293,37 @@ fun ChangePasswordDialog(
                             .padding(end = 8.dp)
                             .weight(1f)
                     )
-                    CustomButton(
-                        text = "Подтвердить",
-                        onClick = {
-                            if (passwordState.value.isEmpty()) {
-                                isInputError.value = true
-                                Toast.makeText(context, "Поле пароля пустое, введите пароль", Toast.LENGTH_SHORT).show()
-                            }
-                            else if (passwordState.value.length < 6) {
-                                isInputError.value = true
-                                Toast.makeText(context, "Пароль должен содержать не менее 6 символов", Toast.LENGTH_SHORT).show()
-                            }
-                            else {
-                                isInputError.value = false
-
-                                user.updatePassword(passwordState.value).addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        Toast.makeText(context, "Пароль успешно изменён", Toast.LENGTH_SHORT).show()
-                                    }
-                                    else {
-                                        Toast.makeText(context, "Ошибка: ${task.exception?.message ?: "unknown"}", Toast.LENGTH_SHORT).show()
-                                    }
+                    val user = Firebase.auth.currentUser
+                    if (user != null) {
+                        CustomButton(
+                            text = "Подтвердить",
+                            onClick = {
+                                if (passwordState.value.isEmpty()) {
+                                    isInputError.value = true
+                                    Toast.makeText(context, "Поле пароля пустое, введите пароль", Toast.LENGTH_SHORT).show()
                                 }
+                                else if (passwordState.value.length < 6) {
+                                    isInputError.value = true
+                                    Toast.makeText(context, "Пароль должен содержать не менее 6 символов", Toast.LENGTH_SHORT).show()
+                                }
+                                else {
+                                    isInputError.value = false
 
-                                hideDialog()
-                            }
-                        },
-                        modifier = Modifier.weight(1f)
-                    )
+                                    user.updatePassword(passwordState.value).addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            Toast.makeText(context, "Пароль успешно изменён", Toast.LENGTH_SHORT).show()
+                                        }
+                                        else {
+                                            Toast.makeText(context, "Ошибка: ${task.exception?.message ?: "unknown"}", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+
+                                    hideDialog()
+                                }
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
             }
         }

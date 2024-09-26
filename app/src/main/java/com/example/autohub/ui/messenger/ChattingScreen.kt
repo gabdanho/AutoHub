@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -27,6 +26,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,25 +38,31 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.autohub.data.Message
+import com.example.autohub.data.User
+import com.example.autohub.ui.ChatViewModel
 import com.example.autohub.ui.componets.TopAdAppBar
 import com.example.autohub.ui.theme.cardColor
 import com.example.autohub.ui.theme.containerColor
-
-// Test Data Class
-data class Message(
-    val text: String,
-    val userId: Int
-)
+import com.example.autohub.utils.getAuthUserUID
+import com.example.autohub.utils.getUserData
+import com.example.autohub.utils.sendMessage
 
 @Composable
 fun ChattingScreen(
-    messages: List<Message>,
-    byuer: String,
+    buyerUID: String,
     onBackButtonClick: () -> Unit,
+    viewModel: ChatViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
     val text = remember { mutableStateOf("") }
+
+    val buyerData = remember { mutableStateOf(User()) }
+    getUserData(buyerUID) { buyerData.value = it }
+
+    val messages by viewModel.getChat(buyerUID).observeAsState(initial = emptyList())
 
     Scaffold(
         topBar = {
@@ -68,7 +75,18 @@ fun ChattingScreen(
             MessageInputField(
                 text = text.value,
                 onValueChange = { text.value = it },
-                onSendMessageClick = { }
+                onSendMessageClick = {
+                    if (text.value.isNotBlank()) {
+                        sendMessage(
+                            getAuthUserUID(),
+                            buyerUID,
+                            "${buyerData.value.firstName} ${buyerData.value.secondName}.",
+                            buyerData.value.image,
+                            text.value
+                        )
+                        text.value = ""
+                    }
+                }
             )
         },
         modifier = modifier.fillMaxSize()
@@ -86,7 +104,7 @@ fun ChattingScreen(
                     .background(cardColor)
             ) {
                 AsyncImage(
-                    model = "https://redbrickworks.com/wp-content/uploads/2021/02/business-man.png",
+                    model = buyerData.value.image,
                     contentDescription = "Фото покупателя",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -96,7 +114,7 @@ fun ChattingScreen(
                         .border(2.dp, containerColor, CircleShape)
                 )
                 Text(
-                    text = byuer,
+                    text = "${buyerData.value.firstName} ${buyerData.value.secondName}.",
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -120,8 +138,10 @@ fun UserMessage(
     val config = LocalConfiguration.current
     val maxWidth = (config.screenWidthDp * 0.9f).dp
 
+    val authUserUID = getAuthUserUID()
+
     Row(
-        horizontalArrangement = if (message.userId == 1) Arrangement.End else Arrangement.Start,
+        horizontalArrangement = if (message.sender == authUserUID) Arrangement.End else Arrangement.Start,
         modifier = Modifier.fillMaxWidth()
     ) {
         Card(
@@ -185,13 +205,7 @@ fun MessageInputField(
 @Composable
 private fun ChattingScreenPreview() {
     ChattingScreen(
-        byuer = "Саня Лютый",
-        onBackButtonClick = { },
-        messages = listOf(
-            Message("Привет", 0),
-            Message("Хай", 1),
-            Message("Продай", 0),
-            Message("Нет пака", 1)
-        )
+        buyerUID = "nd12h8721hdkjashbchjgzx87sagkjhe8791",
+        onBackButtonClick = { }
     )
 }
