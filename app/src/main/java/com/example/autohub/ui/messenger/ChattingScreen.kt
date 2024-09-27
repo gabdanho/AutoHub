@@ -2,6 +2,7 @@ package com.example.autohub.ui.messenger
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -21,11 +24,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -36,41 +41,48 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.autohub.data.Message
 import com.example.autohub.data.User
 import com.example.autohub.ui.ChatViewModel
-import com.example.autohub.ui.componets.TopAdAppBar
 import com.example.autohub.ui.theme.cardColor
 import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.utils.getAuthUserUID
 import com.example.autohub.utils.getUserData
 import com.example.autohub.utils.sendMessage
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChattingScreen(
     buyerUID: String,
-    onBackButtonClick: () -> Unit,
+    onBuyerClick: (String) -> Unit,
     viewModel: ChatViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
     val text = remember { mutableStateOf("") }
-
     val buyerData = remember { mutableStateOf(User()) }
     getUserData(buyerUID) { buyerData.value = it }
-
     val messages by viewModel.getChat(buyerUID).observeAsState(initial = emptyList())
+    val listState = rememberLazyListState()
+    val isFirstRender = remember { mutableStateOf(true) }
+
+    // programming scroll to last item
+    LaunchedEffect(messages) {
+        if ((messages.isNotEmpty() && listState.isScrolledToTheEnd()) || (messages.isNotEmpty() && isFirstRender.value)) {
+            listState.animateScrollToItem(messages.size - 1)
+            isFirstRender.value = false
+        }
+    }
 
     Scaffold(
-        topBar = {
-            TopAdAppBar(
-                titleText = "",
-                onBackButtonClick = onBackButtonClick
-            )
-        },
         bottomBar = {
             MessageInputField(
                 text = text.value,
@@ -102,6 +114,7 @@ fun ChattingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(cardColor)
+                    .clickable { onBuyerClick(buyerUID) }
             ) {
                 AsyncImage(
                     model = buyerData.value.image,
@@ -109,17 +122,20 @@ fun ChattingScreen(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .padding(8.dp)
-                        .size(40.dp)
+                        .size(60.dp)
                         .clip(CircleShape)
                         .border(2.dp, containerColor, CircleShape)
                 )
                 Text(
-                    text = "${buyerData.value.firstName} ${buyerData.value.secondName}.",
+                    text = "${buyerData.value.firstName} ${buyerData.value.secondName}",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.W300,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
 
             LazyColumn(
+                state = listState,
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(messages) { message ->
@@ -151,10 +167,14 @@ fun UserMessage(
                 .widthIn(max = maxWidth)
                 .padding(8.dp)
         ) {
-            Text(
-                text = message.text,
-                modifier = Modifier.padding(8.dp)
-            )
+            Text(buildAnnotatedString {
+                withStyle(style = SpanStyle(fontSize = 15.sp)) {
+                    append(text = message.text + " ")
+                }
+                withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 10.sp)) {
+                    append(text = message.time)
+                }
+            }, modifier = Modifier.padding(8.dp))
         }
     }
 }
@@ -201,11 +221,5 @@ fun MessageInputField(
     }
 }
 
-@Preview
-@Composable
-private fun ChattingScreenPreview() {
-    ChattingScreen(
-        buyerUID = "nd12h8721hdkjashbchjgzx87sagkjhe8791",
-        onBackButtonClick = { }
-    )
-}
+// проверяем последний проскроллено ли до последнего элемента в lazy list
+fun LazyListState.isScrolledToTheEnd() = layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 2 // с 1 работает не так

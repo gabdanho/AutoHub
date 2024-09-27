@@ -181,7 +181,10 @@ fun AutoHubNavGraph(
             getCurrentUserAds(selectedAd.value.userUID) {
                 ads.value = it
             }
-            buyerUID.value = selectedAd.value.userUID
+
+            getUserData(buyerUID.value) {
+                userData.value = it
+            }
 
             AnotherAccountScreen(
                 user = userData.value,
@@ -199,7 +202,10 @@ fun AutoHubNavGraph(
         composable(route = ScreenRoutes.CHATTING.name) {
             ChattingScreen(
                 buyerUID = buyerUID.value,
-                onBackButtonClick = { navController.popBackStack() }
+                onBuyerClick = {
+                    uid -> buyerUID.value = uid
+                    navController.navigate(ScreenRoutes.ANOTHER_ACCOUNT.name)
+                }
             )
         }
     }
