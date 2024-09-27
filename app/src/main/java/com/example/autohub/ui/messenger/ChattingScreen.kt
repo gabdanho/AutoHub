@@ -1,9 +1,11 @@
 package com.example.autohub.ui.messenger
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -52,10 +55,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.autohub.data.Message
 import com.example.autohub.data.User
+import com.example.autohub.data.UserStatus
 import com.example.autohub.ui.ChatViewModel
 import com.example.autohub.ui.theme.cardColor
 import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.utils.getAuthUserUID
+import com.example.autohub.utils.getBuyerStatus
 import com.example.autohub.utils.getUserData
 import com.example.autohub.utils.sendMessage
 import kotlinx.coroutines.launch
@@ -103,6 +108,9 @@ fun ChattingScreen(
         },
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
+        val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
+        val status = getBuyerStatus(buyerUID).observeAsState(initial = UserStatus.OFFLINE)
+
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -116,16 +124,25 @@ fun ChattingScreen(
                     .background(cardColor)
                     .clickable { onBuyerClick(buyerUID) }
             ) {
-                AsyncImage(
-                    model = buyerData.value.image,
-                    contentDescription = "Фото покупателя",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(60.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, containerColor, CircleShape)
-                )
+
+                Box {
+                    AsyncImage(
+                        model = buyerData.value.image,
+                        contentDescription = "Фото покупателя",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(60.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, containerColor, CircleShape)
+                    )
+                    Canvas(modifier = Modifier.size(4.dp).padding(8.dp)) {
+                        drawCircle(
+                            radius = circleSize,
+                            color = if (status.value == UserStatus.ONLINE) Color.Green else Color.Gray
+                        )
+                    }
+                }
                 Text(
                     text = "${buyerData.value.firstName} ${buyerData.value.secondName}",
                     style = MaterialTheme.typography.headlineMedium,
@@ -167,14 +184,16 @@ fun UserMessage(
                 .widthIn(max = maxWidth)
                 .padding(8.dp)
         ) {
-            Text(buildAnnotatedString {
-                withStyle(style = SpanStyle(fontSize = 15.sp)) {
-                    append(text = message.text + " ")
-                }
-                withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 10.sp)) {
-                    append(text = message.time)
-                }
-            }, modifier = Modifier.padding(8.dp))
+            Text(
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontSize = 15.sp)) {
+                        append(text = message.text + " ")
+                    }
+                    withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 10.sp)) {
+                        append(text = message.time)
+                    }
+                }, modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }
@@ -222,4 +241,5 @@ fun MessageInputField(
 }
 
 // проверяем последний проскроллено ли до последнего элемента в lazy list
-fun LazyListState.isScrolledToTheEnd() = layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 2 // с 1 работает не так
+fun LazyListState.isScrolledToTheEnd() =
+    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 2 // с 1 работает не так

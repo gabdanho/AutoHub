@@ -6,5 +6,6 @@ data class User(
     val email: String = "",
     val phoneNumber: String = "",
     val city: String = "",
-    val image: String = ""
+    val image: String = "",
+    val status: String = UserStatus.OFFLINE.name
 )

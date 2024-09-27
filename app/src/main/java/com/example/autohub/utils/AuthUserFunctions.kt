@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.navigation.NavHostController
 import com.example.autohub.data.User
+import com.example.autohub.data.UserStatus
 import com.example.autohub.ui.navigation.ScreenRoutes
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -49,6 +50,7 @@ fun loginUser(
                         fbAuth.signOut()
                         changeLoadingState(false)
                     } else {
+                        changeUserStatus(UserStatus.ONLINE)
                         changeLoadingState(true)
                         navController.navigate(ScreenRoutes.ALL_ADS.name) {
                             popUpTo(0) {
@@ -111,4 +113,15 @@ fun registerUser(
                 ).show()
             }
         }
+}
+
+fun changeUserStatus(status: UserStatus) {
+    val fbAuth = Firebase.auth
+
+    if (fbAuth.currentUser != null) {
+        Firebase.firestore
+            .collection("users")
+            .document(getAuthUserUID())
+            .update("status", status.name)
+    }
 }

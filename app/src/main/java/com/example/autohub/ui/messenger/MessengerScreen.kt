@@ -1,5 +1,6 @@
 package com.example.autohub.ui.messenger
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,11 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.autohub.data.BuyerChat
+import com.example.autohub.data.UserStatus
 import com.example.autohub.ui.ChatViewModel
 import com.example.autohub.ui.componets.BottomNavBar
 import com.example.autohub.ui.theme.barColor
 import com.example.autohub.ui.theme.cardColor
 import com.example.autohub.ui.theme.containerColor
+import com.example.autohub.utils.getBuyerStatus
 
 @Composable
 fun MessengerScreen(
@@ -89,6 +93,9 @@ fun ChatCardBuyer(
     onAnswerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
+    val status = getBuyerStatus(buyer.uid).observeAsState(initial = UserStatus.OFFLINE)
+
     Card(
         elevation = CardDefaults.cardElevation(2.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor),
@@ -103,15 +110,23 @@ fun ChatCardBuyer(
                 .padding(8.dp)
                 .clickable { onAnswerClick(buyer.uid) }
         ) {
-            AsyncImage(
-                model = buyer.image,
-                contentDescription = "Фото покупателя",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, containerColor, CircleShape)
-            )
+            Box {
+                AsyncImage(
+                    model = buyer.image,
+                    contentDescription = "Фото покупателя",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, containerColor, CircleShape)
+                )
+                Canvas(modifier = Modifier.size(4.dp)) {
+                    drawCircle(
+                        radius = circleSize,
+                        color = if (status.value == UserStatus.ONLINE) Color.Green else Color.Gray
+                    )
+                }
+            }
             Column(
                 modifier = Modifier
                     .padding(start = 8.dp)

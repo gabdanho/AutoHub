@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.autohub.data.BuyerChat
 import com.example.autohub.data.Message
 import com.example.autohub.data.User
+import com.example.autohub.data.UserStatus
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
@@ -52,7 +53,7 @@ fun sendMessage(
                 .set(senderConservation)
 
             val receiverConservation = BuyerChat(
-                "${senderUserData.firstName} ${senderUserData.secondName}.",
+                "${senderUserData.firstName} ${senderUserData.secondName}",
                 senderUserData.image,
                 message.text,
                 getTime(),
@@ -125,4 +126,26 @@ fun getBuyersChats(): LiveData<List<BuyerChat>> {
         }
 
     return chats
+}
+
+fun getBuyerStatus(uid: String): LiveData<UserStatus> {
+    val status = MutableLiveData<UserStatus>()
+
+    Firebase.firestore
+        .collection("users")
+        .document(uid)
+        .addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null) {
+                when(snapshot.data?.get("status")) {
+                    "ONLINE" -> status.value = UserStatus.ONLINE
+                    "OFFLINE" -> status.value = UserStatus.OFFLINE
+                }
+            }
+        }
+
+    return status
 }

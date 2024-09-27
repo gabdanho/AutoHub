@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.autohub.data.CarAd
 import com.example.autohub.data.User
+import com.example.autohub.data.UserStatus
 import com.example.autohub.ui.account.AccountSettings
 import com.example.autohub.ui.account.AnotherAccountScreen
 import com.example.autohub.ui.account.AuthUserAccountScreen
@@ -23,6 +24,7 @@ import com.example.autohub.ui.login.LoginScreen
 import com.example.autohub.ui.login.RegisterScreen
 import com.example.autohub.ui.messenger.ChattingScreen
 import com.example.autohub.ui.messenger.MessengerScreen
+import com.example.autohub.utils.changeUserStatus
 import com.example.autohub.utils.createAd
 import com.example.autohub.utils.getAllAds
 import com.example.autohub.utils.getAuthUserUID
@@ -137,6 +139,7 @@ fun AutoHubNavGraph(
                     navController.navigate(route = ScreenRoutes.AD_INFO.name)
                 },
                 onSignOutClick = {
+                    changeUserStatus(UserStatus.OFFLINE)
                     fsAuth.signOut()
                     navController.navigate(ScreenRoutes.LOGIN.name) {
                         popUpTo(0) {
