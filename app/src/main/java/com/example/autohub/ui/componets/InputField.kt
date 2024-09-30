@@ -29,6 +29,7 @@ fun InputField(
     onValueChange: (String) -> Unit,
     placeHolder: String = "",
     isError: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Unspecified,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -61,7 +62,7 @@ fun InputField(
                 unfocusedIndicatorColor = labelColor,
                 focusedIndicatorColor = labelColor
             ),
-            keyboardOptions = KeyboardOptions(keyboardType = if (text == "Номер телефона") KeyboardType.Number else KeyboardType.Unspecified),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             trailingIcon = { if (isError) Icon(imageVector = Icons.Filled.Warning, contentDescription = "Необходимо заполнить поле") },
             modifier = Modifier.weight(3f)
         )

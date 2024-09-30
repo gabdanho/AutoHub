@@ -5,6 +5,12 @@ import android.widget.Toast
 
 fun String.isOnlyLetters() = all { it.isLetter() }
 
+fun String.isOnlyDigits(): Boolean {
+    val str = this.replace(".", "")
+
+    return str.all { it.isDigit() }
+}
+
 fun isValidPhoneNumber(phone: String): Boolean {
     val _phone = if (phone.first() == '+') phone.drop(1) else phone
     if (!_phone.all { it.isDigit() }) return false
@@ -20,8 +26,15 @@ fun isValidEmail(email: String): Boolean {
     return true
 }
 
+fun isValidCity(city: String): Boolean {
+    val _city = city.replace("-", "")
+
+    if (!_city.all { it.isLetter() }) return false
+    else return true
+}
+
 fun isPasswordValid(password: String, context: Context): Boolean {
-    val regex = Regex("[ \t!#\$%&~=',.@?+-_]")
+    val regex = Regex("[!#\$%&~=',.@?+_]")
 
     if (password.length < 8) {
         Toast.makeText(context, "Пароль должен содержать 8 и более и символов", Toast.LENGTH_SHORT).show()

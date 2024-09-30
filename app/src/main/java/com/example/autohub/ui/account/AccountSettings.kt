@@ -48,11 +48,13 @@ import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.TopAdAppBar
 import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.ui.theme.labelColor
+import com.example.autohub.utils.isOnlyLetters
+import com.example.autohub.utils.isPasswordValid
+import com.example.autohub.utils.isValidCity
 import com.example.autohub.utils.updateCity
 import com.example.autohub.utils.updateFirstAnsSecondName
 import com.example.autohub.utils.uploadUserProfileImageToFirebase
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 
@@ -61,6 +63,10 @@ fun AccountSettings(
     onBackButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isFirstNameError = remember { mutableStateOf(false) }
+    val isSecondNameError = remember { mutableStateOf(false) }
+    val isCityError = remember { mutableStateOf(false) }
+
     val context = LocalContext.current
     val isShowDialog = remember { mutableStateOf(false) }
     val firstNameState = remember { mutableStateOf("") }
@@ -133,21 +139,31 @@ fun AccountSettings(
                     text = "Имя",
                     value = firstNameState.value,
                     onValueChange = { firstNameState.value = it },
+                    isError = isFirstNameError.value,
                     placeHolder = userData.value.firstName
                 )
                 InputField(
                     text = "Фамилия",
                     value = secondNameState.value,
                     onValueChange = { secondNameState.value = it },
+                    isError = isSecondNameError.value,
                     placeHolder = userData.value.secondName
                 )
                 CustomButton(
                     text = "Принять изменения",
                     isEnabled = isNamesButtonEnabled.value,
                     onClick = {
-                        updateFirstAnsSecondName(context, firstNameState.value, secondNameState.value)
-                        firstNameState.value = ""
-                        secondNameState.value = ""
+                        if (!firstNameState.value.isOnlyLetters() || !secondNameState.value.isOnlyLetters()) {
+                            isFirstNameError.value = !firstNameState.value.isOnlyLetters()
+                            isSecondNameError.value = !secondNameState.value.isOnlyLetters()
+                            Toast.makeText(context, "Неверно введенно имя и/или фамилия", Toast.LENGTH_SHORT).show()
+                        } else {
+                            updateFirstAnsSecondName(context, firstNameState.value, secondNameState.value)
+                            firstNameState.value = ""
+                            secondNameState.value = ""
+                            isFirstNameError.value = false
+                            isSecondNameError.value = false
+                        }
                     },
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -176,8 +192,14 @@ fun AccountSettings(
                     text = "Принять изменения",
                     isEnabled = isCityButtonEnabled.value,
                     onClick = {
-                        updateCity(context, cityState.value)
-                        cityState.value = ""
+                        if (!isValidCity(cityState.value)) {
+                            isCityError.value = true
+                            Toast.makeText(context, "Неверно введен город", Toast.LENGTH_SHORT).show()
+                        } else {
+                            updateCity(context, cityState.value)
+                            cityState.value = ""
+                            isCityError.value = false
+                        }
                     },
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -302,9 +324,8 @@ fun ChangePasswordDialog(
                                     isInputError.value = true
                                     Toast.makeText(context, "Поле пароля пустое, введите пароль", Toast.LENGTH_SHORT).show()
                                 }
-                                else if (passwordState.value.length < 6) {
+                                else if (!isPasswordValid(passwordState.value, context)) {
                                     isInputError.value = true
-                                    Toast.makeText(context, "Пароль должен содержать не менее 6 символов", Toast.LENGTH_SHORT).show()
                                 }
                                 else {
                                     isInputError.value = false

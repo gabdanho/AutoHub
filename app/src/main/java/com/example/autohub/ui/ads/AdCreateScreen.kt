@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.data.CarAd
@@ -28,6 +29,8 @@ import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.PhotosList
 import com.example.autohub.ui.componets.TopAdAppBar
+import com.example.autohub.utils.isOnlyDigits
+import com.example.autohub.utils.isOnlyLetters
 
 @Composable
 fun AdCreateScreen(
@@ -51,6 +54,20 @@ fun AdCreateScreen(
     val mileageState = remember { mutableStateOf("") }
     val conditionState = remember { mutableStateOf("") }
     val priceState = remember { mutableStateOf("") }
+
+    val isBrandError = remember { mutableStateOf(false) }
+    val isModelError = remember { mutableStateOf(false) }
+    val isColorError = remember { mutableStateOf(false) }
+    val isDriveError = remember { mutableStateOf(false) }
+    val isRealiseYearError = remember { mutableStateOf(false) }
+    val isBodyError = remember { mutableStateOf(false) }
+    val isTypeEngineError = remember { mutableStateOf(false) }
+    val isEngineCapacityError = remember { mutableStateOf(false) }
+    val isTransmissionError = remember { mutableStateOf(false) }
+    val isSteeringWheelSideError = remember { mutableStateOf(false) }
+    val isMileageError = remember { mutableStateOf(false) }
+    val isConditionError = remember { mutableStateOf(false) }
+    val isPriceError = remember { mutableStateOf(false) }
 
     val addImageUri = Uri.Builder()
         .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
@@ -101,66 +118,84 @@ fun AdCreateScreen(
                 InputField(
                     text = "Бренд",
                     value = brandState.value,
+                    isError = isBrandError.value,
                     onValueChange = { brandState.value = it }
                 )
                 InputField(
                     text = "Модель",
                     value = modelState.value,
+                    isError = isModelError.value,
                     onValueChange = { modelState.value = it }
                 )
                 InputField(
                     text = "Цвет",
                     value = colorState.value,
+                    isError = isColorError.value,
                     onValueChange = { colorState.value = it }
                 )
                 InputField(
                     text = "Год выпуска",
                     value = realiseYearState.value,
+                    isError = isRealiseYearError.value,
+                    keyboardType = KeyboardType.Number,
                     onValueChange = { realiseYearState.value = it }
                 )
                 InputField(
                     text = "Кузов",
                     value = bodyState.value,
+                    isError = isBodyError.value,
                     onValueChange = { bodyState.value = it }
                 )
                 InputField(
                     text = "Тип двигателя",
                     value = typeEngineState.value,
+                    isError = isTypeEngineError.value,
                     onValueChange = { typeEngineState.value = it }
                 )
                 InputField(
                     text = "Объем двигателя",
                     value = engineCapacityState.value,
+                    isError = isEngineCapacityError.value,
+                    keyboardType = KeyboardType.Number,
                     onValueChange = { engineCapacityState.value = it }
                 )
                 InputField(
                     text = "Трансмиссия",
                     value = transmissionState.value,
+                    isError = isTransmissionError.value,
                     onValueChange = { transmissionState.value = it }
                 )
                 InputField(
                     text = "Привод",
                     value = driveState.value,
+                    isError = isDriveError.value,
+                    keyboardType = KeyboardType.Number,
                     onValueChange = { driveState.value = it }
                 )
                 InputField(
                     text = "Руль",
                     value = steeringWheelSideState.value,
+                    isError = isSteeringWheelSideError.value,
                     onValueChange = { steeringWheelSideState.value = it }
                 )
                 InputField(
                     text = "Пробег",
                     value = mileageState.value,
+                    isError = isMileageError.value,
+                    keyboardType = KeyboardType.Number,
                     onValueChange = { mileageState.value = it }
                 )
                 InputField(
                     text = "Состояние",
                     value = conditionState.value,
+                    isError = isConditionError.value,
                     onValueChange = { conditionState.value = it }
                 )
                 InputField(
                     text = "Цена",
                     value = priceState.value,
+                    isError = isPriceError.value,
+                    keyboardType = KeyboardType.Number,
                     onValueChange = { priceState.value = it }
                 )
                 Row(
@@ -172,6 +207,20 @@ fun AdCreateScreen(
                     CustomButton(
                         text = "Создать",
                         onClick = {
+                            isBrandError.value = brandState.value.isEmpty()
+                            isModelError.value = modelState.value.isEmpty()
+                            isColorError.value = colorState.value.isEmpty()
+                            isDriveError.value = driveState.value.isEmpty()
+                            isRealiseYearError.value = realiseYearState.value.isEmpty()
+                            isBodyError.value = bodyState.value.isEmpty()
+                            isTypeEngineError.value = typeEngineState.value.isEmpty()
+                            isEngineCapacityError.value = engineCapacityState.value.isEmpty()
+                            isTransmissionError.value = transmissionState.value.isEmpty()
+                            isSteeringWheelSideError.value = steeringWheelSideState.value.isEmpty()
+                            isMileageError.value = mileageState.value.isEmpty()
+                            isConditionError.value = conditionState.value.isEmpty()
+                            isPriceError.value = priceState.value.isEmpty()
+
                             if (images.size == 1) {
                                 Toast.makeText(context, "Добавьте изображения", Toast.LENGTH_LONG).show()
                             } else if (brandState.value.isBlank() || modelState.value.isBlank() ||
@@ -182,6 +231,39 @@ fun AdCreateScreen(
                                 mileageState.value.isBlank() || conditionState.value.isBlank() ||
                                 priceState.value.isBlank()) {
                                 Toast.makeText(context, "Заполните все поля", Toast.LENGTH_LONG).show()
+                            } else if (!colorState.value.isOnlyLetters()) {
+                                isColorError.value = true
+                                Toast.makeText(context, "Неверно указан цвет", Toast.LENGTH_LONG).show()
+                            } else if (!realiseYearState.value.isOnlyDigits()) {
+                                isRealiseYearError.value = true
+                                Toast.makeText(context, "Неверно указан год выпуска", Toast.LENGTH_LONG).show()
+                            } else if (!bodyState.value.isOnlyLetters()) {
+                                isBodyError.value = true
+                                Toast.makeText(context, "Неверно указан тип кузова", Toast.LENGTH_LONG).show()
+                            } else if (!typeEngineState.value.isOnlyLetters()) {
+                                isTypeEngineError.value = true
+                                Toast.makeText(context, "Неверно указан тип двигателя", Toast.LENGTH_LONG).show()
+                            } else if (!engineCapacityState.value.isOnlyDigits()) {
+                                isEngineCapacityError.value = true
+                                Toast.makeText(context, "Неверно указан объем двигателя", Toast.LENGTH_LONG).show()
+                            } else if (!transmissionState.value.isOnlyLetters()) {
+                                isTransmissionError.value = true
+                                Toast.makeText(context, "Неверно указан тип трансмиссии", Toast.LENGTH_LONG).show()
+                            } else if (!driveState.value.isOnlyLetters()) {
+                                isDriveError.value = true
+                                Toast.makeText(context, "Неверно указан привод", Toast.LENGTH_LONG).show()
+                            } else if (!steeringWheelSideState.value.isOnlyLetters()) {
+                                isSteeringWheelSideError.value = true
+                                Toast.makeText(context, "Неверно указано расположение руля", Toast.LENGTH_LONG).show()
+                            } else if (!mileageState.value.isOnlyDigits()) {
+                                isMileageError.value = true
+                                Toast.makeText(context, "Неверно указан пробег", Toast.LENGTH_LONG).show()
+                            } else if (!conditionState.value.isOnlyLetters()) {
+                                isColorError.value = true
+                                Toast.makeText(context, "Неверно указано состояние автомобиля", Toast.LENGTH_LONG).show()
+                            } else if (!priceState.value.isOnlyDigits()) {
+                                isPriceError.value = true
+                                Toast.makeText(context, "Неверно указана цена автомобиля", Toast.LENGTH_LONG).show()
                             } else {
                                 val carAd = CarAd(
                                     brand = brandState.value,
