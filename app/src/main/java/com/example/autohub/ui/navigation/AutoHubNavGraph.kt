@@ -3,6 +3,8 @@ package com.example.autohub.ui.navigation
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +38,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AutoHubNavGraph(
     navController: NavHostController,
@@ -176,7 +179,7 @@ fun AutoHubNavGraph(
                 carAd = selectedAd.value,
                 onBackButtonClick = { navController.popBackStack() },
                 onCallClick = { startCalling(context, userData.value.phoneNumber) },
-                onMessageClick = { navController.navigate(ScreenRoutes.CHATTING.name) }, // TODO()
+                onMessageClick = { navController.navigate(ScreenRoutes.CHATTING.name) },
                 onUserClick = { navController.navigate(ScreenRoutes.ANOTHER_ACCOUNT.name) }
             )
         }

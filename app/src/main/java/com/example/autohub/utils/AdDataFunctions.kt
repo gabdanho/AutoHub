@@ -4,8 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.navigation.NavHostController
 import com.example.autohub.data.CarAd
 import com.example.autohub.data.User
@@ -122,6 +124,7 @@ fun uploadAdsImagesToFirebase(context: Context, images: List<Uri>, reference: St
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun createAd(
     carAd: CarAd,
     authUserData: User,

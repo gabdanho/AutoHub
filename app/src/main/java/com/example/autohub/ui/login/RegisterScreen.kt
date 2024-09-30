@@ -5,14 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,7 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +21,10 @@ import com.example.autohub.data.User
 import com.example.autohub.ui.componets.BackButton
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
-import com.example.autohub.ui.theme.containerColor
+import com.example.autohub.utils.isOnlyLetters
+import com.example.autohub.utils.isPasswordValid
+import com.example.autohub.utils.isValidEmail
+import com.example.autohub.utils.isValidPhoneNumber
 
 @Composable
 fun RegisterScreen(
@@ -44,6 +39,7 @@ fun RegisterScreen(
     val emailState = remember { mutableStateOf("") }
     val phoneState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
+    val passwordRepeatState = remember { mutableStateOf("") }
     val cityState = remember { mutableStateOf("") }
 
     val isFirstNameError = remember { mutableStateOf(false) }
@@ -111,6 +107,13 @@ fun RegisterScreen(
                 isError = isPasswordError.value,
                 onValueChange = { passwordState.value = it }
             )
+            InputField(
+                text = "Повторите пароль",
+                value = passwordRepeatState.value,
+                placeHolder = "●●●●●●●●●●●",
+                isError = isPasswordError.value,
+                onValueChange = { passwordRepeatState.value = it }
+            )
             CustomButton(
                 text = "Зарегистроваться",
                 onClick = {
@@ -127,9 +130,21 @@ fun RegisterScreen(
                     ) {
                         Toast.makeText(context, "Заполните все поля ввода", Toast.LENGTH_LONG).show()
                     }
-                    else if (passwordState.value.length < 6) {
+                    else if (!firstNameState.value.isOnlyLetters() || !secondNameState.value.isOnlyLetters()) {
+                        Toast.makeText(context, "Имя и фамилия должны содержать только буквы", Toast.LENGTH_LONG).show()
+                    }
+                    else if (!isValidEmail(emailState.value)) {
+                        Toast.makeText(context, "Некорректная почта", Toast.LENGTH_LONG).show()
+                    }
+                    else if (!isValidPhoneNumber(phoneState.value)) {
+                        Toast.makeText(context, "Некорректный номер телефона", Toast.LENGTH_LONG).show()
+                    }
+                    else if (passwordState.value != passwordRepeatState.value) {
                         isPasswordError.value = true
-                        Toast.makeText(context, "Минимальная длина пароля должна составлять 6 символов", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Пароли не совпадают", Toast.LENGTH_LONG).show()
+                    }
+                    else if (!isPasswordValid(passwordState.value, context)) {
+                        isPasswordError.value = true
                     }
                     else {
                         val user = User(

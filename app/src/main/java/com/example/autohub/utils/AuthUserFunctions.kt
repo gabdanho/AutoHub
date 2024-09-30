@@ -99,6 +99,7 @@ fun registerUser(
                     Toast.LENGTH_SHORT
                 ).show()
 
+                fbAuth.signOut()
                 navController.navigate(route = ScreenRoutes.LOGIN.name) {
                     popUpTo(0) {
                         inclusive = true
