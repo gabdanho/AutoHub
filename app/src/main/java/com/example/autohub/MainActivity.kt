@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.app.ActivityCompat
-import com.example.autohub.data.UserStatus
+import com.example.autohub.data.model.user.UserStatus
 import com.example.autohub.utils.changeUserStatus
 
 class MainActivity : ComponentActivity() {

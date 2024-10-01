@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.navigation.NavHostController
-import com.example.autohub.data.User
-import com.example.autohub.data.UserStatus
+import com.example.autohub.data.model.user.User
+import com.example.autohub.data.model.user.UserStatus
 import com.example.autohub.ui.navigation.ScreenRoutes
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth

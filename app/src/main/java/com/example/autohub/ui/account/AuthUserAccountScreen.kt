@@ -32,8 +32,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.autohub.data.CarAd
-import com.example.autohub.data.User
+import com.example.autohub.data.model.ad.CarAd
+import com.example.autohub.data.model.user.User
 import com.example.autohub.data.mock.CarAdMock
 import com.example.autohub.ui.componets.BottomNavBar
 import com.example.autohub.ui.componets.CarAdCard

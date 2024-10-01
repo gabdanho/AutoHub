@@ -1,4 +1,4 @@
-package com.example.autohub.data
+package com.example.autohub.data.model.messenger
 
 data class BuyerChat(
     val name: String = "",

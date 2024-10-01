@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.autohub.data.User
+import com.example.autohub.data.model.user.User
 import com.example.autohub.ui.componets.BackButton
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField

@@ -1,7 +1,6 @@
 package com.example.autohub.ui.ads
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.autohub.data.CarAd
+import com.example.autohub.data.model.ad.CarAd
 import com.example.autohub.ui.componets.BottomNavBar
 import com.example.autohub.ui.componets.CarAdCard
 import com.example.autohub.ui.theme.containerColor

@@ -2,8 +2,8 @@ package com.example.autohub.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.autohub.data.BuyerChat
-import com.example.autohub.data.Message
+import com.example.autohub.data.model.messenger.BuyerChat
+import com.example.autohub.data.model.messenger.Message
 import com.example.autohub.utils.getBuyersChats
 import com.example.autohub.utils.getMessages
 

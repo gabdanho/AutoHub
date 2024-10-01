@@ -105,7 +105,7 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "CarHub",
+            text = "AutoHub",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.W300,
             modifier = Modifier.padding(bottom = 8.dp)

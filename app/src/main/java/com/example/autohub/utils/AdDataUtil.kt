@@ -9,13 +9,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.navigation.NavHostController
-import com.example.autohub.data.CarAd
-import com.example.autohub.data.User
+import com.example.autohub.data.model.ad.CarAd
+import com.example.autohub.data.model.user.User
 import com.example.autohub.ui.navigation.ScreenRoutes
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.storage
 import java.io.ByteArrayOutputStream

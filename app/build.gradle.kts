@@ -60,11 +60,16 @@ dependencies {
     implementation(libs.firebase.storage)
     // Firebase Auth
     implementation(libs.firebase.auth)
+    // Firebase Messaging
+    implementation(libs.firebase.messaging)
     // Coil
     implementation(libs.coil)
     // Navigation
     implementation(libs.navigation.compose)
     implementation(libs.navigation.runtime)
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

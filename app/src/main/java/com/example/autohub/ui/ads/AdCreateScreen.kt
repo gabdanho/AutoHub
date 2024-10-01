@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.autohub.data.CarAd
+import com.example.autohub.data.model.ad.CarAd
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.PhotosList
@@ -54,6 +54,7 @@ fun AdCreateScreen(
     val mileageState = remember { mutableStateOf("") }
     val conditionState = remember { mutableStateOf("") }
     val priceState = remember { mutableStateOf("") }
+    val descriptionState = remember { mutableStateOf("") }
 
     val isBrandError = remember { mutableStateOf(false) }
     val isModelError = remember { mutableStateOf(false) }
@@ -169,7 +170,6 @@ fun AdCreateScreen(
                     text = "Привод",
                     value = driveState.value,
                     isError = isDriveError.value,
-                    keyboardType = KeyboardType.Number,
                     onValueChange = { driveState.value = it }
                 )
                 InputField(
@@ -197,6 +197,12 @@ fun AdCreateScreen(
                     isError = isPriceError.value,
                     keyboardType = KeyboardType.Number,
                     onValueChange = { priceState.value = it }
+                )
+                InputField(
+                    text = "Описание",
+                    value = descriptionState.value,
+                    isSingleLine = false,
+                    onValueChange = { descriptionState.value = it }
                 )
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -278,7 +284,8 @@ fun AdCreateScreen(
                                     steeringWheelSide = steeringWheelSideState.value,
                                     mileage = mileageState.value,
                                     condition = conditionState.value,
-                                    price = priceState.value
+                                    price = priceState.value,
+                                    description = descriptionState.value
                                 )
                                 onCreateAdClick(carAd, images.toList().dropLast(1))
                             }

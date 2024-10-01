@@ -42,7 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
-import com.example.autohub.data.User
+import com.example.autohub.data.model.user.User
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.TopAdAppBar

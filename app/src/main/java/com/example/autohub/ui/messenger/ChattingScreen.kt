@@ -48,22 +48,21 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.autohub.data.Message
-import com.example.autohub.data.User
-import com.example.autohub.data.UserStatus
+import com.example.autohub.data.model.messenger.Message
+import com.example.autohub.data.model.user.User
+import com.example.autohub.data.model.user.UserStatus
 import com.example.autohub.ui.ChatViewModel
 import com.example.autohub.ui.theme.cardColor
 import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.utils.getAuthUserUID
 import com.example.autohub.utils.getBuyerStatus
 import com.example.autohub.utils.getUserData
+import com.example.autohub.utils.markMessagesAsRead
 import com.example.autohub.utils.sendMessage
-import kotlinx.coroutines.launch
 
 @Composable
 fun ChattingScreen(
@@ -156,6 +155,8 @@ fun ChattingScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(messages) { message ->
+                    if (!message.read && message.receiver == getAuthUserUID())
+                        markMessagesAsRead(buyerUID, message.id)
                     UserMessage(message)
                 }
             }
@@ -168,6 +169,7 @@ fun UserMessage(
     message: Message,
     modifier: Modifier = Modifier
 ) {
+    println(message.read)
     val config = LocalConfiguration.current
     val maxWidth = (config.screenWidthDp * 0.9f).dp
 
@@ -184,16 +186,30 @@ fun UserMessage(
                 .widthIn(max = maxWidth)
                 .padding(8.dp)
         ) {
-            Text(
-                buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontSize = 15.sp)) {
-                        append(text = message.text + " ")
-                    }
-                    withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 10.sp)) {
-                        append(text = message.time)
-                    }
-                }, modifier = Modifier.padding(8.dp)
-            )
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            ) {
+                if (message.sender == authUserUID && !message.read) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(7.dp)
+                            .background(color = containerColor, shape = CircleShape)
+                    ) { }
+                }
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontSize = 15.sp)) {
+                            append(text = message.text + " ")
+                        }
+                        withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 10.sp)) {
+                            append(text = message.time)
+                        }
+                    }, modifier = Modifier.padding(8.dp)
+                )
+            }
         }
     }
 }

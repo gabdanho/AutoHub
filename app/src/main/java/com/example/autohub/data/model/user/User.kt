@@ -1,4 +1,4 @@
-package com.example.autohub.data
+package com.example.autohub.data.model.user
 
 data class User(
     val firstName: String = "",

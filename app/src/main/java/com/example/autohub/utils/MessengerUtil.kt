@@ -3,14 +3,13 @@ package com.example.autohub.utils
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.autohub.data.BuyerChat
-import com.example.autohub.data.Message
-import com.example.autohub.data.User
-import com.example.autohub.data.UserStatus
+import com.example.autohub.data.model.messenger.BuyerChat
+import com.example.autohub.data.model.messenger.Message
+import com.example.autohub.data.model.user.User
+import com.example.autohub.data.model.user.UserStatus
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
-import java.time.LocalDate
 
 fun getUniqueId(sender: String, receiver: String): String {
     return listOf(sender, receiver).sorted().joinToString("")
@@ -26,14 +25,15 @@ fun sendMessage(
     var senderUserData = User()
     getUserData(sender) { senderUserData = it }
 
-    val message = Message(sender, receiver, text)
+    val messageId = System.currentTimeMillis().toString()
+    val message = Message(messageId, sender, receiver, text)
     val uniqueId = getUniqueId(sender, receiver)
 
     Firebase.firestore
         .collection("chats")
         .document(uniqueId)
         .collection("messages")
-        .document(System.currentTimeMillis().toString())
+        .document(messageId)
         .set(message)
         .addOnCompleteListener { task ->
             Log.d("MESSAGE", "sended: $sender-$receiver-$text")
@@ -65,6 +65,9 @@ fun sendMessage(
                 .collection(receiver)
                 .document(sender)
                 .set(receiverConservation)
+        }
+        .addOnFailureListener { task ->
+            Log.e("MESSENGER", "Error: ${task.message}")
         }
 }
 
@@ -140,7 +143,7 @@ fun getBuyerStatus(uid: String): LiveData<UserStatus> {
             }
 
             if (snapshot != null) {
-                when(snapshot.data?.get("status")) {
+                when (snapshot.data?.get("status")) {
                     "ONLINE" -> status.value = UserStatus.ONLINE
                     "OFFLINE" -> status.value = UserStatus.OFFLINE
                 }
@@ -148,4 +151,48 @@ fun getBuyerStatus(uid: String): LiveData<UserStatus> {
         }
 
     return status
+}
+
+fun getCountUnreadMessages(buyerUID: String, callback: (Int) -> Unit) {
+    val uniqueId = getUniqueId(getAuthUserUID(), buyerUID)
+    Firebase.firestore
+        .collection("chats")
+        .document(uniqueId)
+        .collection("messages")
+        .whereEqualTo("read", false)
+        .whereEqualTo("receiver", getAuthUserUID())
+        .orderBy("time", Query.Direction.DESCENDING)
+        .get()
+        .addOnCompleteListener { snapshot ->
+            if (!snapshot.isSuccessful) {
+                Log.d("MESSAGE", "Error: ${snapshot.exception?.message}")
+                callback(0)
+            } else {
+                val count = snapshot.result.size()
+                callback(count)
+            }
+        }
+}
+
+fun markMessagesAsRead(buyerUID: String, messageId: String) {
+    val uniqueId = getUniqueId(getAuthUserUID(), buyerUID)
+    val reference = Firebase.firestore
+        .collection("chats")
+        .document(uniqueId)
+        .collection("messages")
+        .document(messageId)
+
+    reference.get().addOnSuccessListener { document ->
+        if (document.exists()) {
+            if (document.getBoolean("read") == false) {
+                reference.update("read", true)
+                    .addOnCompleteListener {
+                        Log.d("MESSAGE", "Read changed success")
+                    }
+                    .addOnFailureListener { error ->
+                        Log.d("MESSAGE", "Read not changed. Error: ${error.message}")
+                    }
+            }
+        }
+    }
 }

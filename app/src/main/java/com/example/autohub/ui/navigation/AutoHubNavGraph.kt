@@ -13,9 +13,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.autohub.data.CarAd
-import com.example.autohub.data.User
-import com.example.autohub.data.UserStatus
+import com.example.autohub.data.model.ad.CarAd
+import com.example.autohub.data.model.user.User
+import com.example.autohub.data.model.user.UserStatus
 import com.example.autohub.ui.account.AccountSettings
 import com.example.autohub.ui.account.AnotherAccountScreen
 import com.example.autohub.ui.account.AuthUserAccountScreen
@@ -36,7 +36,6 @@ import com.example.autohub.utils.loginUser
 import com.example.autohub.utils.registerUser
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

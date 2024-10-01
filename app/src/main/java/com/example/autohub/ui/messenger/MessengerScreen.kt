@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,6 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,14 +36,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.autohub.data.BuyerChat
-import com.example.autohub.data.UserStatus
+import com.example.autohub.data.model.messenger.BuyerChat
+import com.example.autohub.data.model.user.UserStatus
 import com.example.autohub.ui.ChatViewModel
 import com.example.autohub.ui.componets.BottomNavBar
 import com.example.autohub.ui.theme.barColor
 import com.example.autohub.ui.theme.cardColor
 import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.utils.getBuyerStatus
+import com.example.autohub.utils.getCountUnreadMessages
 
 @Composable
 fun MessengerScreen(
@@ -95,6 +96,8 @@ fun ChatCardBuyer(
 ) {
     val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
     val status = getBuyerStatus(buyer.uid).observeAsState(initial = UserStatus.OFFLINE)
+    val unreadMessages = remember { mutableIntStateOf(0) }
+    getCountUnreadMessages(buyer.uid) { unreadMessages.intValue = it }
 
     Card(
         elevation = CardDefaults.cardElevation(2.dp),
@@ -108,7 +111,10 @@ fun ChatCardBuyer(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .padding(8.dp)
-                .clickable { onAnswerClick(buyer.uid) }
+                .fillMaxWidth()
+                .clickable {
+                    onAnswerClick(buyer.uid)
+                }
         ) {
             Box {
                 AsyncImage(
@@ -130,6 +136,7 @@ fun ChatCardBuyer(
             Column(
                 modifier = Modifier
                     .padding(start = 8.dp)
+                    .weight(4f)
                     .fillMaxWidth()
             ) {
                 Text(
@@ -144,6 +151,20 @@ fun ChatCardBuyer(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+            }
+            if (unreadMessages.intValue != 0) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .background(color = containerColor, shape = CircleShape)
+                ) {
+                    Text(
+                        text = unreadMessages.intValue.toString(),
+                        color = Color.White,
+                        modifier = Modifier
+                    )
+                }
             }
         }
     }

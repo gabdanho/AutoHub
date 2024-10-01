@@ -30,6 +30,7 @@ fun InputField(
     placeHolder: String = "",
     isError: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Unspecified,
+    isSingleLine: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -54,7 +55,7 @@ fun InputField(
                     color = Color.LightGray
                 )
             },
-            singleLine = true,
+            singleLine = isSingleLine,
             visualTransformation = if (text == "Пароль" || text == "Повторите пароль") PasswordVisualTransformation() else VisualTransformation.None,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,

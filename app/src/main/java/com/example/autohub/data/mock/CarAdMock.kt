@@ -1,6 +1,6 @@
 package com.example.autohub.data.mock
 
-import com.example.autohub.data.CarAd
+import com.example.autohub.data.model.ad.CarAd
 
 object CarAdMock {
     val ads = listOf(
