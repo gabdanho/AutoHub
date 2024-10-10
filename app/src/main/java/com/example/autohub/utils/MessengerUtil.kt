@@ -42,7 +42,7 @@ fun sendMessage(
                 buyerName,
                 buyerImage,
                 message.text,
-                getTime(),
+                getTimeString(),
                 receiver
             )
             Firebase.firestore
@@ -56,7 +56,7 @@ fun sendMessage(
                 "${senderUserData.firstName} ${senderUserData.secondName}",
                 senderUserData.image,
                 message.text,
-                getTime(),
+                getTimeString(),
                 sender
             )
             Firebase.firestore
@@ -80,7 +80,7 @@ fun getMessages(buyerUID: String): LiveData<List<Message>> {
         .collection("chats")
         .document(uniqueId)
         .collection("messages")
-        .orderBy("time", Query.Direction.ASCENDING)
+        .orderBy("timeMillis", Query.Direction.ASCENDING)
         .addSnapshotListener { value, error ->
             if (error != null) {
                 return@addSnapshotListener

@@ -68,7 +68,7 @@ import com.example.autohub.utils.sendMessage
 fun ChattingScreen(
     buyerUID: String,
     onBuyerClick: (String) -> Unit,
-    viewModel: ChatViewModel = viewModel(),
+    viewModel: ChatViewModel,
     modifier: Modifier = Modifier
 ) {
     val text = remember { mutableStateOf("") }
@@ -99,6 +99,11 @@ fun ChattingScreen(
                             "${buyerData.value.firstName} ${buyerData.value.secondName}.",
                             buyerData.value.image,
                             text.value
+                        )
+                        viewModel.sendMessage(
+                            "${buyerData.value.firstName} ${buyerData.value.secondName}",
+                            text.value,
+                            buyerData.value.localToken
                         )
                         text.value = ""
                     }

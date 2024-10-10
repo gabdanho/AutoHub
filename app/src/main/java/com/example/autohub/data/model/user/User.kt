@@ -7,5 +7,6 @@ data class User(
     val phoneNumber: String = "",
     val city: String = "",
     val image: String = "",
-    val status: String = UserStatus.OFFLINE.name
+    val status: String = UserStatus.OFFLINE.name,
+    val localToken: String = ""
 )

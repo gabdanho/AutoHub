@@ -14,6 +14,8 @@ coilVersion = "2.6.0"
 navigation = "2.8.1"
 runtimeLivedata = "1.7.2"
 retrofitVersion = "2.9.0"
+#daggerHiltVersion = "2.51.1"
+#hiltVersion = "1.2.0"
 
 [libraries]
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "bomVersion" }
@@ -28,7 +30,12 @@ navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitVersion" }
-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofitVersion" }
+converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofitVersion" }
+
+#hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "daggerHiltVersion" }
+#hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltVersion" }
+#dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "daggerHiltVersion" }
+#hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltVersion" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -50,3 +57,4 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsVerison" }
+#dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHiltVersion" }

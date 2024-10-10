@@ -3,6 +3,7 @@ package com.example.autohub.utils
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import com.example.autohub.data.model.user.User
 import com.example.autohub.data.model.user.UserStatus
@@ -10,6 +11,11 @@ import com.example.autohub.ui.navigation.ScreenRoutes
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import com.google.firebase.messaging.messaging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 fun getAuthUserUID(): String {
     return Firebase.auth.currentUser?.uid ?: ""
@@ -50,6 +56,9 @@ fun loginUser(
                         fbAuth.signOut()
                         changeLoadingState(false)
                     } else {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            getToken()
+                        }
                         changeUserStatus(UserStatus.ONLINE)
                         changeLoadingState(true)
                         navController.navigate(ScreenRoutes.ALL_ADS.name) {
@@ -124,5 +133,20 @@ fun changeUserStatus(status: UserStatus) {
             .collection("users")
             .document(getAuthUserUID())
             .update("status", status.name)
+    }
+}
+
+suspend fun getToken() {
+    val user = Firebase.auth.currentUser
+    val fbStoreRef = Firebase.firestore.collection("users").document(user?.uid ?: "")
+    val token = Firebase.messaging.token.await()
+
+
+    fbStoreRef.update("localToken", token).addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            Log.d("USER", "Токен обновлен")
+        } else {
+            Log.d("USER", "Ошибка: ${task.exception?.message}")
+        }
     }
 }

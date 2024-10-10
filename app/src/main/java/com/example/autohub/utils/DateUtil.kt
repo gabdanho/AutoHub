@@ -16,10 +16,20 @@ fun getFullDate(): String {
     return date
 }
 
-fun getTime(): String {
+fun getTimeString(): String {
     val time = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Moscow")
     }.format(Date())
 
     return time
+}
+
+fun String.toMillis(): Long {
+    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("Europe/Moscow")
+    }
+
+    val date = timeFormat.parse(this)
+
+    return date?.time ?: 0L
 }

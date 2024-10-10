@@ -10,12 +10,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.autohub.data.model.ad.CarAd
 import com.example.autohub.data.model.user.User
 import com.example.autohub.data.model.user.UserStatus
+import com.example.autohub.ui.ChatViewModel
 import com.example.autohub.ui.account.AccountSettings
 import com.example.autohub.ui.account.AnotherAccountScreen
 import com.example.autohub.ui.account.AuthUserAccountScreen
@@ -31,6 +33,7 @@ import com.example.autohub.utils.createAd
 import com.example.autohub.utils.getAllAds
 import com.example.autohub.utils.getAuthUserUID
 import com.example.autohub.utils.getCurrentUserAds
+import com.example.autohub.utils.getToken
 import com.example.autohub.utils.getUserData
 import com.example.autohub.utils.loginUser
 import com.example.autohub.utils.registerUser
@@ -52,6 +55,7 @@ fun AutoHubNavGraph(
     val buyerUID = remember { mutableStateOf("") }
     val authUserData = remember { mutableStateOf(User()) }
     val authUser = fsAuth.currentUser
+    val viewModel: ChatViewModel = viewModel()
 
     if (authUser != null) {
         getUserData(authUser.uid) { data ->
@@ -118,6 +122,7 @@ fun AutoHubNavGraph(
         }
         composable(route = ScreenRoutes.MESSENGER.name) {
             MessengerScreen(
+                viewModel = viewModel,
                 onMessageClick = { },
                 onAccountClick = { navController.navigate(ScreenRoutes.AUTH_USER_ACCOUNT.name) },
                 onAdListClick = { navController.navigate(ScreenRoutes.ALL_ADS.name) },
@@ -206,6 +211,7 @@ fun AutoHubNavGraph(
 
         composable(route = ScreenRoutes.CHATTING.name) {
             ChattingScreen(
+                viewModel = viewModel,
                 buyerUID = buyerUID.value,
                 onBuyerClick = {
                     uid -> buyerUID.value = uid

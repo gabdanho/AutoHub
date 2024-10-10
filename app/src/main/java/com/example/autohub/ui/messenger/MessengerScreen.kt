@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +46,7 @@ import com.example.autohub.ui.theme.cardColor
 import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.utils.getBuyerStatus
 import com.example.autohub.utils.getCountUnreadMessages
+import com.example.autohub.utils.getUserData
 
 @Composable
 fun MessengerScreen(
@@ -52,7 +54,7 @@ fun MessengerScreen(
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
-    viewModel: ChatViewModel = viewModel(),
+    viewModel: ChatViewModel,
     modifier: Modifier = Modifier
 ) {
     val buyers by viewModel.getBuyers().observeAsState(initial = emptyList())
@@ -76,13 +78,28 @@ fun MessengerScreen(
         },
         bottomBar = { BottomNavBar(onAdListClick, onAccountClick, onMessageClick) }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = modifier
-                .padding(innerPadding)
-                .padding(8.dp)
-        ) {
-            items(buyers) { buyer ->
-                ChatCardBuyer(buyer, onAnswerClick)
+        if (buyers.isNotEmpty()) {
+            LazyColumn(
+                modifier = modifier
+                    .padding(innerPadding)
+                    .padding(8.dp)
+            ) {
+                items(buyers) { buyer ->
+                    ChatCardBuyer(buyer, onAnswerClick)
+                }
+            }
+        } else {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding)
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = "Не найдено активных чатов",
+                    color = Color.LightGray
+                )
             }
         }
     }
@@ -94,6 +111,11 @@ fun ChatCardBuyer(
     onAnswerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val buyerToken = remember { mutableStateOf("") }
+    getUserData(buyer.uid) {
+        buyerToken.value = it.localToken
+    }
+
     val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
     val status = getBuyerStatus(buyer.uid).observeAsState(initial = UserStatus.OFFLINE)
     val unreadMessages = remember { mutableIntStateOf(0) }
@@ -114,6 +136,7 @@ fun ChatCardBuyer(
                 .fillMaxWidth()
                 .clickable {
                     onAnswerClick(buyer.uid)
+                    println("TOKEN ${buyerToken.value}")
                 }
         ) {
             Box {
@@ -170,10 +193,10 @@ fun ChatCardBuyer(
     }
 }
 
-@Preview
-@Composable
-private fun MessengerScreenPreview() {
-    MessengerScreen(
-        { }, { }, { }, { }
-    )
-}
+//@Preview
+//@Composable
+//private fun MessengerScreenPreview() {
+//    MessengerScreen(
+//        { }, { }, { }, { }
+//    )
+//}

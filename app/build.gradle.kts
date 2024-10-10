@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.gms)
+//    id("kotlin-kapt")
 }
 
 android {
@@ -69,7 +70,12 @@ dependencies {
     implementation(libs.navigation.runtime)
     // Retrofit
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(libs.converter.moshi)
+    // Dagger Hilt
+//    implementation(libs.hilt.android)
+//    implementation(libs.hilt.navigation.compose)
+//    implementation(libs.hilt.compiler)
+//    implementation(libs.dagger.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
