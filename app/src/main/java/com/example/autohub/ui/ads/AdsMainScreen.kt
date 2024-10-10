@@ -1,15 +1,19 @@
 package com.example.autohub.ui.ads
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -33,15 +37,31 @@ import com.example.autohub.utils.getAdsBySearchText
 @Composable
 fun AdsMainScreen(
     adsList: List<CarAd>,
+    filters: Map<String, String> = emptyMap(),
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
     onAdClick: (CarAd) -> Unit,
+    onFiltersClick: () -> Unit,
     onDoneClick: (List<CarAd>) -> Unit,
     modifier: Modifier = Modifier
 ) {
      Scaffold(
-         topBar = { SearchAdsBar(onDoneClick) },
+         topBar = {
+             Row(
+                 horizontalArrangement = Arrangement.Center,
+                 modifier = Modifier.fillMaxWidth()
+             ) {
+                 SearchAdsBar(filters, onDoneClick, onFiltersClick)
+                 Icon(
+                     imageVector = Icons.AutoMirrored.Filled.List,
+                     contentDescription = "Фильтры поиска",
+                     modifier = Modifier
+                         .size(40.dp)
+                         .clickable { onFiltersClick() }
+                 )
+             }
+         },
          bottomBar = { BottomNavBar(onAdListClick, onAccountClick, onMessageClick) }
      ) { innerPadding ->
          if (adsList.isNotEmpty()) {
@@ -74,7 +94,9 @@ fun AdsMainScreen(
 
 @Composable
 fun SearchAdsBar(
+    filters: Map<String, String>,
     onDoneClick: (List<CarAd>) -> Unit,
+    onFiltersClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val searchTextState = remember { mutableStateOf("") }
@@ -112,10 +134,18 @@ fun SearchAdsBar(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    getAdsBySearchText(searchTextState.value, onDoneClick)
+                    getAdsBySearchText(searchTextState.value, filters, onDoneClick)
                 }
             ),
             modifier = Modifier.fillMaxWidth(0.8f)
+        )
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.List,
+            contentDescription = "Фильтры поиска",
+            modifier = Modifier
+                .size(40.dp)
+                .padding(start = 8.dp)
+                .clickable { onFiltersClick() }
         )
     }
 }
@@ -124,6 +154,6 @@ fun SearchAdsBar(
 @Composable
 private fun AdsMainScreenPreview() {
     AdsMainScreen(
-        listOf(CarAd()), { }, { }, { }, { }, { }
+        listOf(CarAd()), mapOf(), { }, { }, { }, { }, { }, { }
     )
 }

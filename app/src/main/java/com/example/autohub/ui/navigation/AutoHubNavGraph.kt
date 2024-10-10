@@ -24,6 +24,7 @@ import com.example.autohub.ui.account.AuthUserAccountScreen
 import com.example.autohub.ui.ads.AdCreateScreen
 import com.example.autohub.ui.ads.AdScreen
 import com.example.autohub.ui.ads.AdsMainScreen
+import com.example.autohub.ui.ads.FiltersScreen
 import com.example.autohub.ui.login.LoginScreen
 import com.example.autohub.ui.login.RegisterScreen
 import com.example.autohub.ui.messenger.ChattingScreen
@@ -33,7 +34,6 @@ import com.example.autohub.utils.createAd
 import com.example.autohub.utils.getAllAds
 import com.example.autohub.utils.getAuthUserUID
 import com.example.autohub.utils.getCurrentUserAds
-import com.example.autohub.utils.getToken
 import com.example.autohub.utils.getUserData
 import com.example.autohub.utils.loginUser
 import com.example.autohub.utils.registerUser
@@ -56,6 +56,7 @@ fun AutoHubNavGraph(
     val authUserData = remember { mutableStateOf(User()) }
     val authUser = fsAuth.currentUser
     val viewModel: ChatViewModel = viewModel()
+    var filters = remember { mutableStateOf(mapOf<String, String>()) }
 
     if (authUser != null) {
         getUserData(authUser.uid) { data ->
@@ -106,8 +107,9 @@ fun AutoHubNavGraph(
         composable(route = ScreenRoutes.ALL_ADS.name) {
             AdsMainScreen(
                 adsList = adsOnMainScreen.value,
+                filters = filters.value,
                 onAdListClick = {
-                    getAllAds { dataList -> adsOnMainScreen.value = dataList }
+                    getAllAds(filters.value) { dataList -> adsOnMainScreen.value = dataList }
                 },
                 onAdClick = { ad ->
                     selectedAd.value = ad
@@ -115,6 +117,7 @@ fun AutoHubNavGraph(
                 },
                 onMessageClick = { navController.navigate(ScreenRoutes.MESSENGER.name) },
                 onAccountClick = { navController.navigate(ScreenRoutes.AUTH_USER_ACCOUNT.name) },
+                onFiltersClick = { navController.navigate(ScreenRoutes.FILTERS.name) },
                 onDoneClick = {
                     adsOnMainScreen.value = it
                 }
@@ -216,6 +219,18 @@ fun AutoHubNavGraph(
                 onBuyerClick = {
                     uid -> buyerUID.value = uid
                     navController.navigate(ScreenRoutes.ANOTHER_ACCOUNT.name)
+                }
+            )
+        }
+
+        composable(route = ScreenRoutes.FILTERS.name) {
+            FiltersScreen(
+                filters = filters.value,
+                onBackButtonClick = { navController.popBackStack() },
+                onConfirmClick = {
+                    filters.value = it
+                    getAllAds(filters.value) { dataList -> adsOnMainScreen.value = dataList }
+                    navController.popBackStack()
                 }
             )
         }

@@ -15,12 +15,22 @@ import com.example.autohub.ui.navigation.ScreenRoutes
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.storage
 import java.io.ByteArrayOutputStream
 
-fun getAllAds(callBack: (List<CarAd>) -> Unit) {
-    val fbStoreRef = Firebase.firestore.collection("ads")
+fun getAllAds(filters: Map<String, String> = emptyMap(), callBack: (List<CarAd>) -> Unit) {
+    var fbStoreRef: Query = Firebase.firestore.collection("ads")
+
+    if (filters.isNotEmpty()) {
+        filters.forEach { (filter, value) ->
+            if (value.isNotEmpty()) {
+                fbStoreRef = fbStoreRef.whereEqualTo(filter, value)
+            }
+        }
+    }
 
     fbStoreRef.get().addOnCompleteListener { snapshotQuery ->
         if (snapshotQuery.isSuccessful) {
@@ -32,10 +42,19 @@ fun getAllAds(callBack: (List<CarAd>) -> Unit) {
     }
 }
 
-fun getAdsBySearchText(searchText: String, callBack: (List<CarAd>) -> Unit) {
+fun getAdsBySearchText(searchText: String, filters: Map<String, String> = emptyMap(), callBack: (List<CarAd>) -> Unit) {
     val words = searchText.trim().split(' ')
 
-    val fbStoreRef = Firebase.firestore.collection("ads")
+    var fbStoreRef: Query = Firebase.firestore.collection("ads")
+
+    if (filters.isNotEmpty()) {
+        filters.forEach { (filter, value) ->
+            if (value.isNotEmpty()) {
+                fbStoreRef = fbStoreRef.whereEqualTo(filter, value)
+            }
+        }
+    }
+
     fbStoreRef.get().addOnCompleteListener { snapshotQuery ->
         if (snapshotQuery.isSuccessful) {
             val ads: MutableList<CarAd> = emptyList<CarAd>().toMutableList()
