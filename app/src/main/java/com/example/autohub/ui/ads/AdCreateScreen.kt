@@ -25,9 +25,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.data.model.ad.CarAd
+import com.example.autohub.data.model.ad.OptionsTypes
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.PhotosList
+import com.example.autohub.ui.componets.RowRadioButtons
 import com.example.autohub.ui.componets.TopAdAppBar
 import com.example.autohub.utils.isOnlyDigits
 import com.example.autohub.utils.isOnlyLetters
@@ -141,18 +143,16 @@ fun AdCreateScreen(
                     keyboardType = KeyboardType.Number,
                     onValueChange = { realiseYearState.value = it }
                 )
-                InputField(
-                    text = "Кузов",
-                    value = bodyState.value,
+                RowRadioButtons(
+                    option = "Кузов",
                     isError = isBodyError.value,
-                    onValueChange = { bodyState.value = it }
-                )
-                InputField(
-                    text = "Тип двигателя",
-                    value = typeEngineState.value,
+                    typesName = OptionsTypes.bodyTypes
+                ) { bodyState.value = it }
+                RowRadioButtons(
+                    option = "Тип двигателя",
                     isError = isTypeEngineError.value,
-                    onValueChange = { typeEngineState.value = it }
-                )
+                    typesName = OptionsTypes.typeEngineTypes
+                ) { typeEngineState.value = it }
                 InputField(
                     text = "Объем двигателя",
                     value = engineCapacityState.value,
@@ -160,24 +160,21 @@ fun AdCreateScreen(
                     keyboardType = KeyboardType.Number,
                     onValueChange = { engineCapacityState.value = it }
                 )
-                InputField(
-                    text = "Трансмиссия",
-                    value = transmissionState.value,
+                RowRadioButtons(
+                    option = "Тип трансмиссии",
                     isError = isTransmissionError.value,
-                    onValueChange = { transmissionState.value = it }
-                )
-                InputField(
-                    text = "Привод",
-                    value = driveState.value,
+                    typesName = OptionsTypes.transmissionsTypes
+                ) { transmissionState.value = it }
+                RowRadioButtons(
+                    option = "Привод",
                     isError = isDriveError.value,
-                    onValueChange = { driveState.value = it }
-                )
-                InputField(
-                    text = "Руль",
-                    value = steeringWheelSideState.value,
+                    typesName = OptionsTypes.driveTypes
+                ) { driveState.value = it }
+                RowRadioButtons(
+                    option = "Руль",
                     isError = isSteeringWheelSideError.value,
-                    onValueChange = { steeringWheelSideState.value = it }
-                )
+                    typesName = OptionsTypes.steeringWheelSideTypes
+                ) { steeringWheelSideState.value = it }
                 InputField(
                     text = "Пробег",
                     value = mileageState.value,
@@ -185,12 +182,11 @@ fun AdCreateScreen(
                     keyboardType = KeyboardType.Number,
                     onValueChange = { mileageState.value = it }
                 )
-                InputField(
-                    text = "Состояние",
-                    value = conditionState.value,
+                RowRadioButtons(
+                    option = "Состояние",
                     isError = isConditionError.value,
-                    onValueChange = { conditionState.value = it }
-                )
+                    typesName = OptionsTypes.conditionTypes
+                ) { conditionState.value = it }
                 InputField(
                     text = "Цена",
                     value = priceState.value,

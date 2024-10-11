@@ -12,10 +12,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.autohub.data.model.ad.OptionsTypes
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
+import com.example.autohub.ui.componets.RowRadioButtons
 import com.example.autohub.ui.componets.TopAdAppBar
 
 @Composable
@@ -60,68 +63,72 @@ fun FiltersScreen(
         ) {
             Column {
                 InputField(
-                    text = "Модель",
-                    value = modelState.value,
-                    onValueChange = { modelState.value = it }
-                )
-                InputField(
                     text = "Бренд",
                     value = brandState.value,
                     onValueChange = { brandState.value = it }
+                )
+                InputField(
+                    text = "Модель",
+                    value = modelState.value,
+                    onValueChange = { modelState.value = it }
                 )
                 InputField(
                     text = "Цвет",
                     value = colorState.value,
                     onValueChange = { colorState.value = it }
                 )
-                InputField(
-                    text = "Привод",
-                    value = driveState.value,
-                    onValueChange = { driveState.value = it }
-                )
+                RowRadioButtons(
+                    option = "Привод",
+                    currentType = filters["drive"] ?: "",
+                    typesName = OptionsTypes.driveTypes
+                ) { driveState.value = it }
                 InputField(
                     text = "Макс. год выпуска",
                     value = realiseYearState.value,
+                    keyboardType = KeyboardType.Number,
                     onValueChange = { realiseYearState.value = it }
                 )
-                InputField(
-                    text = "Кузов",
-                    value = bodyState.value,
-                    onValueChange = { bodyState.value = it }
-                )
-                InputField(
-                    text = "Тип двигателя",
-                    value = typeEngineState.value,
-                    onValueChange = { typeEngineState.value = it }
-                )
+                RowRadioButtons(
+                    option = "Кузов",
+                    currentType = filters["body"] ?: "",
+                    typesName = OptionsTypes.bodyTypes
+                ) { bodyState.value = it }
+                RowRadioButtons(
+                    option = "Тип двигателя",
+                    currentType = filters["typeEngine"] ?: "",
+                    typesName = OptionsTypes.typeEngineTypes
+                ) { typeEngineState.value = it }
                 InputField(
                     text = "Объем двигателя",
                     value = engineCapacityState.value,
+                    keyboardType = KeyboardType.Number,
                     onValueChange = { engineCapacityState.value = it }
                 )
-                InputField(
-                    text = "Тип трансмиссии",
-                    value = transmissionState.value,
-                    onValueChange = { transmissionState.value = it }
-                )
-                InputField(
-                    text = "Руль",
-                    value = steeringWheelSideState.value,
-                    onValueChange = { steeringWheelSideState.value = it }
-                )
+                RowRadioButtons(
+                    option = "Тип трансмиссии",
+                    currentType = filters["transmission"] ?: "",
+                    typesName = OptionsTypes.transmissionsTypes
+                ) { transmissionState.value = it }
+                RowRadioButtons(
+                    option = "Руль",
+                    currentType = filters["steeringWheelSide"] ?: "",
+                    typesName = OptionsTypes.steeringWheelSideTypes
+                ) { steeringWheelSideState.value = it }
                 InputField(
                     text = "Макс. пробег",
                     value = mileageState.value,
+                    keyboardType = KeyboardType.Number,
                     onValueChange = { mileageState.value = it }
                 )
-                InputField(
-                    text = "Состояние",
-                    value = conditionState.value,
-                    onValueChange = { conditionState.value = it }
-                )
+                RowRadioButtons(
+                    option = "Состояние",
+                    currentType = filters["condition"] ?: "",
+                    typesName = OptionsTypes.conditionTypes
+                ) { conditionState.value = it }
                 InputField(
                     text = "Цена",
                     value = priceState.value,
+                    keyboardType = KeyboardType.Number,
                     onValueChange = { priceState.value = it }
                 )
                 InputField(
