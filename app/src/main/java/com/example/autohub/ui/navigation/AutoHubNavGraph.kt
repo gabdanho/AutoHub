@@ -97,7 +97,7 @@ fun AutoHubNavGraph(
                     registerUser(
                         email = email,
                         password = password,
-                        user = user,
+                        user = user.copy(image = "https://i.pinimg.com/736x/4c/85/31/4c8531dbc05c77cb7a5893297977ac89.jpg"),
                         navController = navController,
                         context = context
                     )
