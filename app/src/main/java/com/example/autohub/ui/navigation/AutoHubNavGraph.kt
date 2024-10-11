@@ -231,6 +231,11 @@ fun AutoHubNavGraph(
                     filters.value = it
                     getAllAds(filters.value) { dataList -> adsOnMainScreen.value = dataList }
                     navController.popBackStack()
+                },
+                onClearFiltersClick = {
+                    filters.value = it
+                    getAllAds { dataList -> adsOnMainScreen.value = dataList }
+                    navController.popBackStack()
                 }
             )
         }
