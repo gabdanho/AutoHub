@@ -60,7 +60,13 @@ fun AdsMainScreen(
                  )
              }
          },
-         bottomBar = { BottomNavBar(onAdListClick, onAccountClick, onMessageClick) }
+         bottomBar = {
+             BottomNavBar(
+                 onAdListClick = onAdListClick,
+                 onAccountClick = onAccountClick,
+                 onMessageClick = onMessageClick
+             )
+         }
      ) { innerPadding ->
          if (adsList.isNotEmpty()) {
              LazyVerticalGrid(
@@ -70,7 +76,7 @@ fun AdsMainScreen(
                      .padding(innerPadding)
              ) {
                  items(adsList) { carAd ->
-                     CarAdCard(carAd, { onAdClick(carAd) })
+                     CarAdCard(ad = carAd, onAdClick = { onAdClick(carAd) })
                  }
              }
          } else {

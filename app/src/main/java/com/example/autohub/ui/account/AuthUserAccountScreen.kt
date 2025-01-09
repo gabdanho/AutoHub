@@ -78,7 +78,13 @@ fun AuthUserAccountScreen(
                 )
             }
         },
-        bottomBar = { BottomNavBar(onAdListClick, onAccountClick, onMessageClick) }
+        bottomBar = {
+            BottomNavBar(
+                onAdListClick = onAdListClick,
+                onAccountClick = onAccountClick,
+                onMessageClick = onMessageClick
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = modifier
