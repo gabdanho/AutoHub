@@ -39,7 +39,7 @@ fun AnotherAccountScreen(
     onCallClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     onWriteClick: () -> Unit,
-    onAddClick: (CarAd) -> Unit
+    onAdClick: (CarAd) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -114,14 +114,25 @@ fun AnotherAccountScreen(
                     .padding(horizontal = 8.dp)
             )
             HorizontalDivider()
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2)
-            ) {
-                items(ads) { ad ->
-                    CarAdCard(
-                        ad = ad,
-                        onAdClick = { onAddClick(ad) }
-                    )
+            if (ads.isNotEmpty()) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2)
+                ) {
+                    items(ads) { ad ->
+                        CarAdCard(
+                            ad = ad,
+                            onAdClick = { onAdClick(ad) }
+                        )
+                    }
+                }
+            } else {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Ничего не найдено")
                 }
             }
         }

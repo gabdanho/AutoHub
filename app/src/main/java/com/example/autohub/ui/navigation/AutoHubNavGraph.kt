@@ -1,5 +1,6 @@
 package com.example.autohub.ui.navigation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -56,7 +57,7 @@ fun AutoHubNavGraph(
     val authUserData = remember { mutableStateOf(User()) }
     val authUser = fsAuth.currentUser
     val viewModel: ChatViewModel = viewModel()
-    var filters = remember { mutableStateOf(mapOf<String, String>()) }
+    val filters = remember { mutableStateOf(mapOf<String, String>()) }
 
     if (authUser != null) {
         getUserData(authUser.uid) { data ->
@@ -199,18 +200,18 @@ fun AutoHubNavGraph(
         }
 
         composable(route = ScreenRoutes.ANOTHER_ACCOUNT.name) {
-            getCurrentUserAds(selectedAd.value.userUID) {
-                ads.value = it
-            }
-
             getUserData(buyerUID.value) {
                 userData.value = it
+            }
+
+            getCurrentUserAds(buyerUID.value) {
+                ads.value = it
             }
 
             AnotherAccountScreen(
                 user = userData.value,
                 ads = ads.value,
-                onAddClick = {
+                onAdClick = {
                     selectedAd.value = it
                     navController.navigate(ScreenRoutes.AD_INFO.name)
                 },
@@ -250,6 +251,7 @@ fun AutoHubNavGraph(
     }
 }
 
+@SuppressLint("QueryPermissionsNeeded")
 fun startCalling(context: Context, phoneNumber: String) {
     val callIntent = Intent(Intent.ACTION_CALL, Uri.fromParts("tel", phoneNumber, null))
 
