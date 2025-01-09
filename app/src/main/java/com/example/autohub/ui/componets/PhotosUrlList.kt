@@ -1,9 +1,7 @@
 package com.example.autohub.ui.componets
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,8 +18,8 @@ import com.example.autohub.ui.theme.cardColor
 
 @Composable
 fun PhotosUrlList(
-    imagesUrl: List<String>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imagesUrl: List<String>
 ) {
     val isShowImageDialog = remember { mutableStateOf(false) }
     val imageUriToShowImage = remember { mutableStateOf("") }

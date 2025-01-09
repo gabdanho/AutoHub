@@ -20,9 +20,9 @@ import com.example.autohub.ui.theme.cardColor
 
 @Composable
 fun CarAdCard(
+    modifier: Modifier = Modifier,
     ad: CarAd,
-    onAdClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onAdClick: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(bottomEnd = 15.dp, bottomStart = 15.dp),

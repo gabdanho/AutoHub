@@ -28,7 +28,7 @@ fun TopAdAppBar(
             .fillMaxWidth()
             .background(color = barColor)
     ) {
-        BackButton({ onBackButtonClick() })
+        BackButton(onBackClick = { onBackButtonClick() })
         Text(
             text = titleText,
             style = MaterialTheme.typography.titleLarge,

@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.ui.theme.borderColor
 import com.example.autohub.ui.theme.focusedTextFieldColor
@@ -19,10 +18,10 @@ import com.example.autohub.ui.theme.unfocusedTextFieldColor
 
 @Composable
 fun RoundedCornerTextField(
+    modifier: Modifier = Modifier,
     text: String,
     label: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    onValueChange: (String) -> Unit
 ) {
     TextField(
         value = text,
@@ -43,8 +42,8 @@ fun RoundedCornerTextField(
     )
 }
 
-@Preview
-@Composable
-private fun RoundedCornerTextFieldPreview() {
-    RoundedCornerTextField("", "Password", { _ -> })
-}
+//@Preview
+//@Composable
+//private fun RoundedCornerTextFieldPreview() {
+//    RoundedCornerTextField("", "Password", { _ -> })
+//}

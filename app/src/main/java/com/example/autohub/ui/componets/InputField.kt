@@ -24,14 +24,14 @@ import com.example.autohub.ui.theme.labelColor
 
 @Composable
 fun InputField(
+    modifier: Modifier = Modifier,
     text: String,
     value: String,
     onValueChange: (String) -> Unit,
     placeHolder: String = "",
     isError: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Unspecified,
-    isSingleLine: Boolean = true,
-    modifier: Modifier = Modifier
+    isSingleLine: Boolean = true
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

@@ -66,10 +66,10 @@ import com.example.autohub.utils.sendMessage
 
 @Composable
 fun ChattingScreen(
+    modifier: Modifier = Modifier,
     buyerUID: String,
     onBuyerClick: (String) -> Unit,
-    viewModel: ChatViewModel,
-    modifier: Modifier = Modifier
+    viewModel: ChatViewModel
 ) {
     val text = remember { mutableStateOf("") }
     val buyerData = remember { mutableStateOf(User()) }
@@ -162,7 +162,7 @@ fun ChattingScreen(
                 items(messages) { message ->
                     if (!message.read && message.receiver == getAuthUserUID())
                         markMessagesAsRead(buyerUID, message.id)
-                    UserMessage(message)
+                    UserMessage(message = message)
                 }
             }
         }
@@ -171,8 +171,8 @@ fun ChattingScreen(
 
 @Composable
 fun UserMessage(
-    message: Message,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    message: Message
 ) {
     println(message.read)
     val config = LocalConfiguration.current
@@ -221,10 +221,10 @@ fun UserMessage(
 
 @Composable
 fun MessageInputField(
+    modifier: Modifier = Modifier,
     text: String,
     onValueChange: (String) -> Unit,
-    onSendMessageClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onSendMessageClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
 
@@ -261,6 +261,6 @@ fun MessageInputField(
     }
 }
 
-// проверяем последний проскроллено ли до последнего элемента в lazy list
+// проверяем проскроллено ли до последнего элемента в lazy list
 fun LazyListState.isScrolledToTheEnd() =
-    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 2 // с 1 работает не так
+    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 2

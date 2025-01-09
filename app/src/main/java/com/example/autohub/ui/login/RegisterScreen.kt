@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.data.model.user.User
 import com.example.autohub.ui.componets.BackButton
@@ -30,9 +29,9 @@ import com.example.autohub.utils.isValidPhoneNumber
 
 @Composable
 fun RegisterScreen(
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onRegisterClick: (String, String, User) -> Unit,
-    modifier: Modifier = Modifier
+    onRegisterClick: (String, String, User) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -52,7 +51,7 @@ fun RegisterScreen(
     val isCityError = remember { mutableStateOf(false) }
 
     Scaffold(
-        floatingActionButton = { BackButton(onBackClick) },
+        floatingActionButton = { BackButton(onBackClick = onBackClick) },
         floatingActionButtonPosition = FabPosition.Start
     ) { innerPadding ->
         Column(
@@ -177,8 +176,8 @@ fun RegisterScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun RegisterScreenPreview() {
-    RegisterScreen({ }, { _, _, _ -> })
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun RegisterScreenPreview() {
+//    RegisterScreen({ }, { _, _, _ -> })
+//}

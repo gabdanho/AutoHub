@@ -50,12 +50,12 @@ import com.example.autohub.utils.getUserData
 
 @Composable
 fun MessengerScreen(
+    modifier: Modifier = Modifier,
     onAnswerClick: (String) -> Unit,
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
-    viewModel: ChatViewModel,
-    modifier: Modifier = Modifier
+    viewModel: ChatViewModel
 ) {
     val buyers by viewModel.getBuyers().observeAsState(initial = emptyList())
 
@@ -76,7 +76,13 @@ fun MessengerScreen(
                 )
             }
         },
-        bottomBar = { BottomNavBar(onAdListClick, onAccountClick, onMessageClick) }
+        bottomBar = {
+            BottomNavBar(
+                onAdListClick = onAdListClick,
+                onAccountClick = onAccountClick,
+                onMessageClick = onMessageClick
+            )
+        }
     ) { innerPadding ->
         if (buyers.isNotEmpty()) {
             LazyColumn(
@@ -85,7 +91,7 @@ fun MessengerScreen(
                     .padding(8.dp)
             ) {
                 items(buyers) { buyer ->
-                    ChatCardBuyer(buyer, onAnswerClick)
+                    ChatCardBuyer(buyer = buyer, onAnswerClick = onAnswerClick)
                 }
             }
         } else {
@@ -107,9 +113,9 @@ fun MessengerScreen(
 
 @Composable
 fun ChatCardBuyer(
+    modifier: Modifier = Modifier,
     buyer: BuyerChat,
-    onAnswerClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onAnswerClick: (String) -> Unit
 ) {
     val buyerToken = remember { mutableStateOf("") }
     getUserData(buyer.uid) {

@@ -1,8 +1,8 @@
-package com.example.autohub.data.mock
+package com.example.autohub.data.fake
 
 import com.example.autohub.data.model.ad.CarAd
 
-object CarAdMock {
+object CarAdFake {
     val ads = listOf(
         CarAd(
             dateAdPublished = "15.06.2024",

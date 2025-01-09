@@ -29,12 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.autohub.data.model.ad.CarAd
 import com.example.autohub.data.model.user.User
-import com.example.autohub.data.mock.CarAdMock
 import com.example.autohub.ui.componets.BottomNavBar
 import com.example.autohub.ui.componets.CarAdCard
 import com.example.autohub.ui.componets.CustomButton
@@ -46,6 +44,7 @@ import com.google.firebase.auth.auth
 
 @Composable
 fun AuthUserAccountScreen(
+    modifier: Modifier = Modifier,
     yourAds: List<CarAd>,
     onChangeInfoClick: () -> Unit,
     onSignOutClick: () -> Unit,
@@ -54,7 +53,6 @@ fun AuthUserAccountScreen(
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
     onAdCreateClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val userData = remember { mutableStateOf(User()) }
 
@@ -190,11 +188,11 @@ fun AuthUserAccountScreen(
     }
 }
 
-@Preview
-@Composable
-private fun AuthUserAccountScreenPreview() {
-    AuthUserAccountScreen(
-        yourAds = CarAdMock.ads,
-        { }, { }, { }, { }, { }, { }, { }
-    )
-}
+//@Preview
+//@Composable
+//private fun AuthUserAccountScreenPreview() {
+//    AuthUserAccountScreen(
+//        yourAds = CarAdFake.ads,
+//        { }, { }, { }, { }, { }, { }, { }
+//    )
+//}

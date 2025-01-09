@@ -41,13 +41,13 @@ import com.google.firebase.auth.auth
 
 @Composable
 fun AdScreen(
+    modifier: Modifier = Modifier,
     user: User,
     carAd: CarAd,
     onUserClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     onMessageClick: () -> Unit,
-    onCallClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onCallClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
 
@@ -350,12 +350,12 @@ fun AdScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun AdScreenPreview() {
-    AdScreen(
-        User(),
-        CarAd(),
-        { }, { }, { }, { }
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun AdScreenPreview() {
+//    AdScreen(
+//        User(),
+//        CarAd(),
+//        { }, { }, { }, { }
+//    )
+//}

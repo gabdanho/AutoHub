@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -26,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.data.model.ad.CarAd
 import com.example.autohub.ui.componets.BottomNavBar
@@ -36,6 +34,7 @@ import com.example.autohub.utils.getAdsBySearchText
 
 @Composable
 fun AdsMainScreen(
+    modifier: Modifier = Modifier,
     adsList: List<CarAd>,
     filters: Map<String, String> = emptyMap(),
     onAccountClick: () -> Unit,
@@ -43,8 +42,7 @@ fun AdsMainScreen(
     onAdListClick: () -> Unit,
     onAdClick: (CarAd) -> Unit,
     onFiltersClick: () -> Unit,
-    onDoneClick: (List<CarAd>) -> Unit,
-    modifier: Modifier = Modifier
+    onDoneClick: (List<CarAd>) -> Unit
 ) {
      Scaffold(
          topBar = {
@@ -52,7 +50,7 @@ fun AdsMainScreen(
                  horizontalArrangement = Arrangement.Center,
                  modifier = Modifier.fillMaxWidth()
              ) {
-                 SearchAdsBar(filters, onDoneClick, onFiltersClick)
+                 SearchAdsBar(filters = filters, onDoneClick = onDoneClick, onFiltersClick = onFiltersClick)
                  Icon(
                      imageVector = Icons.AutoMirrored.Filled.List,
                      contentDescription = "Фильтры поиска",
@@ -94,10 +92,10 @@ fun AdsMainScreen(
 
 @Composable
 fun SearchAdsBar(
+    modifier: Modifier = Modifier,
     filters: Map<String, String>,
     onDoneClick: (List<CarAd>) -> Unit,
-    onFiltersClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onFiltersClick: () -> Unit
 ) {
     val searchTextState = remember { mutableStateOf("") }
 
@@ -150,10 +148,10 @@ fun SearchAdsBar(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun AdsMainScreenPreview() {
-    AdsMainScreen(
-        listOf(CarAd()), mapOf(), { }, { }, { }, { }, { }, { }
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun AdsMainScreenPreview() {
+//    AdsMainScreen(
+//        listOf(CarAd()), mapOf(), { }, { }, { }, { }, { }, { }
+//    )
+//}

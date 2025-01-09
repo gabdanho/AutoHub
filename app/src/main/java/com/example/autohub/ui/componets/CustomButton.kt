@@ -16,6 +16,7 @@ import com.example.autohub.ui.theme.containerColor
 
 @Composable
 fun CustomButton(
+    modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
     isEnabled: Boolean = true,
@@ -23,8 +24,7 @@ fun CustomButton(
     colorButton: ButtonColors = buttonColors(
         containerColor = containerColor
     ),
-    textColor: Color = Color.White,
-    modifier: Modifier = Modifier
+    textColor: Color = Color.White
 ) {
     Button(
         onClick = { onClick() },
@@ -41,13 +41,13 @@ fun CustomButton(
     }
 }
 
-@Preview(widthDp = 400)
-@Composable
-private fun CustomButtonPreview() {
-    CustomButton(
-        "Вход",
-        { },
-        colorButton = buttonColors(
-        containerColor = containerColor
-    ))
-}
+//@Preview(widthDp = 400)
+//@Composable
+//private fun CustomButtonPreview() {
+//    CustomButton(
+//        "Вход",
+//        { },
+//        colorButton = buttonColors(
+//        containerColor = containerColor
+//    ))
+//}

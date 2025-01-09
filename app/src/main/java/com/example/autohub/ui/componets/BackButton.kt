@@ -15,8 +15,8 @@ import com.example.autohub.ui.theme.containerColor
 
 @Composable
 fun BackButton(
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit
 ) {
     FloatingActionButton(
         onClick = { onBackClick() },

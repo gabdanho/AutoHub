@@ -2,7 +2,6 @@ package com.example.autohub.ui.login
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,12 +14,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,25 +26,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogWindowProvider
 import com.example.autohub.R
 import com.example.autohub.ui.componets.CustomButton
 import com.example.autohub.ui.componets.InputField
 import com.example.autohub.ui.componets.RoundedCornerTextField
-import com.example.autohub.ui.theme.containerColor
-import com.example.autohub.ui.theme.focusedTextFieldColor
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
 @Composable
 fun LoginScreen(
+    modifier: Modifier = Modifier,
     isProgressBarWork: Boolean,
     isShowSendEmailText: Boolean,
     onLoginClick: (String, String) -> Unit,
@@ -100,7 +92,7 @@ fun LoginScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -178,9 +170,9 @@ fun LoginScreen(
 
 @Composable
 fun ChangePasswordDialog(
+    modifier: Modifier = Modifier,
     context: Context,
-    onHideDialogClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onHideDialogClick: () -> Unit
 ) {
     val emailToResetPassword = remember { mutableStateOf("") }
     val fsAuth = Firebase.auth
@@ -231,8 +223,8 @@ fun ChangePasswordDialog(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun LoginScreenPreview() {
-    LoginScreen(false, true, { _, _ -> }, { })
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun LoginScreenPreview() {
+//    LoginScreen(false, true, { _, _ -> }, { })
+//}

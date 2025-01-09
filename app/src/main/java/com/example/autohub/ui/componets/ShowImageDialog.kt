@@ -9,9 +9,9 @@ import coil.compose.AsyncImage
 
 @Composable
 fun ShowImageDialog(
+    modifier: Modifier = Modifier,
     uri: Uri,
-    closeDialog: () -> Unit,
-    modifier: Modifier = Modifier
+    closeDialog: () -> Unit
 ) {
     Dialog(closeDialog) {
         AsyncImage(
@@ -24,9 +24,9 @@ fun ShowImageDialog(
 
 @Composable
 fun ShowImageDialog(
+    modifier: Modifier = Modifier,
     uri: String,
-    closeDialog: () -> Unit,
-    modifier: Modifier = Modifier
+    closeDialog: () -> Unit
 ) {
     Dialog(closeDialog) {
         AsyncImage(

@@ -43,8 +43,8 @@ import com.google.firebase.auth.auth
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AutoHubNavGraph(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     val context = LocalContext.current
     val fsAuth = Firebase.auth
@@ -90,6 +90,7 @@ fun AutoHubNavGraph(
                 isShowSendEmailText = isShowSendMessageEmailText.value
             )
         }
+
         composable(route = ScreenRoutes.REGISTER.name) {
             RegisterScreen(
                 onBackClick = { navController.popBackStack() },
@@ -104,6 +105,7 @@ fun AutoHubNavGraph(
                 }
             )
         }
+
         composable(route = ScreenRoutes.ALL_ADS.name) {
             AdsMainScreen(
                 adsList = adsOnMainScreen.value,
@@ -123,6 +125,7 @@ fun AutoHubNavGraph(
                 }
             )
         }
+
         composable(route = ScreenRoutes.MESSENGER.name) {
             MessengerScreen(
                 viewModel = viewModel,
@@ -136,6 +139,7 @@ fun AutoHubNavGraph(
                 }
             )
         }
+
         composable(route = ScreenRoutes.AUTH_USER_ACCOUNT.name) {
             getCurrentUserAds(getAuthUserUID()) { ads.value = it }
 
@@ -162,11 +166,13 @@ fun AutoHubNavGraph(
                 onAdCreateClick = { navController.navigate(ScreenRoutes.AD_CREATE.name) }
             )
         }
+
         composable(route = ScreenRoutes.ACCOUNT_SETTINGS.name) {
             AccountSettings(
                 onBackButtonClick = { navController.popBackStack() }
             )
         }
+
         composable(route = ScreenRoutes.AD_CREATE.name) {
             AdCreateScreen(
                 onBackButtonClick = { navController.popBackStack() },
@@ -175,6 +181,7 @@ fun AutoHubNavGraph(
                 }
             )
         }
+
         composable(route = ScreenRoutes.AD_INFO.name) {
             getUserData(selectedAd.value.userUID) {
                 userData.value = it
@@ -190,6 +197,7 @@ fun AutoHubNavGraph(
                 onUserClick = { navController.navigate(ScreenRoutes.ANOTHER_ACCOUNT.name) }
             )
         }
+
         composable(route = ScreenRoutes.ANOTHER_ACCOUNT.name) {
             getCurrentUserAds(selectedAd.value.userUID) {
                 ads.value = it

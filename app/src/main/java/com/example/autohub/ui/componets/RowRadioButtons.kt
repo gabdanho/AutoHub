@@ -19,7 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.ui.theme.containerColor
 import com.example.autohub.ui.theme.labelColor
@@ -27,11 +26,11 @@ import com.example.autohub.ui.theme.unfocusedTextFieldColor
 
 @Composable
 fun RowRadioButtons(
+    modifier: Modifier = Modifier,
     option: String,
     currentType: String = "",
     typesName: List<String>,
     isError: Boolean = false,
-    modifier: Modifier = Modifier,
     returnType: (String) -> Unit
 ) {
     val selectedType = rememberSaveable { mutableStateOf(currentType) }
@@ -89,12 +88,12 @@ fun RowRadioButtons(
     }
 }
 
-@Preview
-@Composable
-private fun Test() {
-    RowRadioButtons(
-        option = "pokat",
-        currentType = "poka",
-        typesName = listOf("priv", "poka")
-    ) { }
-}
+//@Preview
+//@Composable
+//private fun Test() {
+//    RowRadioButtons(
+//        option = "pokat",
+//        currentType = "poka",
+//        typesName = listOf("priv", "poka")
+//    ) { }
+//}

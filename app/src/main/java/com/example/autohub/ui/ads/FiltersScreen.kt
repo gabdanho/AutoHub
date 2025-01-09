@@ -15,14 +15,12 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.data.model.ad.OptionsTypes
 import com.example.autohub.ui.componets.CustomButton
@@ -32,11 +30,11 @@ import com.example.autohub.ui.componets.TopAdAppBar
 
 @Composable
 fun FiltersScreen(
+    modifier: Modifier = Modifier,
     filters: Map<String, String>,
     onBackButtonClick: () -> Unit,
     onConfirmClick: (Map<String, String>) -> Unit,
-    onClearFiltersClick: (Map<String, String>) -> Unit,
-    modifier: Modifier = Modifier
+    onClearFiltersClick: (Map<String, String>) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -212,8 +210,8 @@ fun FiltersScreen(
     }
 }
 
-@Preview
-@Composable
-private fun FiltersScreenPreview() {
-    FiltersScreen(mapOf(), { }, { }, { }, modifier = Modifier)
-}
+//@Preview
+//@Composable
+//private fun FiltersScreenPreview() {
+//    FiltersScreen(mapOf(), { }, { }, { }, modifier = Modifier)
+//}

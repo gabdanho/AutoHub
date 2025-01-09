@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.autohub.data.model.ad.CarAd
 import com.example.autohub.data.model.ad.OptionsTypes
@@ -36,9 +35,9 @@ import com.example.autohub.utils.isOnlyLetters
 
 @Composable
 fun AdCreateScreen(
+    modifier: Modifier = Modifier,
     onCreateAdClick: (CarAd, List<Uri>) -> Unit,
-    onBackButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onBackButtonClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -293,8 +292,8 @@ fun AdCreateScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun AdCreateScreenPreview() {
-    AdCreateScreen({ _, _ -> }, { })
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun AdCreateScreenPreview() {
+//    AdCreateScreen({ _, _ -> }, { })
+//}

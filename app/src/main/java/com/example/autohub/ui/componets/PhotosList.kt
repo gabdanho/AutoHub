@@ -1,11 +1,8 @@
 package com.example.autohub.ui.componets
 
 import android.net.Uri
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,18 +13,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
-import com.example.autohub.R
 import com.example.autohub.ui.theme.cardColor
 
 @Composable
 fun PhotosList(
+    modifier: Modifier = Modifier,
     images: List<Uri>,
-    onAddImageClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onAddImageClick: () -> Unit
 ) {
     val isShowImageDialog = remember { mutableStateOf(false) }
     val imageUriToShowImage = remember { mutableStateOf(Uri.EMPTY) }

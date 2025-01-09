@@ -38,7 +38,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
@@ -60,8 +59,8 @@ import com.google.firebase.firestore.firestore
 
 @Composable
 fun AccountSettings(
-    onBackButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackButtonClick: () -> Unit
 ) {
     val isFirstNameError = remember { mutableStateOf(false) }
     val isSecondNameError = remember { mutableStateOf(false) }
@@ -260,9 +259,9 @@ fun AccountSettings(
 
 @Composable
 fun ChangePasswordDialog(
+    modifier: Modifier = Modifier,
     context: Context,
-    hideDialog: () -> Unit,
-    modifier: Modifier = Modifier
+    hideDialog: () -> Unit
 ) {
     val passwordState = remember { mutableStateOf("") }
     val isInputError = remember { mutableStateOf(false) }
@@ -351,8 +350,8 @@ fun ChangePasswordDialog(
     }
 }
 
-@Preview
-@Composable
-private fun AccountSettingsPreview() {
-    AccountSettings({ })
-}
+//@Preview
+//@Composable
+//private fun AccountSettingsPreview() {
+//    AccountSettings({ })
+//}
