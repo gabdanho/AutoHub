@@ -1,0 +1,35 @@
+package com.example.autohub.presentation.model
+
+enum class StringResNamePresentation {
+    LABEL_SEDAN,
+    LABEL_COUPE,
+    LABEL_CONVERTIBLE,
+    LABEL_STATION_WAGON,
+    LABEL_HATCHBACK,
+    LABEL_VAN,
+    LABEL_MINIVAN,
+    LABEL_SUV,
+    LABEL_CROSSOVER,
+    LABEL_PICKUP_TRUCK,
+    LABEL_LIMOUSINE,
+
+    LABEL_NOT_BROKEN,
+    LABEL_BROKEN,
+    LABEL_NOT_WORKING,
+
+    LABEL_MANUAL,
+    LABEL_AUTOMATIC,
+    LABEL_VARIATOR,
+    LABEL_ROBOT,
+
+    LABEL_RIGHT_WHEEL,
+    LABEL_LEFT_WHEEL,
+
+    LABEL_PETROL,
+    LABEL_DIESEL,
+    LABEL_HYBRID,
+
+    LABEL_FWD,
+    LABEL_RWD,
+    LABEL_FULL_WD;
+}

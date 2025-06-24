@@ -22,7 +22,7 @@
         android:theme="@style/Theme.AutoHub"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.AutoHub">
@@ -34,7 +34,7 @@
         </activity>
 
         <service
-            android:name=".notifications.PushNotificationService"
+            android:name=".data.notifications.PushNotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
