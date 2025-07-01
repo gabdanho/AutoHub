@@ -49,9 +49,9 @@ import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.TopAdAppBar
 import com.example.autohub.presentation.theme.containerColor
 import com.example.autohub.presentation.theme.labelColor
-import com.example.autohub.data.utils.isOnlyLetters
-import com.example.autohub.data.utils.isPasswordValid
-import com.example.autohub.data.utils.isValidCity
+import com.example.autohub.presentation.utils.isOnlyLetters
+import com.example.autohub.presentation.utils.isPasswordValid
+import com.example.autohub.presentation.utils.isValidCity
 import com.example.autohub.data.utils.updateCity
 import com.example.autohub.data.utils.updateFirstAnsSecondName
 import com.example.autohub.data.utils.uploadUserProfileImageToFirebase

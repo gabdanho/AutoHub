@@ -23,11 +23,11 @@ import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.componets.BackButton
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
-import com.example.autohub.data.utils.isOnlyLetters
-import com.example.autohub.data.utils.isPasswordValid
-import com.example.autohub.data.utils.isValidCity
-import com.example.autohub.data.utils.isValidEmail
-import com.example.autohub.data.utils.isValidPhoneNumber
+import com.example.autohub.presentation.utils.isOnlyLetters
+import com.example.autohub.presentation.utils.isPasswordValid
+import com.example.autohub.presentation.utils.isValidCity
+import com.example.autohub.presentation.utils.isValidEmail
+import com.example.autohub.presentation.utils.isValidPhoneNumber
 
 @Composable
 fun RegisterScreen(

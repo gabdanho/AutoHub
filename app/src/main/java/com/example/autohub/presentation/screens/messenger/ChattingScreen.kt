@@ -60,7 +60,7 @@ import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.ChatViewModel
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
-import com.example.autohub.data.utils.getAuthUserUID
+import com.example.autohub.data.remote.firebase.utils.getAuthUserUID
 import com.example.autohub.data.utils.getBuyerStatus
 import com.example.autohub.data.utils.getUserData
 import com.example.autohub.data.utils.markMessagesAsRead

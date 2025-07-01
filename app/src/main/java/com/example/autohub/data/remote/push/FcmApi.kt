@@ -1,5 +1,6 @@
-package com.example.autohub.data.notifications
+package com.example.autohub.data.remote.push
 
+import com.example.autohub.data.model.SendMessageDto
 import retrofit2.http.Body
 import retrofit2.http.POST
 

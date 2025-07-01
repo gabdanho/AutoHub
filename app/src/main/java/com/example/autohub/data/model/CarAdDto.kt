@@ -1,6 +1,6 @@
-package com.example.autohub.presentation.model.ad
+package com.example.autohub.data.model
 
-data class CarAd(
+data class CarAdDto(
     val userUID: String = "",
     val adID: String = "",
     val dateAdPublished: String = "",

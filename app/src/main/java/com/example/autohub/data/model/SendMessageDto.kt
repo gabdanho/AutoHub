@@ -1,4 +1,4 @@
-package com.example.autohub.data.notifications
+package com.example.autohub.data.model
 
 data class SendMessageDto(
     val to: String?,

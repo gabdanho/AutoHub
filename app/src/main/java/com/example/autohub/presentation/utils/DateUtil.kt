@@ -1,20 +1,17 @@
-package com.example.autohub.data.utils
+package com.example.autohub.presentation.utils
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun getFullDate(): String {
-    val date = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("Europe/Moscow")
-    }.format(Date())
-
-    return date
+fun Date.toFullString(): String {
+    val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    sdf.timeZone = TimeZone.getTimeZone("Europe/Moscow")
+    return sdf.format(this)
 }
+
+// ToDo Рефакторинг
 
 fun getTimeString(): String {
     val time = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {

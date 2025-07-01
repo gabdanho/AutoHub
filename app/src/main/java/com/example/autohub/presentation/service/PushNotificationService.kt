@@ -1,4 +1,4 @@
-package com.example.autohub.data.notifications
+package com.example.autohub.presentation.service
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

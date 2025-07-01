@@ -32,8 +32,8 @@ import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.PhotosList
 import com.example.autohub.presentation.componets.RowRadioButtons
 import com.example.autohub.presentation.componets.TopAdAppBar
-import com.example.autohub.data.utils.isOnlyDigits
-import com.example.autohub.data.utils.isOnlyLetters
+import com.example.autohub.presentation.utils.isOnlyDigits
+import com.example.autohub.presentation.utils.isOnlyLetters
 
 @Composable
 fun AdCreateScreen(

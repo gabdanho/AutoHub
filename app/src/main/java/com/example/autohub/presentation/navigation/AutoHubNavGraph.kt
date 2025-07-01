@@ -33,7 +33,7 @@ import com.example.autohub.presentation.screens.messenger.MessengerScreen
 import com.example.autohub.data.utils.changeUserStatus
 import com.example.autohub.data.utils.createAd
 import com.example.autohub.data.utils.getAllAds
-import com.example.autohub.data.utils.getAuthUserUID
+import com.example.autohub.data.remote.firebase.utils.getAuthUserUID
 import com.example.autohub.data.utils.getCurrentUserAds
 import com.example.autohub.data.utils.getUserData
 import com.example.autohub.data.utils.loginUser

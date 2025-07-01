@@ -1,6 +1,6 @@
 package com.example.autohub.presentation.model.messenger
 
-import com.example.autohub.data.utils.getTimeString
+import com.example.autohub.presentation.utils.getTimeString
 
 data class Message(
     val id: String = "",

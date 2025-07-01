@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.model.ad
+package com.example.autohub.domain.model
 
 data class CarAd(
     val userUID: String = "",

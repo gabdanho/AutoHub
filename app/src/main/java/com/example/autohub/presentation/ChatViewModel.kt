@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
-import com.example.autohub.presentation.model.messenger.BuyerChat
+import com.example.autohub.presentation.model.messenger.ChatInfo
 import com.example.autohub.presentation.model.messenger.Message
-import com.example.autohub.data.notifications.FcmApi
-import com.example.autohub.data.notifications.NotificationBody
-import com.example.autohub.data.notifications.SendMessageDto
+import com.example.autohub.data.remote.push.FcmApi
+import com.example.autohub.data.model.NotificationBody
+import com.example.autohub.data.model.SendMessageDto
 import com.example.autohub.data.utils.getBuyersChats
 import com.example.autohub.data.utils.getMessages
 import com.google.firebase.Firebase
@@ -22,6 +22,7 @@ import retrofit2.create
 
 class ChatViewModel : ViewModel() {
 
+    // ToDo : В DI
     val api: FcmApi = Builder()
             .baseUrl("http://10.0.2.2:8080/")
             .addConverterFactory(MoshiConverterFactory.create())
@@ -38,7 +39,7 @@ class ChatViewModel : ViewModel() {
         return getMessages(buyerUID)
     }
 
-    fun getBuyers(): LiveData<List<BuyerChat>> {
+    fun getBuyers(): LiveData<List<ChatInfo>> {
         return getBuyersChats()
     }
 

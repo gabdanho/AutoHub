@@ -1,6 +1,6 @@
 package com.example.autohub.presentation.model.messenger
 
-data class BuyerChat(
+data class ChatInfo(
     val name: String = "",
     val image: String = "",
     val lastMessage: String = "",

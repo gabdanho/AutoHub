@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.autohub.R
-import com.example.autohub.presentation.model.messenger.BuyerChat
+import com.example.autohub.presentation.model.messenger.ChatInfo
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.ChatViewModel
 import com.example.autohub.presentation.componets.BottomNavBar
@@ -114,7 +114,7 @@ fun MessengerScreen(
 @Composable
 fun ChatCardBuyer(
     modifier: Modifier = Modifier,
-    buyer: BuyerChat,
+    buyer: ChatInfo,
     onAnswerClick: (String) -> Unit
 ) {
     val buyerToken = remember { mutableStateOf("") }
