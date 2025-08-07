@@ -1,4 +1,4 @@
-package com.example.autohub.data.remote.push
+package com.example.autohub.data.remote.api
 
 import com.example.autohub.data.model.SendMessageDto
 import retrofit2.http.Body

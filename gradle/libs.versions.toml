@@ -14,6 +14,8 @@ coilVersion = "2.6.0"
 navigation = "2.8.1"
 runtimeLivedata = "1.7.2"
 retrofitVersion = "2.9.0"
+room = "2.7.2"
+ksp = "2.1.10-1.0.29"
 
 [libraries]
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "bomVersion" }
@@ -29,6 +31,9 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitVersion" }
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofitVersion" }
+
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -50,3 +55,4 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsVerison" }
+google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
