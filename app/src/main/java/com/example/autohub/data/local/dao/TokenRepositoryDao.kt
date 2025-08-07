@@ -12,5 +12,5 @@ interface TokenRepositoryDao {
     suspend fun getToken(): String
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateToken()
+    suspend fun updateToken(token: String)
 }

@@ -1,23 +1,26 @@
 package com.example.autohub.data.firebase.model
 
-import com.example.autohub.domain.model.Result
+import com.example.autohub.domain.model.result.FirebaseResult
+import kotlinx.coroutines.TimeoutCancellationException
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
 
-suspend fun <T> safeFirebaseCall(apiCall: suspend () -> T): Result<T> {
+suspend fun <T> safeFirebaseCall(apiCall: suspend () -> T): FirebaseResult<T> {
     return try {
-        Result.Success(apiCall())
+        FirebaseResult.Success(apiCall())
     } catch (e: HttpException) {
-        Result.ServerError(
+        FirebaseResult.ServerError(
             message = e.toString(),
             errorCode = e.code()
         )
     } catch (e: SocketTimeoutException) {
-        Result.TimeoutError(message = e.toString())
+        FirebaseResult.TimeoutError(message = e.toString())
     } catch (e: IOException) {
-        Result.ConnectionError(message = e.toString())
+        FirebaseResult.ConnectionError(message = e.toString())
     } catch (e: Exception) {
-        Result.UnknownError(message = e.toString())
+        FirebaseResult.UnknownError(message = e.toString())
+    } catch (e: TimeoutCancellationException) {
+        FirebaseResult.TimeoutError(message = "The server response time has been exceeded")
     }
 }
