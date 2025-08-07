@@ -1,11 +1,11 @@
-package com.example.autohub.data.repository.firebase
+package com.example.autohub.data.repository.impl.firebase
 
-import com.example.autohub.data.mapper.toUserStatus
-import com.example.autohub.data.mapper.toUserStatusDto
-import com.example.autohub.data.model.UserStatusDto
+import com.example.autohub.data.mapper.toUserStatusDomain
+import com.example.autohub.data.mapper.toUserStatusData
+import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.domain.interfaces.repository.firebase.AuthUserRepository
-import com.example.autohub.domain.model.Result
+import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.UserData
 import com.example.autohub.domain.model.UserStatus
 import com.google.firebase.Firebase
@@ -19,7 +19,7 @@ class AuthUserRepositoryImpl: AuthUserRepository {
     private val fbAuth = Firebase.auth
     private val fbStore = Firebase.firestore
 
-    override suspend fun loginUser(email: String, password: String): Result<Boolean> {
+    override suspend fun loginUser(email: String, password: String): FirebaseResult<Boolean> {
         return safeFirebaseCall {
             fbAuth.signInWithEmailAndPassword(email, password).await()
             val user = fbAuth.currentUser ?: throw IllegalStateException("User is null after login")
@@ -30,7 +30,7 @@ class AuthUserRepositoryImpl: AuthUserRepository {
             }
 
             getUserToken()
-            changeUserStatus(UserStatusDto.ONLINE.toUserStatus())
+            changeUserStatus(UserStatus.ONLINE.toUserStatusDomain())
 
             true
         }
@@ -40,7 +40,7 @@ class AuthUserRepositoryImpl: AuthUserRepository {
         email: String,
         password: String,
         user: UserData,
-    ): Result<Boolean> {
+    ): FirebaseResult<Boolean> {
         return safeFirebaseCall {
             fbAuth.createUserWithEmailAndPassword(email, password).await()
             val userUID = getAuthUserUID()
@@ -55,7 +55,7 @@ class AuthUserRepositoryImpl: AuthUserRepository {
         }
     }
 
-    override suspend fun getUserToken(): Result<Boolean> {
+    override suspend fun getUserToken(): FirebaseResult<Boolean> {
         return safeFirebaseCall {
             val fbStoreRef = fbStore.collection("users").document(getAuthUserUID())
             val token = Firebase.messaging.token.await()
@@ -70,11 +70,11 @@ class AuthUserRepositoryImpl: AuthUserRepository {
             fbStore
                 .collection("users")
                 .document(getAuthUserUID())
-                .update("status", status.toUserStatusDto().value)
+                .update("status", status.toUserStatusData().value)
                 .await()
         }
     }
 
-    fun getAuthUserUID(): String =
+    private fun getAuthUserUID(): String =
         fbAuth.currentUser?.uid ?: throw IllegalStateException("Can't get user UID")
 }

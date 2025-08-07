@@ -1,4 +1,4 @@
-package com.example.autohub.data.model
+package com.example.autohub.data.firebase.model.chat
 
 data class SendMessageDto(
     val to: String?,

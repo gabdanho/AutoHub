@@ -1,4 +1,4 @@
-package com.example.autohub.data.repository.room
+package com.example.autohub.data.repository.impl.room
 
 import com.example.autohub.data.local.dao.TokenRepositoryDao
 import com.example.autohub.data.local.model.safeDbCall

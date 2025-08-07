@@ -4,7 +4,7 @@ import com.example.autohub.domain.model.ChatInfo
 import com.example.autohub.domain.model.SenderData
 import com.example.autohub.domain.model.Message
 import com.example.autohub.domain.model.ReceiverData
-import com.example.autohub.domain.model.Result
+import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.UserStatus
 import kotlinx.coroutines.flow.Flow
 
@@ -15,7 +15,7 @@ interface MessengerRepository {
         receiver: ReceiverData,
         text: String,
         timeSend: Long
-    ): Result<Boolean>
+    ): FirebaseResult<Boolean>
 
     suspend fun getMessages(authUserUID: String, buyerUID: String): Flow<List<Message>>
 

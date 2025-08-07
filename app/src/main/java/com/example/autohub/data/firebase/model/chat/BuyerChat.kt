@@ -1,6 +1,6 @@
-package com.example.autohub.data.model
+package com.example.autohub.data.firebase.model.chat
 
-data class BuyerChatDto(
+data class BuyerChat(
     val name: String = "",
     val image: String = "",
     val lastMessage: String = "",

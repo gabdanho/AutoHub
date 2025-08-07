@@ -1,18 +1,18 @@
 package com.example.autohub.data.mapper
 
-import com.example.autohub.data.model.UserStatusDto
-import com.example.autohub.domain.model.UserStatus
+import com.example.autohub.data.firebase.model.user.UserStatus
+import com.example.autohub.domain.model.UserStatus as UserStatusDomain
 
-fun UserStatus.toUserStatusDto(): UserStatusDto {
+fun UserStatusDomain.toUserStatusData(): UserStatus {
     return when (this) {
-        UserStatus.Offline -> UserStatusDto.OFFLINE
-        UserStatus.Online -> UserStatusDto.ONLINE
+        UserStatusDomain.Offline -> UserStatus.OFFLINE
+        UserStatusDomain.Online -> UserStatus.ONLINE
     }
 }
 
-fun UserStatusDto.toUserStatus(): UserStatus {
+fun UserStatus.toUserStatusDomain(): UserStatusDomain {
     return when (this) {
-        UserStatusDto.OFFLINE -> UserStatus.Offline
-        UserStatusDto.ONLINE -> UserStatus.Online
+        UserStatus.OFFLINE -> UserStatusDomain.Offline
+        UserStatus.ONLINE -> UserStatusDomain.Online
     }
 }

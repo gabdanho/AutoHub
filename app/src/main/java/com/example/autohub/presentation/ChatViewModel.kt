@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
 import com.example.autohub.presentation.model.messenger.ChatInfo
 import com.example.autohub.presentation.model.messenger.Message
-import com.example.autohub.data.remote.push.FcmApi
-import com.example.autohub.data.model.NotificationBody
-import com.example.autohub.data.model.SendMessageDto
+import com.example.autohub.data.remote.api.FcmApi
+import com.example.autohub.data.firebase.model.chat.NotificationBody
+import com.example.autohub.data.firebase.model.chat.SendMessageDto
 import com.example.autohub.data.utils.getBuyersChats
 import com.example.autohub.data.utils.getMessages
 import com.google.firebase.Firebase

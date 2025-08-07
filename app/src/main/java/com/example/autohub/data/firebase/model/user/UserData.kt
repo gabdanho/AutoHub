@@ -1,12 +1,12 @@
-package com.example.autohub.data.model
+package com.example.autohub.data.firebase.model.user
 
-data class UserDataDto(
+data class UserData(
     val firstName: String = "",
     val secondName: String = "",
     val email: String = "",
     val phoneNumber: String = "",
     val city: String = "",
     val image: String = "",
-    val status: UserStatusDto = UserStatusDto.Offline,
+    val status: UserStatus = UserStatus.OFFLINE,
     val localToken: String = ""
 )

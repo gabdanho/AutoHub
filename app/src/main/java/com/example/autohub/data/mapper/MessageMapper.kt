@@ -1,10 +1,10 @@
 package com.example.autohub.data.mapper
 
-import com.example.autohub.data.model.MessageDto
-import com.example.autohub.domain.model.Message
+import com.example.autohub.data.firebase.model.chat.Message
+import com.example.autohub.domain.model.Message as MessageDomain
 
-fun MessageDto.toMessage(): Message {
-    return Message(
+fun Message.toMessageDomain(): MessageDomain {
+    return MessageDomain(
         id = id,
         senderUID = senderUID,
         receiverUID = receiverUID,
@@ -14,8 +14,8 @@ fun MessageDto.toMessage(): Message {
     )
 }
 
-fun Message.toMessageDto(): MessageDto {
-    return MessageDto(
+fun Message.toMessageData(): Message {
+    return Message(
         id = id,
         senderUID = senderUID,
         receiverUID = receiverUID,

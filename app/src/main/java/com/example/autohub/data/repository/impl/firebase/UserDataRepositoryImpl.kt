@@ -1,4 +1,4 @@
-package com.example.autohub.data.repository.firebase
+package com.example.autohub.data.repository.impl.firebase
 
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.firebase.utils.uploadImageToFirebase
@@ -8,7 +8,7 @@ import com.example.autohub.domain.model.UserData
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
-import com.example.autohub.domain.model.Result
+import com.example.autohub.domain.model.result.FirebaseResult
 import com.google.firebase.auth.auth
 
 class UserDataRepositoryImpl : UserDataRepository {
@@ -18,7 +18,7 @@ class UserDataRepositoryImpl : UserDataRepository {
 
     private val user get() = fbAuth.currentUser ?: throw IllegalStateException("User not found")
 
-    override suspend fun getUserData(userUID: String): Result<UserData> {
+    override suspend fun getUserData(userUID: String): FirebaseResult<UserData> {
         return safeFirebaseCall {
             val snapshot = fbStore
                 .collection("users")
@@ -31,7 +31,7 @@ class UserDataRepositoryImpl : UserDataRepository {
         }
     }
 
-    override suspend fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData): Result<Boolean> {
+    override suspend fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData): FirebaseResult<Boolean> {
         return safeFirebaseCall {
             val uri = uploadImageToFirebase(bytes = imageRef.bytes, path = "users/${user.uid}/profileImage.jpg")
 
@@ -44,7 +44,7 @@ class UserDataRepositoryImpl : UserDataRepository {
     override suspend fun updateFirstAnsSecondName(
         firstName: String,
         lastName: String,
-    ): Result<Boolean> {
+    ): FirebaseResult<Boolean> {
         return safeFirebaseCall {
             updateProfileInfo("firstName", firstName)
             updateProfileInfo("secondName", lastName)
@@ -52,7 +52,7 @@ class UserDataRepositoryImpl : UserDataRepository {
         }
     }
 
-    override suspend fun updateCity(city: String): Result<Boolean> {
+    override suspend fun updateCity(city: String): FirebaseResult<Boolean> {
         return safeFirebaseCall {
             updateProfileInfo("city", city)
             true

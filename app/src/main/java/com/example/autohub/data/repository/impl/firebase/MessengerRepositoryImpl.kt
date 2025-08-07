@@ -1,20 +1,19 @@
-package com.example.autohub.data.repository.firebase
+package com.example.autohub.data.repository.impl.firebase
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.example.autohub.data.mapper.toChatInfo
-import com.example.autohub.data.mapper.toMessage
-import com.example.autohub.data.mapper.toUserStatus
-import com.example.autohub.data.model.ChatInfoDto
-import com.example.autohub.data.model.MessageDto
-import com.example.autohub.data.model.UserStatusDto
+import com.example.autohub.data.mapper.toMessageDomain
+import com.example.autohub.data.mapper.toUserStatusDomain
+import com.example.autohub.data.firebase.model.chat.ChatInfo
+import com.example.autohub.data.firebase.model.chat.Message
+import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.domain.interfaces.repository.firebase.MessengerRepository
 import com.example.autohub.domain.model.ChatInfo
 import com.example.autohub.domain.model.SenderData
 import com.example.autohub.domain.model.Message
 import com.example.autohub.domain.model.ReceiverData
-import com.example.autohub.domain.model.Result
+import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.UserStatus
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Query
@@ -34,11 +33,11 @@ class MessengerRepositoryImpl : MessengerRepository {
         receiver: ReceiverData,
         text: String,
         timeSend: Long, // ToDo : System.currentTimeMillis().toString()
-    ): Result<Boolean> {
+    ): FirebaseResult<Boolean> {
         return safeFirebaseCall {
             val messageId = "message_${timeSend}"
             val uniqueChatID = getUniqueId(sender.uid, receiver.uid)
-            val message = Message(
+            val message = com.example.autohub.domain.model.Message(
                 id = messageId,
                 senderUID = sender.uid,
                 receiverUID = receiver.uid,
@@ -104,7 +103,7 @@ class MessengerRepositoryImpl : MessengerRepository {
 
                     if (snapshot != null && !snapshot.isEmpty) {
                         val messages = snapshot.documents.mapNotNull { document ->
-                            document.toObject(MessageDto::class.java)?.toMessage()
+                            document.toObject(Message::class.java)?.toMessageDomain()
                         }
                         trySend(element = messages).isSuccess
                     } else {
@@ -129,7 +128,7 @@ class MessengerRepositoryImpl : MessengerRepository {
 
                     if (!value!!.isEmpty) {
                         val chats = value.documents.mapNotNull { document ->
-                            document.toObject(ChatInfoDto::class.java)?.toChatInfo()
+                            document.toObject(ChatInfo::class.java)?.toChatInfo()
                         }
                         trySend(element = chats).isSuccess
                     } else {
@@ -153,8 +152,8 @@ class MessengerRepositoryImpl : MessengerRepository {
 
                     if (snapshot != null) {
                         when (snapshot.data?.get("status")) {
-                            "ONLINE" -> trySend(element = UserStatusDto.ONLINE.toUserStatus())
-                            "OFFLINE" -> trySend(element = UserStatusDto.OFFLINE.toUserStatus())
+                            "ONLINE" -> trySend(element = UserStatus.ONLINE.toUserStatusDomain())
+                            "OFFLINE" -> trySend(element = UserStatus.OFFLINE.toUserStatusDomain())
                         }
                     }
                 }

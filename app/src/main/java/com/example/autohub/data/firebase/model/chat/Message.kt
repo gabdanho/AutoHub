@@ -1,6 +1,6 @@
-package com.example.autohub.data.model
+package com.example.autohub.data.firebase.model.chat
 
-data class MessageDto(
+data class Message(
     val id: String = "",
     val senderUID: String = "",
     val receiverUID: String = "",
