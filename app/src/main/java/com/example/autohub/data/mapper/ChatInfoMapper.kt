@@ -13,7 +13,7 @@ fun ChatInfo.toChatInfoData(): ChatInfo {
     )
 }
 
-fun ChatInfo.ChatInfoDomain(): ChatInfoDomain {
+fun ChatInfo.toChatInfoDomain(): ChatInfoDomain {
     return ChatInfoDomain(
         name = name,
         image = image,

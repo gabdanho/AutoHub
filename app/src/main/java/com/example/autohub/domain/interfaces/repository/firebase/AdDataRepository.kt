@@ -17,14 +17,16 @@ interface AdDataRepository {
 
     suspend fun getCurrentUserAds(uid: String): FirebaseResult<List<CarAd>>
 
-    suspend fun uploadAdsImagesToFirebase(images: List<ImageUploadData>, reference: String): FirebaseResult<Boolean>
+    suspend fun uploadAdsImagesToFirebase(
+        images: List<ImageUploadData>,
+        reference: String
+    ): FirebaseResult<Unit>
 
     suspend fun createAd(
         userUID: String,
         carAd: CarAd,
         authUserData: UserData,
         currentDate: String,
-        timeStamp: String,
         images: List<ImageUploadData>,
-    ): FirebaseResult<Boolean>
+    ): FirebaseResult<Unit>
 }

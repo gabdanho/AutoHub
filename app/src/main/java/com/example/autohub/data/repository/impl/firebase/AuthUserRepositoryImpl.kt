@@ -6,41 +6,40 @@ import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.domain.interfaces.repository.firebase.AuthUserRepository
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.domain.model.UserData
-import com.example.autohub.domain.model.UserStatus
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
-import com.google.firebase.messaging.messaging
+import com.example.autohub.domain.model.UserData as UserDataDomain
+import com.example.autohub.domain.model.UserStatus as UserStatusDomain
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class AuthUserRepositoryImpl: AuthUserRepository {
+class AuthUserRepositoryImpl @Inject constructor(
+    private val fbAuth: FirebaseAuth,
+    private val fbStore: FirebaseFirestore,
+    private val fbMessaging: FirebaseMessaging
+) : AuthUserRepository {
 
-    private val fbAuth = Firebase.auth
-    private val fbStore = Firebase.firestore
-
-    override suspend fun loginUser(email: String, password: String): FirebaseResult<Boolean> {
+    override suspend fun loginUser(email: String, password: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.signInWithEmailAndPassword(email, password).await()
             val user = fbAuth.currentUser ?: throw IllegalStateException("User is null after login")
 
             if (!user.isEmailVerified) {
                 fbAuth.signOut()
-                return@safeFirebaseCall false
+                return@safeFirebaseCall throw IllegalStateException("Email not verified")
             }
 
             getUserToken()
             changeUserStatus(UserStatus.ONLINE.toUserStatusDomain())
-
-            true
         }
     }
 
     override suspend fun registerUser(
         email: String,
         password: String,
-        user: UserData,
-    ): FirebaseResult<Boolean> {
+        user: UserDataDomain,
+    ): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.createUserWithEmailAndPassword(email, password).await()
             val userUID = getAuthUserUID()
@@ -50,22 +49,19 @@ class AuthUserRepositoryImpl: AuthUserRepository {
             fbAuth.currentUser?.sendEmailVerification()?.await().also {
                 fbAuth.signOut()
             }
-
-            true
         }
     }
 
-    override suspend fun getUserToken(): FirebaseResult<Boolean> {
-        return safeFirebaseCall {
+    override suspend fun getUserToken() {
+        safeFirebaseCall {
             val fbStoreRef = fbStore.collection("users").document(getAuthUserUID())
-            val token = Firebase.messaging.token.await()
+            val token = fbMessaging.token.await()
 
             fbStoreRef.update("localToken", token).await()
-            true
         }
     }
 
-    override suspend fun changeUserStatus(status: UserStatus) {
+    override suspend fun changeUserStatus(status: UserStatusDomain) {
         fbAuth.currentUser?.let {
             fbStore
                 .collection("users")

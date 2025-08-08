@@ -3,25 +3,26 @@ package com.example.autohub.data.repository.impl.firebase
 import com.example.autohub.data.mapper.toCarAdDomain
 import com.example.autohub.data.firebase.model.ad.CarAd
 import com.example.autohub.data.firebase.model.safeFirebaseCall
-import com.example.autohub.data.firebase.utils.uploadImageToFirebase
+import com.example.autohub.data.firebase.utils.FirebaseStorageUtils
 import com.example.autohub.domain.interfaces.repository.firebase.AdDataRepository
-import com.example.autohub.domain.model.CarAd
+import com.example.autohub.domain.model.CarAd as CarAdDomain
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.SearchFilter
-import com.example.autohub.domain.model.UserData
+import com.example.autohub.domain.model.UserData as UserDataDomain
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.google.firebase.Firebase
+import com.example.autohub.domain.utils.TimeProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.storage
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class AdDataRepositoryImpl: AdDataRepository {
+class AdDataRepositoryImpl @Inject constructor(
+    private val fbFirestore: FirebaseFirestore,
+    private val fbStorageUtils: FirebaseStorageUtils,
+    private val timeProvider: TimeProvider
+) : AdDataRepository {
 
-    private var fbFirestore = Firebase.firestore
-    private val fbStorage = Firebase.storage
-
-    override suspend fun getAdsWithFilters(filters: List<SearchFilter>): FirebaseResult<List<CarAd>> {
+    override suspend fun getAdsWithFilters(filters: List<SearchFilter>): FirebaseResult<List<CarAdDomain>> {
         return safeFirebaseCall {
             var fbStoreRef: Query = fbFirestore.collection("ads")
 
@@ -38,7 +39,10 @@ class AdDataRepositoryImpl: AdDataRepository {
         }
     }
 
-    override suspend fun getAdsBySearchTextAndFilters(searchText: String, filters: List<SearchFilter>): FirebaseResult<List<CarAd>> {
+    override suspend fun getAdsBySearchTextAndFilters(
+        searchText: String,
+        filters: List<SearchFilter>
+    ): FirebaseResult<List<CarAdDomain>> {
         return safeFirebaseCall {
             val words = searchText.trim().lowercase().split(' ')
             var fbStoreRef: Query = fbFirestore.collection("ads")
@@ -61,7 +65,7 @@ class AdDataRepositoryImpl: AdDataRepository {
         }
     }
 
-    override suspend fun getCurrentUserAds(uid: String): FirebaseResult<List<CarAd>> {
+    override suspend fun getCurrentUserAds(uid: String): FirebaseResult<List<CarAdDomain>> {
         return safeFirebaseCall {
             val fbStoreRef = fbFirestore.collection("ads")
 
@@ -74,14 +78,14 @@ class AdDataRepositoryImpl: AdDataRepository {
     }
 
     override suspend fun createAd(
-        userUID: String, // ToDo: Передать Firebase.auth.currentUser?.uid
-        carAd: CarAd,
-        authUserData: UserData,
+        userUID: String,
+        carAd: CarAdDomain,
+        authUserData: UserDataDomain,
         currentDate: String,
-        timeStamp: String, // ToDo: Это вот System.currentTimeMillis()
         images: List<ImageUploadData>
-    ): FirebaseResult<Boolean> {
+    ): FirebaseResult<Unit> {
         return safeFirebaseCall {
+            val timeStamp = timeProvider.currentTimeMillis()
             val adReference = "${userUID}_${timeStamp}"
             val docReference = fbFirestore
                 .collection("ads")
@@ -96,25 +100,24 @@ class AdDataRepositoryImpl: AdDataRepository {
             docReference.set(updatedCarAd).await()
 
             uploadAdsImagesToFirebase(images, adReference)
-
-            true
         }
     }
 
-    override suspend fun uploadAdsImagesToFirebase(images: List<ImageUploadData>, reference: String): FirebaseResult<Boolean> {
+    override suspend fun uploadAdsImagesToFirebase(
+        images: List<ImageUploadData>,
+        reference: String
+    ): FirebaseResult<Unit> {
         return safeFirebaseCall {
             val fbStoreRef = fbFirestore.collection("ads").document(reference)
 
             val imagesLinks = images.map { image ->
-                uploadImageToFirebase(
+                fbStorageUtils.uploadImageToFirebase(
                     bytes = image.bytes,
                     path = "adsImages/$reference/${reference + "_" + image.id}.jpg"
                 )
             }
 
             fbStoreRef.update("imagesUrl", imagesLinks).await()
-
-            true
         }
     }
 }

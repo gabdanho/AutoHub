@@ -1,48 +1,63 @@
 package com.example.autohub.data.repository.impl.firebase
 
 import android.util.Log
-import com.example.autohub.data.mapper.toChatInfo
 import com.example.autohub.data.mapper.toMessageDomain
 import com.example.autohub.data.mapper.toUserStatusDomain
 import com.example.autohub.data.firebase.model.chat.ChatInfo
 import com.example.autohub.data.firebase.model.chat.Message
 import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
+import com.example.autohub.data.mapper.toChatInfoDomain
 import com.example.autohub.domain.interfaces.repository.firebase.MessengerRepository
-import com.example.autohub.domain.model.ChatInfo
 import com.example.autohub.domain.model.SenderData
-import com.example.autohub.domain.model.Message
+import com.example.autohub.domain.model.Message as MessageDomain
 import com.example.autohub.domain.model.ReceiverData
-import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.domain.model.UserStatus
-import com.google.firebase.Firebase
+import com.example.autohub.domain.utils.TimeProvider
+import com.example.autohub.domain.model.UserStatus as UserStatusDomain
+import com.example.autohub.domain.model.ChatInfo as ChatInfoDomain
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class MessengerRepositoryImpl : MessengerRepository {
-
-    private val fbFirestore = Firebase.firestore
+class MessengerRepositoryImpl @Inject constructor(
+    private val fbFirestore: FirebaseFirestore,
+    private val timeProvider: TimeProvider
+) : MessengerRepository {
 
     override suspend fun sendMessage(
         sender: SenderData,
         receiver: ReceiverData,
-        text: String,
-        timeSend: Long, // ToDo : System.currentTimeMillis().toString()
-    ): FirebaseResult<Boolean> {
-        return safeFirebaseCall {
+        text: String
+    ) {
+        safeFirebaseCall {
+            val timeSend = timeProvider.currentTimeMillis()
             val messageId = "message_${timeSend}"
             val uniqueChatID = getUniqueId(sender.uid, receiver.uid)
-            val message = com.example.autohub.domain.model.Message(
+            val message = MessageDomain(
                 id = messageId,
                 senderUID = sender.uid,
                 receiverUID = receiver.uid,
                 text = text,
                 timeMillis = timeSend
+            )
+            val senderConservation = ChatInfo(
+                name = sender.name,
+                image = sender.image,
+                lastMessage = message.text,
+                time = timeSend.toString(),
+                uid = receiver.uid
+            )
+            val receiverConservation = ChatInfo(
+                name = receiver.name,
+                image = receiver.image,
+                lastMessage = message.text,
+                time = timeSend.toString(),
+                uid = sender.uid
             )
 
             fbFirestore
@@ -53,14 +68,7 @@ class MessengerRepositoryImpl : MessengerRepository {
                 .set(message)
                 .await()
 
-            val senderConservation = ChatInfo(
-                name = sender.name,
-                image = sender.image,
-                lastMessage = message.text,
-                time = timeSend,
-                uid = receiver.uid
-            )
-            Firebase.firestore
+            fbFirestore
                 .collection("conservations")
                 .document("users")
                 .collection(sender.uid)
@@ -68,26 +76,17 @@ class MessengerRepositoryImpl : MessengerRepository {
                 .set(senderConservation)
                 .await()
 
-            val receiverConservation = ChatInfo(
-                name = receiver.name,
-                image = receiver.image,
-                lastMessage = message.text,
-                time = timeSend,
-                uid = sender.uid
-            )
-            Firebase.firestore
+            fbFirestore
                 .collection("conservations")
                 .document("users")
                 .collection(receiver.uid)
                 .document(sender.uid)
                 .set(receiverConservation)
                 .await()
-
-            true
         }
     }
 
-    override suspend fun getMessages(authUserUID: String, buyerUID: String): Flow<List<Message>> {
+    override fun getMessages(authUserUID: String, buyerUID: String): Flow<List<MessageDomain>> {
         val uniqueId = getUniqueId(authUserUID, buyerUID)
 
         return callbackFlow {
@@ -114,7 +113,7 @@ class MessengerRepositoryImpl : MessengerRepository {
         }
     }
 
-    override suspend fun getBuyersChats(authUserUID: String): Flow<List<ChatInfo>> {
+    override  fun getBuyersChats(authUserUID: String): Flow<List<ChatInfoDomain>> {
         return callbackFlow {
             val listener = fbFirestore
                 .collection("conservations")
@@ -128,7 +127,7 @@ class MessengerRepositoryImpl : MessengerRepository {
 
                     if (!value!!.isEmpty) {
                         val chats = value.documents.mapNotNull { document ->
-                            document.toObject(ChatInfo::class.java)?.toChatInfo()
+                            document.toObject(ChatInfo::class.java)?.toChatInfoDomain()
                         }
                         trySend(element = chats).isSuccess
                     } else {
@@ -139,7 +138,7 @@ class MessengerRepositoryImpl : MessengerRepository {
         }
     }
 
-    override suspend fun getBuyerStatus(buyerUID: String): Flow<UserStatus> {
+    override fun getBuyerStatus(buyerUID: String): Flow<UserStatusDomain> {
         return callbackFlow {
             val listener = fbFirestore
                 .collection("users")
@@ -161,7 +160,7 @@ class MessengerRepositoryImpl : MessengerRepository {
         }
     }
 
-    override suspend fun getCountUnreadMessages(authUserUID: String, buyerUID: String): Flow<Int> =
+    override fun getCountUnreadMessages(authUserUID: String, buyerUID: String): Flow<Int> =
         flow {
             val uniqueId = getUniqueId(authUserUID, buyerUID)
 

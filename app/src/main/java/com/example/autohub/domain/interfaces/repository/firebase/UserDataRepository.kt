@@ -8,9 +8,9 @@ interface UserDataRepository {
 
     suspend fun getUserData(userUID: String): FirebaseResult<UserData>
 
-    suspend fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData): FirebaseResult<Boolean>
+    suspend fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData)
 
-    suspend fun updateFirstAnsSecondName(firstName: String, lastName: String): FirebaseResult<Boolean>
+    suspend fun updateFirstAnsSecondName(firstName: String, lastName: String)
 
-    suspend fun updateCity(city: String): FirebaseResult<Boolean>
+    suspend fun updateCity(city: String)
 }

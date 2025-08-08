@@ -13,17 +13,16 @@ interface MessengerRepository {
     suspend fun sendMessage(
         sender: SenderData,
         receiver: ReceiverData,
-        text: String,
-        timeSend: Long
-    ): FirebaseResult<Boolean>
+        text: String
+    )
 
-    suspend fun getMessages(authUserUID: String, buyerUID: String): Flow<List<Message>>
+    fun getMessages(authUserUID: String, buyerUID: String): Flow<List<Message>>
 
-    suspend fun getBuyersChats(authUserUID: String): Flow<List<ChatInfo>>
+    fun getBuyersChats(authUserUID: String): Flow<List<ChatInfo>>
 
-    suspend fun getBuyerStatus(buyerUID: String): Flow<UserStatus>
+    fun getBuyerStatus(buyerUID: String): Flow<UserStatus>
 
-    suspend fun getCountUnreadMessages(authUserUID: String, buyerUID: String): Flow<Int>
+    fun getCountUnreadMessages(authUserUID: String, buyerUID: String): Flow<Int>
 
     suspend fun markMessagesAsRead(authUserUID: String, buyerUID: String, messageID: String)
 }
