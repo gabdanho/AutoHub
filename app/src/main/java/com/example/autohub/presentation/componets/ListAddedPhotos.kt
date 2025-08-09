@@ -1,8 +1,7 @@
 package com.example.autohub.presentation.componets
 
-import androidx.compose.foundation.background
+import android.net.Uri
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -16,31 +15,40 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.autohub.R
-import com.example.autohub.presentation.theme.cardColor
+
+// TODO : Использовать в экранах модификатор:
+/*
+modifier
+    .fillMaxWidth()
+    .background(cardColor)
+ */
 
 @Composable
-fun PhotosUrlList(
+fun ListAddedPhotos(
+    images: List<Uri>,
+    onAddImageClick: () -> Unit,
     modifier: Modifier = Modifier,
-    imagesUrl: List<String>
 ) {
     val isShowImageDialog = remember { mutableStateOf(false) }
-    val imageUriToShowImage = remember { mutableStateOf("") }
+    val imageUriToShow = remember { mutableStateOf(Uri.EMPTY) }
 
     LazyRow(
         modifier = modifier
-            .fillMaxWidth()
-            .background(cardColor)
     ) {
-        items(imagesUrl) { url ->
+        items(images) { imageUri ->
             AsyncImage(
-                model = url,
+                model = imageUri,
                 contentDescription = stringResource(id = R.string.content_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(300.dp)
                     .clickable {
-                        isShowImageDialog.value = true
-                        imageUriToShowImage.value = url
+                        if (imageUri == images.last()) {
+                            onAddImageClick()
+                        } else {
+                            isShowImageDialog.value = true
+                            imageUriToShow.value = imageUri
+                        }
                     }
                     .padding(horizontal = 4.dp)
             )
@@ -48,8 +56,8 @@ fun PhotosUrlList(
     }
 
     if (isShowImageDialog.value) {
-        ShowImageDialog(
-            uri = imageUriToShowImage.value,
+        ImageDialog(
+            uri = imageUriToShow.value,
             closeDialog = { isShowImageDialog.value = false }
         )
     }

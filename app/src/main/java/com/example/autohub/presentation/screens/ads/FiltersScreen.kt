@@ -1,6 +1,7 @@
 package com.example.autohub.presentation.screens.ads
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,15 +30,16 @@ import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.RowRadioButtons
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.theme.barColor
 
 @Composable
 fun FiltersScreen(
-    modifier: Modifier = Modifier,
     // FixMe : фильтры в дата класс
     filters: Map<String, String>,
     onBackButtonClick: () -> Unit,
     onConfirmClick: (Map<String, String>) -> Unit,
-    onClearFiltersClick: (Map<String, String>) -> Unit
+    onClearFiltersClick: (Map<String, String>) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -62,7 +64,10 @@ fun FiltersScreen(
             TopAdAppBar(
                 titleText = stringResource(id = R.string.text_filters),
                 onBackButtonClick = onBackButtonClick,
-                modifier = modifier.padding(bottom = 8.dp)
+                modifier = modifier
+                    .fillMaxWidth()
+                    .background(color = barColor)
+                    .padding(bottom = 8.dp)
             )
         }
     ) { innerPadding ->
@@ -77,76 +82,118 @@ fun FiltersScreen(
                 InputField(
                     text = stringResource(id = R.string.input_brand),
                     value = brandState.value,
-                    onValueChange = { brandState.value = it }
+                    onValueChange = { brandState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_model),
                     value = modelState.value,
-                    onValueChange = { modelState.value = it }
+                    onValueChange = { modelState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_color),
                     value = colorState.value,
-                    onValueChange = { colorState.value = it }
+                    onValueChange = { colorState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_drive_type),
                     currentType = driveState.value,
-                    typesName = OptionsTypes.driveTypes
+                    typesName = OptionsTypes.driveTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { driveState.value = it }
                 InputField(
                     text = stringResource(id = R.string.input_max_year_created),
                     value = realiseYearState.value,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { realiseYearState.value = it }
+                    onValueChange = { realiseYearState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_bodywork),
                     currentType = bodyState.value,
-                    typesName = OptionsTypes.bodyTypes
+                    typesName = OptionsTypes.bodyTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { bodyState.value = it }
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_engine_type),
                     currentType = typeEngineState.value,
-                    typesName = OptionsTypes.typeEngineTypes
+                    typesName = OptionsTypes.typeEngineTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { typeEngineState.value = it }
                 InputField(
                     text = stringResource(id = R.string.input_engine_capacity),
                     value = engineCapacityState.value,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { engineCapacityState.value = it }
+                    onValueChange = { engineCapacityState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_transmission_type),
                     currentType = transmissionState.value,
-                    typesName = OptionsTypes.transmissionsTypes
+                    typesName = OptionsTypes.transmissionsTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { transmissionState.value = it }
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_steering_wheel),
                     currentType = steeringWheelSideState.value,
-                    typesName = OptionsTypes.steeringWheelSideTypes
+                    typesName = OptionsTypes.steeringWheelSideTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { steeringWheelSideState.value = it }
                 InputField(
                     text = stringResource(id = R.string.input_max_mileage),
                     value = mileageState.value,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { mileageState.value = it }
+                    onValueChange = { mileageState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_condition),
                     currentType = conditionState.value,
-                    typesName = OptionsTypes.conditionTypes
+                    typesName = OptionsTypes.conditionTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { conditionState.value = it }
                 InputField(
                     text = stringResource(id = R.string.input_price),
                     value = priceState.value,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { priceState.value = it }
+                    onValueChange = { priceState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_city),
                     value = cityState.value,
-                    onValueChange = { cityState.value = it }
+                    onValueChange = { cityState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
             }
             Row(
@@ -178,7 +225,9 @@ fun FiltersScreen(
                         Toast.makeText(context,
                             context.getString(R.string.text_filters_added), Toast.LENGTH_SHORT).show()
                     },
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
                 )
                 Icon(
                     imageVector = Icons.Default.Delete,

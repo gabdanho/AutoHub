@@ -1,8 +1,6 @@
 package com.example.autohub.presentation.componets
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -17,28 +15,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.labelColor
 
+// TODO : Заменить в экранах modifier:
+/*
+modifier
+    .fillMaxWidth()
+    .padding(horizontal = 16.dp)
+ */
+
 @Composable
 fun InputField(
-    modifier: Modifier = Modifier,
     text: String,
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     placeHolder: String = "",
+    isSingleLine: Boolean = true,
     isError: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Unspecified,
-    isSingleLine: Boolean = true
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    placeholderColor: Color = Color.LightGray
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
     ) {
         Text(
             text = text,
@@ -53,12 +57,11 @@ fun InputField(
             placeholder = {
                 Text(
                     text = placeHolder,
-                    color = Color.LightGray
+                    color = placeholderColor
                 )
             },
             singleLine = isSingleLine,
-            // FixMe : другой способ (не по проверке текста)
-            visualTransformation = if (text == "Пароль" || text == "Повторите пароль") PasswordVisualTransformation() else VisualTransformation.None,
+            visualTransformation = visualTransformation,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,

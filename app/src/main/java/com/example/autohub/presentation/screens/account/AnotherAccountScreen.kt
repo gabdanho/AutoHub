@@ -1,5 +1,6 @@
 package com.example.autohub.presentation.screens.account
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,23 +32,27 @@ import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.containerColor
 
 @Composable
 fun AnotherAccountScreen(
-    modifier: Modifier = Modifier,
     user: User,
     ads: List<CarAd>,
     onCallClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     onWriteClick: () -> Unit,
-    onAdClick: (CarAd) -> Unit
+    onAdClick: (CarAd) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
             TopAdAppBar(
                 titleText = stringResource(id = R.string.text_seller),
-                onBackButtonClick = onBackButtonClick
+                onBackButtonClick = onBackButtonClick,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .background(color = barColor)
             )
         }
     ) { innerPadding ->
@@ -103,13 +108,16 @@ fun AnotherAccountScreen(
                     text = stringResource(id = R.string.button_write_message),
                     onClick = { onWriteClick() },
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(end = 8.dp)
                         .weight(1f)
                 )
                 CustomButton(
                     text = stringResource(id = R.string.button_call),
                     onClick = { onCallClick() },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 )
             }
             Text(
@@ -127,7 +135,10 @@ fun AnotherAccountScreen(
                     items(ads) { ad ->
                         CarAdCard(
                             ad = ad,
-                            onAdClick = { onAdClick(ad) }
+                            onAdClick = { onAdClick(ad) },
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
                         )
                     }
                 }

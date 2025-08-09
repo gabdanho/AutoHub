@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.autohub.R
 import com.example.autohub.presentation.model.user.User
@@ -31,9 +33,9 @@ import com.example.autohub.presentation.utils.isValidPhoneNumber
 
 @Composable
 fun RegisterScreen(
-    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onRegisterClick: (String, String, User) -> Unit
+    onRegisterClick: (String, String, User) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 
@@ -73,21 +75,30 @@ fun RegisterScreen(
                 value = firstNameState.value,
                 placeHolder = stringResource(id = R.string.placeholder_first_name),
                 isError = isFirstNameError.value,
-                onValueChange = { firstNameState.value = it }
+                onValueChange = { firstNameState.value = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
             InputField(
                 text = stringResource(id = R.string.input_last_name),
                 value = secondNameState.value,
                 placeHolder = stringResource(id = R.string.placeholder_last_name),
                 isError = isSecondNameError.value,
-                onValueChange = { secondNameState.value = it }
+                onValueChange = { secondNameState.value = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
             InputField(
                 text = stringResource(id = R.string.input_email),
                 value = emailState.value,
                 placeHolder = stringResource(id = R.string.placeholder_email),
                 isError = isEmailError.value,
-                onValueChange = { emailState.value = it }
+                onValueChange = { emailState.value = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
             InputField(
                 text = stringResource(id = R.string.input_phone),
@@ -95,28 +106,42 @@ fun RegisterScreen(
                 placeHolder = stringResource(id = R.string.placeholder_phone),
                 isError = isPhoneError.value,
                 keyboardType = KeyboardType.Number,
-                onValueChange = { phoneState.value = it }
+                onValueChange = { phoneState.value = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
             InputField(
                 text = stringResource(id = R.string.input_city),
                 value = cityState.value,
                 placeHolder = stringResource(id = R.string.placeholder_city),
                 isError = isCityError.value,
-                onValueChange = { cityState.value = it }
+                onValueChange = { cityState.value = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
             InputField(
                 text = stringResource(id = R.string.input_password),
                 value = passwordState.value,
                 placeHolder = stringResource(id = R.string.placeholder_password),
                 isError = isPasswordError.value,
-                onValueChange = { passwordState.value = it }
+                onValueChange = { passwordState.value = it },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
             InputField(
                 text = stringResource(id = R.string.input_repeat_password),
                 value = passwordRepeatState.value,
                 placeHolder = stringResource(id = R.string.placeholder_password),
                 isError = isPasswordError.value,
-                onValueChange = { passwordRepeatState.value = it }
+                onValueChange = { passwordRepeatState.value = it },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
             CustomButton(
                 text = stringResource(id = R.string.button_registration),
@@ -174,11 +199,11 @@ fun RegisterScreen(
                         onRegisterClick(emailState.value, passwordState.value, user)
                     }
                 },
-                modifier = Modifier.padding(top = 32.dp)
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .padding(top = 32.dp)
             )
         }
-
-
     }
 }
 

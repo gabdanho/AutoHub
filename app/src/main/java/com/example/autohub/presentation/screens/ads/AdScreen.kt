@@ -33,8 +33,9 @@ import com.example.autohub.R
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.componets.CustomButton
-import com.example.autohub.presentation.componets.PhotosUrlList
+import com.example.autohub.presentation.componets.ListPhotos
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
 import com.google.firebase.Firebase
@@ -42,13 +43,13 @@ import com.google.firebase.auth.auth
 
 @Composable
 fun AdScreen(
-    modifier: Modifier = Modifier,
     user: User,
     carAd: CarAd,
     onUserClick: () -> Unit,
     onBackButtonClick: () -> Unit,
     onMessageClick: () -> Unit,
-    onCallClick: () -> Unit
+    onCallClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
 
@@ -64,7 +65,10 @@ fun AdScreen(
                     carAd.realiseYear
                 ),
                 onBackButtonClick = onBackButtonClick,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .fillMaxWidth()
+                    .background(color = barColor)
             )
         }
     ) { innerPadding ->
@@ -74,9 +78,12 @@ fun AdScreen(
                 .padding(innerPadding)
                 .verticalScroll(scrollState)
         ) {
-            PhotosUrlList(
+            ListPhotos(
                 imagesUrl = carAd.imagesUrl,
-                modifier = Modifier.weight(1.4f)
+                modifier = Modifier
+                    .weight(1.4f)
+                    .fillMaxWidth()
+                    .background(cardColor)
             )
             Column(modifier = Modifier.weight(3f)) {
                 Text(
@@ -125,13 +132,16 @@ fun AdScreen(
                                     text = stringResource(id = R.string.button_write_message),
                                     onClick = { onMessageClick() },
                                     modifier = Modifier
+                                        .fillMaxWidth()
                                         .padding(end = 4.dp)
                                         .weight(1f)
                                 )
                                 CustomButton(
                                     text = stringResource(id = R.string.button_call),
                                     onClick = { onCallClick() },
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
                                 )
                             }
                         }

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,17 +30,19 @@ import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.OptionsTypes
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
-import com.example.autohub.presentation.componets.PhotosList
+import com.example.autohub.presentation.componets.ListAddedPhotos
 import com.example.autohub.presentation.componets.RowRadioButtons
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.theme.barColor
+import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.utils.isOnlyDigits
 import com.example.autohub.presentation.utils.isOnlyLetters
 
 @Composable
 fun AdCreateScreen(
-    modifier: Modifier = Modifier,
     onCreateAdClick: (CarAd, List<Uri>) -> Unit,
-    onBackButtonClick: () -> Unit
+    onBackButtonClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -93,8 +96,11 @@ fun AdCreateScreen(
         topBar = {
             TopAdAppBar(
                 titleText = stringResource(id = R.string.text_creating_ad),
-                modifier = Modifier.padding(bottom = 8.dp),
-                onBackButtonClick = onBackButtonClick
+                onBackButtonClick = onBackButtonClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = barColor)
+                    .padding(bottom = 8.dp)
             )
         }
     ) { innerPadding ->
@@ -108,11 +114,14 @@ fun AdCreateScreen(
                     text = stringResource(id = R.string.text_car_images),
                     modifier = Modifier.padding(16.dp)
                 )
-                PhotosList(
+                ListAddedPhotos(
                     images = images.toList(),
                     onAddImageClick = {
                         galleryLauncher.launch("image/*")
-                    }
+                    },
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .background(cardColor)
                 )
             }
             Column(
@@ -124,83 +133,125 @@ fun AdCreateScreen(
                     text = stringResource(id = R.string.input_brand),
                     value = brandState.value,
                     isError = isBrandError.value,
-                    onValueChange = { brandState.value = it }
+                    onValueChange = { brandState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_model),
                     value = modelState.value,
                     isError = isModelError.value,
-                    onValueChange = { modelState.value = it }
+                    onValueChange = { modelState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.text_color),
                     value = colorState.value,
                     isError = isColorError.value,
-                    onValueChange = { colorState.value = it }
+                    onValueChange = { colorState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_year_created),
                     value = realiseYearState.value,
                     isError = isRealiseYearError.value,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { realiseYearState.value = it }
+                    onValueChange = { realiseYearState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_bodywork),
                     isError = isBodyError.value,
-                    typesName = OptionsTypes.bodyTypes
+                    typesName = OptionsTypes.bodyTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { bodyState.value = it }
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_engine_type),
                     isError = isTypeEngineError.value,
-                    typesName = OptionsTypes.typeEngineTypes
+                    typesName = OptionsTypes.typeEngineTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { typeEngineState.value = it }
                 InputField(
                     text = stringResource(id = R.string.input_engine_capacity),
                     value = engineCapacityState.value,
                     isError = isEngineCapacityError.value,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { engineCapacityState.value = it }
+                    onValueChange = { engineCapacityState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_transmission_type),
                     isError = isTransmissionError.value,
-                    typesName = OptionsTypes.transmissionsTypes
+                    typesName = OptionsTypes.transmissionsTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { transmissionState.value = it }
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_drive_type),
                     isError = isDriveError.value,
-                    typesName = OptionsTypes.driveTypes
+                    typesName = OptionsTypes.driveTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { driveState.value = it }
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_steering_wheel),
                     isError = isSteeringWheelSideError.value,
-                    typesName = OptionsTypes.steeringWheelSideTypes
+                    typesName = OptionsTypes.steeringWheelSideTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { steeringWheelSideState.value = it }
                 InputField(
                     text = stringResource(id = R.string.input_mileage),
                     value = mileageState.value,
                     isError = isMileageError.value,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { mileageState.value = it }
+                    onValueChange = { mileageState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_condition),
                     isError = isConditionError.value,
-                    typesName = OptionsTypes.conditionTypes
+                    typesName = OptionsTypes.conditionTypes,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp)
                 ) { conditionState.value = it }
                 InputField(
                     text = stringResource(id = R.string.input_price),
                     value = priceState.value,
                     isError = isPriceError.value,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { priceState.value = it }
+                    onValueChange = { priceState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_description),
                     value = descriptionState.value,
                     isSingleLine = false,
-                    onValueChange = { descriptionState.value = it }
+                    onValueChange = { descriptionState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -299,7 +350,8 @@ fun AdCreateScreen(
                                 )
                                 onCreateAdClick(carAd, images.toList().dropLast(1))
                             }
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth(0.5f)
                     )
                 }
             }

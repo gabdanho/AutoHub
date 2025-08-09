@@ -50,12 +50,11 @@ import com.example.autohub.data.utils.getUserData
 
 @Composable
 fun MessengerScreen(
-    modifier: Modifier = Modifier,
     onAnswerClick: (String) -> Unit,
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
-    viewModel: ChatViewModel
+    modifier: Modifier = Modifier
 ) {
     val buyers by viewModel.getBuyers().observeAsState(initial = emptyList())
 
@@ -113,9 +112,9 @@ fun MessengerScreen(
 
 @Composable
 fun ChatCardBuyer(
-    modifier: Modifier = Modifier,
     buyer: ChatInfo,
-    onAnswerClick: (String) -> Unit
+    onAnswerClick: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val buyerToken = remember { mutableStateOf("") }
     getUserData(buyer.uid) {

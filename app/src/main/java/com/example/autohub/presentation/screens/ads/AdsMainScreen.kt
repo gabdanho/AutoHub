@@ -36,15 +36,15 @@ import com.example.autohub.data.utils.getAdsBySearchText
 
 @Composable
 fun AdsMainScreen(
-    modifier: Modifier = Modifier,
     adsList: List<CarAd>,
-    filters: Map<String, String> = emptyMap(),
     onAccountClick: () -> Unit,
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
     onAdClick: (CarAd) -> Unit,
     onFiltersClick: () -> Unit,
-    onDoneClick: (List<CarAd>) -> Unit
+    onDoneClick: (List<CarAd>) -> Unit,
+    modifier: Modifier = Modifier,
+    filters: Map<String, String> = emptyMap()
 ) {
      Scaffold(
          topBar = {
@@ -78,7 +78,13 @@ fun AdsMainScreen(
                      .padding(innerPadding)
              ) {
                  items(adsList) { carAd ->
-                     CarAdCard(ad = carAd, onAdClick = { onAdClick(carAd) })
+                     CarAdCard(
+                         ad = carAd,
+                         onAdClick = { onAdClick(carAd) },
+                         modifier = Modifier
+                             .fillMaxWidth()
+                             .padding(8.dp)
+                     )
                  }
              }
          } else {
@@ -100,10 +106,10 @@ fun AdsMainScreen(
 
 @Composable
 fun SearchAdsBar(
-    modifier: Modifier = Modifier,
     filters: Map<String, String>,
     onDoneClick: (List<CarAd>) -> Unit,
-    onFiltersClick: () -> Unit
+    onFiltersClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val searchTextState = remember { mutableStateOf("") }
 

@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -20,20 +22,28 @@ import com.example.autohub.R
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.theme.cardColor
 
+// TODO : Заменить в экрана модификатор:
+/*
+modifier
+    .fillMaxWidth()
+    .padding(8.dp)
+ */
+
 @Composable
 fun CarAdCard(
-    modifier: Modifier = Modifier,
     ad: CarAd,
-    onAdClick: () -> Unit
+    onAdClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    shape: Shape = RoundedCornerShape(bottomEnd = 15.dp, bottomStart = 15.dp),
+    elevation: CardElevation = CardDefaults.cardElevation(4.dp),
+
 ) {
     Card(
-        shape = RoundedCornerShape(bottomEnd = 15.dp, bottomStart = 15.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
+        shape = shape,
+        elevation = elevation,
         colors = CardDefaults.cardColors(cardColor),
         onClick = { onAdClick() },
         modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
     ) {
         Column {
             AsyncImage(

@@ -68,10 +68,9 @@ import com.example.autohub.data.utils.sendMessage
 
 @Composable
 fun ChattingScreen(
-    modifier: Modifier = Modifier,
     buyerUID: String,
     onBuyerClick: (String) -> Unit,
-    viewModel: ChatViewModel
+    modifier: Modifier = Modifier
 ) {
     val text = remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -188,8 +187,8 @@ fun ChattingScreen(
 
 @Composable
 fun UserMessage(
-    modifier: Modifier = Modifier,
-    message: Message
+    message: Message,
+    modifier: Modifier = Modifier
 ) {
     println(message.read)
     val config = LocalConfiguration.current
@@ -238,10 +237,10 @@ fun UserMessage(
 
 @Composable
 fun MessageInputField(
-    modifier: Modifier = Modifier,
     text: String,
     onValueChange: (String) -> Unit,
-    onSendMessageClick: () -> Unit
+    onSendMessageClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
 

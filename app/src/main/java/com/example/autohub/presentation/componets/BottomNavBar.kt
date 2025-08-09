@@ -25,17 +25,17 @@ import com.example.autohub.presentation.theme.containerColor
 
 @Composable
 fun BottomNavBar(
-    modifier: Modifier = Modifier,
     onAdListClick: () -> Unit,
     onAccountClick: () -> Unit,
-    onMessageClick: () -> Unit
+    onMessageClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .background(barColor)
+            .background(color = barColor)
     ) {
         IconButton(
             onClick = { onAdListClick() }
@@ -66,6 +66,7 @@ fun BottomNavBar(
                 tint = containerColor,
                 modifier = Modifier.size(30.dp)
             )
+            // TODO : Проверить как работает прикол с зеленым кругом
             Box(
                 contentAlignment = Alignment.BottomEnd,
                 modifier = Modifier.size(200.dp)

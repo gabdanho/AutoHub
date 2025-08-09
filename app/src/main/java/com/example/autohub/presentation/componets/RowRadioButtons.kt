@@ -2,6 +2,7 @@ package com.example.autohub.presentation.componets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,14 +27,27 @@ import com.example.autohub.presentation.theme.containerColor
 import com.example.autohub.presentation.theme.labelColor
 import com.example.autohub.presentation.theme.unfocusedTextFieldColor
 
+// TODO : Заменить в экранам modifier:
+/*
+modifier
+    .fillMaxWidth()
+    .padding(end = 8.dp)
+ */
+
 @Composable
 fun RowRadioButtons(
-    modifier: Modifier = Modifier,
     option: String,
-    currentType: String = "",
     typesName: List<String>,
+    returnType: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    currentType: String = "",
     isError: Boolean = false,
-    returnType: (String) -> Unit
+    radioButtonColors: RadioButtonColors = RadioButtonColors(
+        selectedColor = containerColor,
+        disabledSelectedColor = unfocusedTextFieldColor,
+        unselectedColor = labelColor,
+        disabledUnselectedColor = unfocusedTextFieldColor
+    )
 ) {
     val selectedType = rememberSaveable { mutableStateOf(currentType) }
 
@@ -41,7 +55,9 @@ fun RowRadioButtons(
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp)
         ) {
             Text(option)
             if (isError) {
@@ -55,36 +71,28 @@ fun RowRadioButtons(
         LazyRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
-                .fillMaxWidth()
-                .padding(end = 8.dp)
         ) {
             items(typesName) { type ->
-                RadioButton(
-                    selected = selectedType.value == type,
-                    onClick = {
-                        if (selectedType.value != type)
-                            selectedType.value = type
-                        else
-                            selectedType.value = ""
-                        returnType(selectedType.value)
-                    },
-                    colors = RadioButtonColors(
-                        selectedColor = containerColor,
-                        disabledSelectedColor = unfocusedTextFieldColor,
-                        unselectedColor = labelColor,
-                        disabledUnselectedColor = unfocusedTextFieldColor
+                // TODO : Проверить как выглядит в превью
+                Box(
+                    modifier = Modifier
+                        .clickable {
+                            if (selectedType.value != type)
+                                selectedType.value = type
+                            else
+                                selectedType.value = ""
+                            returnType(selectedType.value)
+                        }
+                ) {
+                    RadioButton(
+                        selected = selectedType.value == type,
+                        onClick = { },
+                        colors = radioButtonColors
                     )
-                )
-                Text(
-                    text = type,
-                    modifier = Modifier.clickable {
-                        if (selectedType.value != type)
-                            selectedType.value = type
-                        else
-                            selectedType.value = ""
-                        returnType(selectedType.value)
-                    }
-                )
+                    Text(
+                        text = type
+                    )
+                }
             }
         }
     }

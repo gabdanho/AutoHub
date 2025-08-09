@@ -1,7 +1,6 @@
 package com.example.autohub.presentation.componets
 
 import android.net.Uri
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -9,32 +8,37 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.example.autohub.R
 
+// TODO : Заменить в экранах modifier:
+/*
+modifier.fillMaxWidth()
+ */
+
 @Composable
-fun ShowImageDialog(
-    modifier: Modifier = Modifier,
+fun ImageDialog(
     uri: Uri,
-    closeDialog: () -> Unit
+    closeDialog: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Dialog(closeDialog) {
         AsyncImage(
             model = uri,
             contentDescription = stringResource(id = R.string.content_image),
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier
         )
     }
 }
 
 @Composable
-fun ShowImageDialog(
-    modifier: Modifier = Modifier,
+fun ImageDialog(
     uri: String,
-    closeDialog: () -> Unit
+    closeDialog: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Dialog(closeDialog) {
         AsyncImage(
             model = uri,
             contentDescription = stringResource(id = R.string.content_image),
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier
         )
     }
 }

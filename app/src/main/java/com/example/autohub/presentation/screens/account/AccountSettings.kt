@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.screens.account
 
-import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -61,8 +60,8 @@ import com.google.firebase.firestore.firestore
 
 @Composable
 fun AccountSettings(
-    modifier: Modifier = Modifier,
-    onBackButtonClick: () -> Unit
+    onBackButtonClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val isFirstNameError = remember { mutableStateOf(false) }
     val isSecondNameError = remember { mutableStateOf(false) }
@@ -107,7 +106,6 @@ fun AccountSettings(
 
     if (isShowDialog.value) {
         ChangePasswordDialog(
-            context = context,
             hideDialog = { isShowDialog.value = false }
         )
     }
@@ -148,14 +146,20 @@ fun AccountSettings(
                     value = firstNameState.value,
                     onValueChange = { firstNameState.value = it },
                     isError = isFirstNameError.value,
-                    placeHolder = userData.value.firstName
+                    placeHolder = userData.value.firstName,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_last_name),
                     value = secondNameState.value,
                     onValueChange = { secondNameState.value = it },
                     isError = isSecondNameError.value,
-                    placeHolder = userData.value.secondName
+                    placeHolder = userData.value.secondName,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 CustomButton(
                     text = stringResource(id = R.string.button_accept_changes),
@@ -181,7 +185,9 @@ fun AccountSettings(
                             isSecondNameError.value = false
                         }
                     },
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
                 )
             }
             // Город
@@ -202,7 +208,10 @@ fun AccountSettings(
                     text = stringResource(id = R.string.input_city),
                     value = cityState.value,
                     onValueChange = { cityState.value = it },
-                    placeHolder = userData.value.city
+                    placeHolder = userData.value.city,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 CustomButton(
                     text = stringResource(id = R.string.button_accept_changes),
@@ -219,7 +228,9 @@ fun AccountSettings(
                             isCityError.value = false
                         }
                     },
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
                 )
             }
             // Фото профиля
@@ -252,6 +263,7 @@ fun AccountSettings(
                         galleryLauncher.launch("image/*")
                     },
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(start = 8.dp)
                         .weight(1f)
                 )
@@ -270,7 +282,9 @@ fun AccountSettings(
                 onClick = {
                     isShowDialog.value = true
                 },
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
             )
         }
     }
@@ -278,12 +292,12 @@ fun AccountSettings(
 
 @Composable
 fun ChangePasswordDialog(
+    hideDialog: () -> Unit,
     modifier: Modifier = Modifier,
-    context: Context,
-    hideDialog: () -> Unit
 ) {
     val passwordState = remember { mutableStateOf("") }
     val isInputError = remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Dialog(hideDialog) {
         Card(
@@ -335,6 +349,7 @@ fun ChangePasswordDialog(
                         textColor = Color.Black,
                         border = BorderStroke(4.dp, containerColor),
                         modifier = Modifier
+                            .fillMaxWidth()
                             .padding(end = 8.dp)
                             .weight(1f)
                     )
@@ -378,7 +393,9 @@ fun ChangePasswordDialog(
                                     hideDialog()
                                 }
                             },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
                         )
                     }
                 }

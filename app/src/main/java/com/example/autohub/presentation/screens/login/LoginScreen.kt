@@ -3,6 +3,7 @@ package com.example.autohub.presentation.screens.login
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,16 +38,17 @@ import com.example.autohub.R
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.RoundedCornerTextField
+import com.example.autohub.presentation.theme.borderColor
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
     isProgressBarWork: Boolean,
     isShowSendEmailText: Boolean,
     onLoginClick: (String, String) -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val emailState = remember { mutableStateOf("") }
@@ -56,7 +59,6 @@ fun LoginScreen(
     // Диалог со сменой пароля
     if (showDialog.value) {
         ChangePasswordDialog(
-            context = context,
             onHideDialogClick = { showDialog.value = false }
         )
     }
@@ -106,40 +108,57 @@ fun LoginScreen(
         RoundedCornerTextField(
             text = emailState.value,
             onValueChange = { emailState.value = it },
-            label = stringResource(id = R.string.input_login)
+            label = stringResource(id = R.string.input_login),
+            modifier = Modifier.border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(20.dp)
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         RoundedCornerTextField(
             text = passwordState.value,
             onValueChange = { passwordState.value = it },
-            label = stringResource(id = R.string.input_password)
+            label = stringResource(id = R.string.input_password),
+            modifier = Modifier.border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(20.dp)
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         CustomButton(
             text = stringResource(id = R.string.button_enter),
             onClick = {
                 if (emailState.value.isEmpty()) {
-                    Toast.makeText(context,
-                        context.getString(R.string.text_input_email), Toast.LENGTH_LONG).show()
-                }
-                else if (passwordState.value.isEmpty()) {
-                    Toast.makeText(context,
-                        context.getString(R.string.text_input_password), Toast.LENGTH_LONG).show()
-                }
-                else if (passwordState.value.isEmpty() && emailState.value.isEmpty()) {
-                    Toast.makeText(context,
-                        context.getString(R.string.text_fill_all_field_for_enter), Toast.LENGTH_LONG).show()
-                }
-                else {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.text_input_email), Toast.LENGTH_LONG
+                    ).show()
+                } else if (passwordState.value.isEmpty()) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.text_input_password), Toast.LENGTH_LONG
+                    ).show()
+                } else if (passwordState.value.isEmpty() && emailState.value.isEmpty()) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.text_fill_all_field_for_enter), Toast.LENGTH_LONG
+                    ).show()
+                } else {
                     onLoginClick(emailState.value, passwordState.value)
                 }
             },
-            modifier = Modifier.padding(top = 32.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp)
         )
         CustomButton(
             text = stringResource(id = R.string.button_registration),
             onClick = { onRegisterClick() },
-            modifier = Modifier.padding(bottom = 32.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 32.dp)
         )
         // Повторно отправить письмо
         if (isShowSendEmailText) {
@@ -179,12 +198,12 @@ fun LoginScreen(
 
 @Composable
 fun ChangePasswordDialog(
-    modifier: Modifier = Modifier,
-    context: Context,
-    onHideDialogClick: () -> Unit
+    onHideDialogClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val emailToResetPassword = remember { mutableStateOf("") }
     val fsAuth = Firebase.auth
+    val context = LocalContext.current
 
     Dialog(onHideDialogClick) {
         Card(
@@ -204,29 +223,47 @@ fun ChangePasswordDialog(
                     InputField(
                         text = stringResource(id = R.string.input_email),
                         onValueChange = { emailToResetPassword.value = it },
-                        value = emailToResetPassword.value
+                        value = emailToResetPassword.value,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
                     )
                 }
                 CustomButton(
                     text = stringResource(id = R.string.button_change_password),
                     onClick = {
                         if (emailToResetPassword.value.isNotEmpty()) {
-                            fsAuth.sendPasswordResetEmail(emailToResetPassword.value).addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    onHideDialogClick()
-                                    Toast.makeText(context,
-                                        context.getString(R.string.text_help_message_to_change_password), Toast.LENGTH_LONG).show()
-                                } else {
-                                    Toast.makeText(context, context.getString(R.string.text_error, task.exception?.message ?: "unknown"), Toast.LENGTH_LONG).show()
+                            fsAuth.sendPasswordResetEmail(emailToResetPassword.value)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        onHideDialogClick()
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.text_help_message_to_change_password),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(
+                                                R.string.text_error,
+                                                task.exception?.message ?: "unknown"
+                                            ),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
                                 }
-                            }
                         } else {
-                            Toast.makeText(context, context.getString(R.string.text_input_email), Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.text_input_email),
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     },
                     modifier = Modifier
-                        .padding(bottom = 8.dp)
                         .fillMaxWidth(0.7f)
+                        .padding(bottom = 8.dp)
                 )
             }
         }

@@ -46,7 +46,6 @@ import com.google.firebase.auth.auth
 
 @Composable
 fun AuthUserAccountScreen(
-    modifier: Modifier = Modifier,
     yourAds: List<CarAd>,
     onChangeInfoClick: () -> Unit,
     onSignOutClick: () -> Unit,
@@ -55,6 +54,7 @@ fun AuthUserAccountScreen(
     onMessageClick: () -> Unit,
     onAdListClick: () -> Unit,
     onAdCreateClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val userData = remember { mutableStateOf(User()) }
 
@@ -158,13 +158,16 @@ fun AuthUserAccountScreen(
                     textColor = Color.Black,
                     border = BorderStroke(4.dp, containerColor),
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(4.dp)
                         .weight(1f)
                 )
                 CustomButton(
                     text = stringResource(id = R.string.button_exit),
                     onClick = { onSignOutClick() },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 )
             }
             Text(
@@ -183,7 +186,8 @@ fun AuthUserAccountScreen(
             ) {
                 CustomButton(
                     text = stringResource(id = R.string.button_create),
-                    onClick = { onAdCreateClick() }
+                    onClick = { onAdCreateClick() },
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
             LazyVerticalGrid(
@@ -192,7 +196,10 @@ fun AuthUserAccountScreen(
                 items(yourAds) { ad ->
                     CarAdCard(
                         ad = ad,
-                        onAdClick = { onAdClick(ad) }
+                        onAdClick = { onAdClick(ad) },
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
                     )
                 }
             }
