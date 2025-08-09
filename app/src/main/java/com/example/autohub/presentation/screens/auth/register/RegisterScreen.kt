@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.login
+package com.example.autohub.presentation.screens.auth.register
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement

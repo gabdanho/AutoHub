@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.ads
+package com.example.autohub.presentation.screens.ad.create
 
 import android.content.ContentResolver
 import android.net.Uri

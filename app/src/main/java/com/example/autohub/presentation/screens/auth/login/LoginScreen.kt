@@ -1,6 +1,5 @@
-package com.example.autohub.presentation.screens.login
+package com.example.autohub.presentation.screens.auth.login
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border

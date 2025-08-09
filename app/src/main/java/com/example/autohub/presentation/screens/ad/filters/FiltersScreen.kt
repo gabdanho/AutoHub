@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.ads
+package com.example.autohub.presentation.screens.ad.filters
 
 import android.widget.Toast
 import androidx.compose.foundation.background

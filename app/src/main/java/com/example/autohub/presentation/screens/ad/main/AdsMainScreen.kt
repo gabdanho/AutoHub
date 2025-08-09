@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.ads
+package com.example.autohub.presentation.screens.ad.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.account
+package com.example.autohub.presentation.screens.account.auth_user
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

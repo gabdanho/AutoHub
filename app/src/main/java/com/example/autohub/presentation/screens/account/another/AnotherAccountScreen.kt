@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.account
+package com.example.autohub.presentation.screens.account.another
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

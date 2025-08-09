@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.account
+package com.example.autohub.presentation.screens.account.settings
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler

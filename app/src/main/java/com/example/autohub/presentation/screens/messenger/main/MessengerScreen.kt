@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.messenger
+package com.example.autohub.presentation.screens.messenger.main
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,7 +38,6 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.model.messenger.ChatInfo
 import com.example.autohub.presentation.model.user.UserStatus
-import com.example.autohub.presentation.ChatViewModel
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.cardColor

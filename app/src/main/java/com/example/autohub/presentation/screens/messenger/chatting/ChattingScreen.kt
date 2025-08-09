@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.messenger
+package com.example.autohub.presentation.screens.messenger.chatting
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -57,7 +56,6 @@ import com.example.autohub.R
 import com.example.autohub.presentation.model.messenger.Message
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
-import com.example.autohub.presentation.ChatViewModel
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
 import com.example.autohub.data.remote.firebase.utils.getAuthUserUID

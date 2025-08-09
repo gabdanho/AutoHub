@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.screens.ads
+package com.example.autohub.presentation.screens.ad.current
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
