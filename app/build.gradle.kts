@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.gms)
     alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
