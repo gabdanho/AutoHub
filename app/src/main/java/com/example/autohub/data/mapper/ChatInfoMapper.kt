@@ -3,12 +3,12 @@ package com.example.autohub.data.mapper
 import com.example.autohub.data.firebase.model.chat.ChatInfo
 import com.example.autohub.domain.model.ChatInfo as ChatInfoDomain
 
-fun ChatInfo.toChatInfoData(): ChatInfo {
+fun ChatInfoDomain.toChatInfoData(): ChatInfo {
     return ChatInfo(
         name = name,
         image = image,
         lastMessage = lastMessage,
-        time = time,
+        time = time.toString(),
         uid = uid
     )
 }

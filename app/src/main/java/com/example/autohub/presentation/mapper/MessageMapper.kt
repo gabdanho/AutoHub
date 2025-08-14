@@ -1,6 +1,6 @@
-package com.example.autohub.data.mapper
+package com.example.autohub.presentation.mapper
 
-import com.example.autohub.data.firebase.model.chat.Message
+import com.example.autohub.presentation.model.messenger.Message
 import com.example.autohub.domain.model.Message as MessageDomain
 
 fun Message.toMessageDomain(): MessageDomain {
@@ -14,7 +14,7 @@ fun Message.toMessageDomain(): MessageDomain {
     )
 }
 
-fun MessageDomain.toMessageData(): Message {
+fun MessageDomain.toMessagePresentation(): Message {
     return Message(
         id = id,
         senderUID = senderUID,
