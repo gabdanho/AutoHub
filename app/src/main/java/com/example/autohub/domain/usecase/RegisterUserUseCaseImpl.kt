@@ -1,0 +1,19 @@
+package com.example.autohub.domain.usecase
+
+import com.example.autohub.domain.interfaces.repository.firebase.AuthUserRepository
+import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
+import com.example.autohub.domain.model.UserData
+import com.example.autohub.domain.model.result.FirebaseResult
+
+class RegisterUserUseCaseImpl(
+    private val authUserRepository: AuthUserRepository
+) : RegisterUserUseCase {
+
+    override suspend fun invoke(
+        email: String,
+        password: String,
+        user: UserData
+    ): FirebaseResult<Unit> {
+        return authUserRepository.registerUser(email = email, password = password, user = user)
+    }
+}

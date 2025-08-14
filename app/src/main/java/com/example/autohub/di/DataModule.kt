@@ -140,9 +140,7 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideTokenRepository(): TokenRepository {
-        return TokenRepositoryImpl(
-            tokenRepositoryDao = TODO()
-        )
+    fun provideTokenRepository(tokenDao: TokenRepositoryDao): TokenRepository {
+        return TokenRepositoryImpl(tokenRepositoryDao = tokenDao)
     }
 }
