@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,31 +26,29 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
-import com.example.autohub.presentation.model.ad.CarAd
-import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.containerColor
 
 @Composable
 fun AnotherAccountScreen(
     user: User,
-    ads: List<CarAd>,
-    onCallClick: () -> Unit,
-    onBackButtonClick: () -> Unit,
-    onWriteClick: () -> Unit,
-    onAdClick: (CarAd) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AnotherAccountScreenViewModel = hiltViewModel<AnotherAccountScreenViewModel>()
 ) {
+    val uiState = viewModel.uiState.collectAsState().value
+
     Scaffold(
         topBar = {
             TopAdAppBar(
                 titleText = stringResource(id = R.string.text_seller),
-                onBackButtonClick = onBackButtonClick,
+                onBackButtonClick = { viewModel.prevScreen() },
                 modifier = modifier
                     .fillMaxWidth()
                     .background(color = barColor)
@@ -106,7 +105,7 @@ fun AnotherAccountScreen(
             ) {
                 CustomButton(
                     text = stringResource(id = R.string.button_write_message),
-                    onClick = { onWriteClick() },
+                    onClick = { viewModel.writeToUser() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -114,7 +113,7 @@ fun AnotherAccountScreen(
                 )
                 CustomButton(
                     text = stringResource(id = R.string.button_call),
-                    onClick = { onCallClick() },
+                    onClick = { viewModel.callToUser() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -128,14 +127,14 @@ fun AnotherAccountScreen(
                     .padding(horizontal = 8.dp)
             )
             HorizontalDivider()
-            if (ads.isNotEmpty()) {
+            if (uiState.sellerAds.isNotEmpty()) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2)
                 ) {
-                    items(ads) { ad ->
+                    items(uiState.sellerAds) { ad ->
                         CarAdCard(
                             ad = ad,
-                            onAdClick = { onAdClick(ad) },
+                            onAdClick = { viewModel.onAdClick(ad) },
                             modifier = modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
@@ -159,12 +158,5 @@ fun AnotherAccountScreen(
 //@Preview
 //@Composable
 //private fun AuthUserAccountScreenPreview() {
-//    AnotherAccountScreen(
-//        user = User(),
-//        ads = listOf(),
-//        onBackButtonClick = { },
-//        onAddClick = { },
-//        onWriteClick = { },
-//        onCallClick = { }
-//    )
+//    AnotherAccountScreen()
 //}

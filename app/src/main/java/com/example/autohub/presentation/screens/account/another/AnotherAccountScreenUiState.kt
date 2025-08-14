@@ -1,3 +1,7 @@
 package com.example.autohub.presentation.screens.account.another
 
-data class AnotherAccountScreenUiState()
+import com.example.autohub.presentation.model.ad.CarAd
+
+data class AnotherAccountScreenUiState(
+    val sellerAds: List<CarAd> = emptyList()
+)

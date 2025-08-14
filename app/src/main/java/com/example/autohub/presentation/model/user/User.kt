@@ -1,5 +1,10 @@
 package com.example.autohub.presentation.model.user
 
+import androidx.compose.runtime.Immutable
+import kotlinx.serialization.Serializable
+
+@Serializable
+@Immutable
 data class User(
     val firstName: String = "",
     val secondName: String = "",

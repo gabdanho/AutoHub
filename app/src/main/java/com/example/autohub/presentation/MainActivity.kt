@@ -7,8 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import com.example.autohub.presentation.model.user.UserStatus
-import com.example.autohub.data.utils.changeUserStatus
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -16,18 +14,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             requestNotificationPermission()
-            AutoHubEntryPoint()
+            MainActivity()
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        changeUserStatus(UserStatus.OFFLINE)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        changeUserStatus(UserStatus.ONLINE)
     }
 
     private fun requestNotificationPermission() {

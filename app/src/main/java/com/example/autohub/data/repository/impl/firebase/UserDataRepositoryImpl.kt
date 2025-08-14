@@ -12,7 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 
 class UserDataRepositoryImpl @Inject constructor(
-    private val fbStore: FirebaseFirestore,
+    private val fbFirestore: FirebaseFirestore,
     private val fbAuth: FirebaseAuth,
     private val fbStorageUtils: FirebaseStorageUtils
 ) : UserDataRepository {
@@ -22,7 +22,7 @@ class UserDataRepositoryImpl @Inject constructor(
 
     override suspend fun getUserData(userUID: String): FirebaseResult<UserData> {
         return safeFirebaseCall {
-            val snapshot = fbStore
+            val snapshot = fbFirestore
                 .collection("users")
                 .document(userUID)
                 .get()
@@ -48,7 +48,7 @@ class UserDataRepositoryImpl @Inject constructor(
         lastName: String,
     ) {
         safeFirebaseCall {
-            fbStore.collection("users").document(user.uid).update(
+            fbFirestore.collection("users").document(user.uid).update(
                 mapOf(
                     "firstName" to firstName,
                     "secondName" to lastName
@@ -65,7 +65,7 @@ class UserDataRepositoryImpl @Inject constructor(
 
     private suspend fun updateProfileInfo(info: String, value: String) {
         if (value.isNotBlank()) {
-            fbStore.collection("users").document(user.uid).update(info, value).await()
+            fbFirestore.collection("users").document(user.uid).update(info, value).await()
         }
     }
 }

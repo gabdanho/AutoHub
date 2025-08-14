@@ -1,0 +1,3 @@
+package com.example.autohub.presentation.navigation.model.graphs.destinations
+
+interface NavigationDestination

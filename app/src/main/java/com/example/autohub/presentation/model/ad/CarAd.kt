@@ -1,5 +1,8 @@
 package com.example.autohub.presentation.model.ad
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class CarAd(
     val userUID: String = "",
     val adID: String = "",
