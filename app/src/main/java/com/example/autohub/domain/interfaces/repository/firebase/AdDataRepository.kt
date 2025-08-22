@@ -4,7 +4,7 @@ import com.example.autohub.domain.model.CarAd
 import com.example.autohub.domain.model.SearchFilter
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.domain.model.UserData
+import com.example.autohub.domain.model.User
 
 interface AdDataRepository {
 
@@ -23,10 +23,7 @@ interface AdDataRepository {
     ): FirebaseResult<Unit>
 
     suspend fun createAd(
-        userUID: String,
         carAd: CarAd,
-        authUserData: UserData,
-        currentDate: String,
-        images: List<ImageUploadData>,
+        currentDate: String
     ): FirebaseResult<Unit>
 }

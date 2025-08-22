@@ -1,4 +1,6 @@
 package com.example.autohub.presentation.screens.auth.register
 
-class RegisterScreenViewModel {
+import androidx.lifecycle.ViewModel
+
+class RegisterScreenViewModel : ViewModel() {
 }

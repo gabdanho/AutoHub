@@ -4,7 +4,7 @@ import com.example.autohub.domain.interfaces.repository.firebase.AdDataRepositor
 import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
 import com.example.autohub.domain.model.CarAd
 import com.example.autohub.domain.model.ImageUploadData
-import com.example.autohub.domain.model.UserData
+import com.example.autohub.domain.model.User
 import com.example.autohub.domain.model.result.FirebaseResult
 
 class CreateAdUseCaseImpl(
@@ -14,7 +14,7 @@ class CreateAdUseCaseImpl(
     override suspend fun invoke(
         userUID: String,
         carAd: CarAd,
-        authUserData: UserData,
+        authUserData: User,
         currentDate: String,
         images: List<ImageUploadData>
     ): FirebaseResult<Unit> {

@@ -20,8 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,36 +31,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
-import com.example.autohub.presentation.model.ad.CarAd
-import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.CustomButton
+import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.containerColor
-import com.example.autohub.data.utils.getUserData
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 
 @Composable
 fun AuthUserAccountScreen(
-    yourAds: List<CarAd>,
-    onChangeInfoClick: () -> Unit,
-    onSignOutClick: () -> Unit,
-    onAdClick: (CarAd) -> Unit,
-    onAccountClick: () -> Unit,
-    onMessageClick: () -> Unit,
-    onAdListClick: () -> Unit,
-    onAdCreateClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AuthUserAccountScreenViewModel = hiltViewModel<AuthUserAccountScreenViewModel>()
 ) {
-    val userData = remember { mutableStateOf(User()) }
+    val uiState = viewModel.uiState.collectAsState().value
 
-    val userUID = Firebase.auth.currentUser?.uid
-    if (userUID != null) {
-        getUserData(userUID) { user -> userData.value = user }
+    LaunchedEffect(uiState.userLoadingState, uiState.adsLoadingState) {
+        if (uiState.userLoadingState is LoadingState.Error || uiState.adsLoadingState is LoadingState.Error) {
+            viewModel.clearLoadingState()
+        }
     }
 
     Scaffold(
@@ -82,9 +73,9 @@ fun AuthUserAccountScreen(
         },
         bottomBar = {
             BottomNavBar(
-                onAdListClick = onAdListClick,
-                onAccountClick = onAccountClick,
-                onMessageClick = onMessageClick
+                onAdListClick = { viewModel.onAdListClick() },
+                onAccountClick = { viewModel.onAccountClick() },
+                onMessageClick = { viewModel.onMessengerClick() }
             )
         }
     ) { innerPadding ->
@@ -102,7 +93,7 @@ fun AuthUserAccountScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     AsyncImage(
-                        model = userData.value.image,
+                        model = uiState.user.image,
                         contentDescription = stringResource(id = R.string.content_user_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -116,15 +107,15 @@ fun AuthUserAccountScreen(
                         Text(
                             text = stringResource(
                                 id = R.string.text_user_first_last_name,
-                                userData.value.firstName,
-                                userData.value.secondName
+                                uiState.user.firstName,
+                                uiState.user.secondName
                             ),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Text(
-                            text = userData.value.city,
+                            text = uiState.user.city,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -136,11 +127,11 @@ fun AuthUserAccountScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(id = R.string.text_user_email, userData.value.email),
+                    text = stringResource(id = R.string.text_user_email, uiState.user.email),
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = stringResource(id = R.string.text_user_phone, userData.value.phoneNumber)
+                    text = stringResource(id = R.string.text_user_phone, uiState.user.phoneNumber)
                 )
             }
             Row(
@@ -151,7 +142,7 @@ fun AuthUserAccountScreen(
             ) {
                 CustomButton(
                     text = stringResource(id = R.string.button_change),
-                    onClick = { onChangeInfoClick() },
+                    onClick = { viewModel.onChangeInfoClick() },
                     colorButton = buttonColors(
                         containerColor = Color.White
                     ),
@@ -164,7 +155,7 @@ fun AuthUserAccountScreen(
                 )
                 CustomButton(
                     text = stringResource(id = R.string.button_exit),
-                    onClick = { onSignOutClick() },
+                    onClick = { viewModel.onSignOutClick() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -186,17 +177,17 @@ fun AuthUserAccountScreen(
             ) {
                 CustomButton(
                     text = stringResource(id = R.string.button_create),
-                    onClick = { onAdCreateClick() },
+                    onClick = { viewModel.onAdCreateClick() },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2)
             ) {
-                items(yourAds) { ad ->
+                items(uiState.ads) { ad ->
                     CarAdCard(
                         ad = ad,
-                        onAdClick = { onAdClick(ad) },
+                        onAdClick = { viewModel.onAdClick(ad = ad) },
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(8.dp)

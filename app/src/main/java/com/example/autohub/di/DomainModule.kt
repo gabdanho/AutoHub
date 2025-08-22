@@ -5,6 +5,7 @@ import com.example.autohub.domain.interfaces.repository.firebase.AuthUserReposit
 import com.example.autohub.domain.interfaces.repository.firebase.MessengerRepository
 import com.example.autohub.domain.interfaces.repository.firebase.UserDataRepository
 import com.example.autohub.domain.interfaces.repository.room.TokenRepository
+import com.example.autohub.domain.interfaces.usecase.ChangePasswordUseCase
 import com.example.autohub.domain.interfaces.usecase.ChangeUserStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetAdsBySearchTextAndFiltersUseCase
@@ -22,10 +23,13 @@ import com.example.autohub.domain.interfaces.usecase.LoginUserUseCase
 import com.example.autohub.domain.interfaces.usecase.MarkMessagesAsReadUseCase
 import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
 import com.example.autohub.domain.interfaces.usecase.SendMessageUseCase
+import com.example.autohub.domain.interfaces.usecase.SignOutUseCase
 import com.example.autohub.domain.interfaces.usecase.UpdateCityUseCase
-import com.example.autohub.domain.interfaces.usecase.UpdateFirstAnsSecondNameUseCase
+import com.example.autohub.domain.interfaces.usecase.UpdateFirstNameUseCase
+import com.example.autohub.domain.interfaces.usecase.UpdateLastNameUseCase
 import com.example.autohub.domain.interfaces.usecase.UploadAdsImagesToFirebaseUseCase
 import com.example.autohub.domain.interfaces.usecase.UploadUserProfileImageToFirebaseUseCase
+import com.example.autohub.domain.usecase.ChangePasswordUseCaseImpl
 import com.example.autohub.domain.usecase.ChangeUserStatusUseCaseImpl
 import com.example.autohub.domain.usecase.CreateAdUseCaseImpl
 import com.example.autohub.domain.usecase.GetAdsBySearchTextAndFiltersUseCaseImpl
@@ -43,8 +47,10 @@ import com.example.autohub.domain.usecase.LoginUserUseCaseImpl
 import com.example.autohub.domain.usecase.MarkMessagesAsReadUseCaseImpl
 import com.example.autohub.domain.usecase.RegisterUserUseCaseImpl
 import com.example.autohub.domain.usecase.SendMessageUseCaseImpl
+import com.example.autohub.domain.usecase.SignOutUseCaseImpl
 import com.example.autohub.domain.usecase.UpdateCityUseCaseImpl
-import com.example.autohub.domain.usecase.UpdateFirstAnsSecondNameUseCaseImpl
+import com.example.autohub.domain.usecase.UpdateFirstNameUseCaseImpl
+import com.example.autohub.domain.usecase.UpdateLastNameUseCaseImpl
 import com.example.autohub.domain.usecase.UploadAdsImagesToFirebaseUseCaseImpl
 import com.example.autohub.domain.usecase.UploadUserProfileImageToFirebaseUseCaseImpl
 import dagger.Module
@@ -79,6 +85,18 @@ object DomainModule {
     @Singleton
     fun provideGetUserTokenUseCase(authUserRepository: AuthUserRepository): GetUserTokenUseCase {
         return GetUserTokenUseCaseImpl(authUserRepository = authUserRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSignOutUseCase(authUserRepository: AuthUserRepository): SignOutUseCase {
+        return SignOutUseCaseImpl(authUserRepository = authUserRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChangePasswordUseCase(authUserRepository: AuthUserRepository): ChangePasswordUseCase {
+        return ChangePasswordUseCaseImpl(authUserRepository = authUserRepository)
     }
 
     @Provides
@@ -161,9 +179,15 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideUpdateFirstAnsSecondNameUseCase(userDataRepository: UserDataRepository): UpdateFirstAnsSecondNameUseCase {
-        return UpdateFirstAnsSecondNameUseCaseImpl(userDataRepository = userDataRepository)
+    fun provideUpdateFirstNameUseCase(userDataRepository: UserDataRepository): UpdateFirstNameUseCase {
+        return UpdateFirstNameUseCaseImpl(userDataRepository = userDataRepository)
     }
+    @Provides
+    @Singleton
+    fun provideUpdateLastNameUseCase(userDataRepository: UserDataRepository): UpdateLastNameUseCase {
+        return UpdateLastNameUseCaseImpl(userDataRepository = userDataRepository)
+    }
+
 
     @Provides
     @Singleton
@@ -173,8 +197,14 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideInsertTokenUseCase(tokenRepository: TokenRepository): InsertTokenUseCase {
-        return InsertTokenUseCaseImpl(tokenRepository = tokenRepository)
+    fun provideInsertTokenUseCase(
+        tokenRepository: TokenRepository,
+        authUserRepository: AuthUserRepository
+    ): InsertTokenUseCase {
+        return InsertTokenUseCaseImpl(
+            tokenRepository = tokenRepository,
+            authUserRepository = authUserRepository
+        )
     }
 
     @Provides

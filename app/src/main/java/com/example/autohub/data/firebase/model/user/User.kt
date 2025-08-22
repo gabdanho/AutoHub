@@ -1,6 +1,6 @@
 package com.example.autohub.data.firebase.model.user
 
-data class UserData(
+data class User(
     val firstName: String = "",
     val secondName: String = "",
     val email: String = "",

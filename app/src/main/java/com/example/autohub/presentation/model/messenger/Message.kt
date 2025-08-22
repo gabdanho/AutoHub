@@ -1,13 +1,10 @@
 package com.example.autohub.presentation.model.messenger
 
-import com.example.autohub.presentation.utils.getTimeString
-
 data class Message(
     val id: String = "",
-    val sender: String = "",
-    val receiver: String = "",
+    val senderUID: String = "",
+    val receiverUID: String = "",
     val text: String = "",
-    val time: String = getTimeString(),
-    val timeMillis: Long = System.currentTimeMillis(),
+    val timeMillis: Long = 0L,
     val read: Boolean = false
 )

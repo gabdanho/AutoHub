@@ -1,4 +1,6 @@
 package com.example.autohub.presentation.screens.ad.main
 
-class AdsMainScreenViewModel {
+import androidx.lifecycle.ViewModel
+
+class AdsMainScreenViewModel : ViewModel() {
 }

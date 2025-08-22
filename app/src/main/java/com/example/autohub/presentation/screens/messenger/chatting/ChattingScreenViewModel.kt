@@ -1,4 +1,6 @@
 package com.example.autohub.presentation.screens.messenger.chatting
 
-class ChattingScreenViewModel {
+import androidx.lifecycle.ViewModel
+
+class ChattingScreenViewModel : ViewModel() {
 }

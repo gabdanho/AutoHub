@@ -1,4 +1,6 @@
 package com.example.autohub.presentation.screens.auth.login
 
-class LoginScreenViewModel {
+import androidx.lifecycle.ViewModel
+
+class LoginScreenViewModel : ViewModel() {
 }

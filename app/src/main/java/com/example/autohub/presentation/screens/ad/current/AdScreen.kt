@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,32 +29,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.model.ad.CarAd
-import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.ListPhotos
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 
 @Composable
 fun AdScreen(
-    user: User,
+    user: UserNav,
     carAd: CarAd,
-    onUserClick: () -> Unit,
-    onBackButtonClick: () -> Unit,
-    onMessageClick: () -> Unit,
-    onCallClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AdScreenViewModel = hiltViewModel<AdScreenViewModel>()
 ) {
     val scrollState = rememberScrollState()
-
-    val currentUserUID = Firebase.auth.currentUser?.uid ?: ""
+    val uiState = viewModel.uiState.collectAsState().value
 
     Scaffold(
         topBar = {
@@ -64,7 +60,7 @@ fun AdScreen(
                     carAd.model,
                     carAd.realiseYear
                 ),
-                onBackButtonClick = onBackButtonClick,
+                onBackButtonClick = { viewModel.onBackButtonClick() },
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .fillMaxWidth()
@@ -93,7 +89,7 @@ fun AdScreen(
                     modifier = Modifier.padding(8.dp)
                 )
 
-                if (currentUserUID != carAd.userUID) {
+                if (uiState.authUserUid != carAd.userUID) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -108,7 +104,7 @@ fun AdScreen(
                                 .size(70.dp)
                                 .clip(CircleShape)
                                 .border(2.dp, containerColor, CircleShape)
-                                .clickable { onUserClick() }
+                                .clickable { viewModel.onUserClick() }
                         )
                         Column(
                             modifier = Modifier.padding(start = 16.dp)
@@ -117,20 +113,20 @@ fun AdScreen(
                                 text = stringResource(
                                     id = R.string.text_seller_main_info,
                                     user.firstName,
-                                    user.secondName,
+                                    user.lastName,
                                     user.city
                                 ),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.clickable { onUserClick() }
+                                modifier = Modifier.clickable { viewModel.onUserClick() }
                             )
                             Row(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 CustomButton(
                                     text = stringResource(id = R.string.button_write_message),
-                                    onClick = { onMessageClick() },
+                                    onClick = { viewModel.onMessageClick() },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(end = 4.dp)
@@ -138,7 +134,7 @@ fun AdScreen(
                                 )
                                 CustomButton(
                                     text = stringResource(id = R.string.button_call),
-                                    onClick = { onCallClick() },
+                                    onClick = { viewModel.callToUser() },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .weight(1f)

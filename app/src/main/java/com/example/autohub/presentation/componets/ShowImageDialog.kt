@@ -30,13 +30,13 @@ fun ImageDialog(
 
 @Composable
 fun ImageDialog(
-    uri: String,
+    url: String,
     closeDialog: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Dialog(closeDialog) {
         AsyncImage(
-            model = uri,
+            model = url,
             contentDescription = stringResource(id = R.string.content_image),
             modifier = modifier
         )

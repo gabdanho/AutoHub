@@ -42,20 +42,11 @@ import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
-import com.example.autohub.data.utils.getBuyerStatus
-import com.example.autohub.data.utils.getCountUnreadMessages
-import com.example.autohub.data.utils.getUserData
 
 @Composable
 fun MessengerScreen(
-    onAnswerClick: (String) -> Unit,
-    onAccountClick: () -> Unit,
-    onMessageClick: () -> Unit,
-    onAdListClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val buyers by viewModel.getBuyers().observeAsState(initial = emptyList())
-
     Scaffold(
         topBar = {
             Row(
@@ -75,20 +66,20 @@ fun MessengerScreen(
         },
         bottomBar = {
             BottomNavBar(
-                onAdListClick = onAdListClick,
-                onAccountClick = onAccountClick,
-                onMessageClick = onMessageClick
+                onAdListClick = TODO("onAdListClick"),
+                onAccountClick = TODO("onAccountClick"),
+                onMessageClick = TODO("onMessageClick")
             )
         }
     ) { innerPadding ->
-        if (buyers.isNotEmpty()) {
+        if (TODO("buyers.isNotEmpty()")) {
             LazyColumn(
                 modifier = modifier
                     .padding(innerPadding)
                     .padding(8.dp)
             ) {
-                items(buyers) { buyer ->
-                    ChatCardBuyer(buyer = buyer, onAnswerClick = onAnswerClick)
+                items(TODO("buyers")) { buyer ->
+                    ChatCardBuyer(buyer = TODO("buyer"), onAnswerClick = TODO("onAnswerClick()"))
                 }
             }
         } else {
@@ -109,20 +100,15 @@ fun MessengerScreen(
 }
 
 @Composable
-fun ChatCardBuyer(
+private fun ChatCardBuyer(
     buyer: ChatInfo,
     onAnswerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val buyerToken = remember { mutableStateOf("") }
-    getUserData(buyer.uid) {
-        buyerToken.value = it.localToken
-    }
-
     val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
-    val status = getBuyerStatus(buyer.uid).observeAsState(initial = UserStatus.OFFLINE)
-    val unreadMessages = remember { mutableIntStateOf(0) }
-    getCountUnreadMessages(buyer.uid) { unreadMessages.intValue = it }
+    val status = TODO("getBuyerStatus(buyer.uid).observeAsState(initial = UserStatus.OFFLINE)")
+    TODO("val unreadMessages = remember { mutableIntStateOf(0) }")
+    TODO("getCountUnreadMessages(buyer.uid) { unreadMessages.intValue = it }")
 
     Card(
         elevation = CardDefaults.cardElevation(2.dp),
@@ -154,7 +140,7 @@ fun ChatCardBuyer(
                 Canvas(modifier = Modifier.size(4.dp)) {
                     drawCircle(
                         radius = circleSize,
-                        color = if (status.value == UserStatus.ONLINE) Color.Green else Color.Gray
+                        color = TODO("if (status.value == UserStatus.ONLINE) Color.Green else Color.Gray")
                     )
                 }
             }
@@ -177,7 +163,7 @@ fun ChatCardBuyer(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
-            if (unreadMessages.intValue != 0) {
+            if (TODO("unreadMessages.intValue != 0")) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -185,7 +171,7 @@ fun ChatCardBuyer(
                         .background(color = containerColor, shape = CircleShape)
                 ) {
                     Text(
-                        text = unreadMessages.intValue.toString(),
+                        text = "", // TODO("unreadMessages.intValue.toString()")
                         color = Color.White,
                         modifier = Modifier
                     )

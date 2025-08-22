@@ -8,7 +8,7 @@ import com.example.autohub.domain.interfaces.repository.firebase.AdDataRepositor
 import com.example.autohub.domain.model.CarAd as CarAdDomain
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.SearchFilter
-import com.example.autohub.domain.model.UserData as UserDataDomain
+import com.example.autohub.domain.model.User as UserDataDomain
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.utils.TimeProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -78,28 +78,25 @@ class AdDataRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createAd(
-        userUID: String,
         carAd: CarAdDomain,
-        authUserData: UserDataDomain,
-        currentDate: String,
-        images: List<ImageUploadData>
+        currentDate: String
     ): FirebaseResult<Unit> {
         return safeFirebaseCall {
             val timeStamp = timeProvider.currentTimeMillis()
-            val adReference = "${userUID}_${timeStamp}"
+            val adReference = "${carAd.userUID}_${timeStamp}"
             val docReference = fbFirestore
                 .collection("ads")
                 .document(adReference)
             val updatedCarAd = carAd.copy(
                 adID = adReference,
-                userUID = userUID,
-                city = authUserData.city,
                 dateAdPublished = currentDate
             )
 
             docReference.set(updatedCarAd).await()
 
-            uploadAdsImagesToFirebase(images, adReference)
+            // FixMe: Пофиксить (Найти способ как преобразовывать стринги URI в UploadData) -> val imagesUploadData = carAd.imagesUrl.map { ImageUploadData(id = 1, bytes = it.to) }
+
+            uploadAdsImagesToFirebase(imagesUploadData, adReference)
         }
     }
 
@@ -111,10 +108,12 @@ class AdDataRepositoryImpl @Inject constructor(
             val fbStoreRef = fbFirestore.collection("ads").document(reference)
 
             val imagesLinks = images.map { image ->
-                fbStorageUtils.uploadImageToFirebase(
-                    bytes = image.bytes,
-                    path = "adsImages/$reference/${reference + "_" + image.id}.jpg"
-                )
+                image.bytes?.let {
+                    fbStorageUtils.uploadImageToFirebase(
+                        bytes = it,
+                        path = "adsImages/$reference/${reference + "_" + image.id}.jpg"
+                    )
+                }
             }
 
             fbStoreRef.update("imagesUrl", imagesLinks).await()

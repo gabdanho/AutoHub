@@ -3,7 +3,7 @@ package com.example.autohub.presentation.mapper
 import com.example.autohub.presentation.model.messenger.Message
 import com.example.autohub.domain.model.Message as MessageDomain
 
-fun Message.toMessageDomain(): MessageDomain {
+fun Message.toUserDomain(): MessageDomain {
     return MessageDomain(
         id = id,
         senderUID = senderUID,
@@ -14,7 +14,7 @@ fun Message.toMessageDomain(): MessageDomain {
     )
 }
 
-fun MessageDomain.toMessagePresentation(): Message {
+fun MessageDomain.toUserPresentation(): Message {
     return Message(
         id = id,
         senderUID = senderUID,

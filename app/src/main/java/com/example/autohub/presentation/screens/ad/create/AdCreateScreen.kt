@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.screens.ad.create
 
-import android.content.ContentResolver
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -17,76 +16,39 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
-import com.example.autohub.presentation.model.ad.CarAd
-import com.example.autohub.presentation.model.OptionsTypes
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.ListAddedPhotos
 import com.example.autohub.presentation.componets.RowRadioButtons
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.model.options.BodyType
+import com.example.autohub.presentation.model.options.ConditionType
+import com.example.autohub.presentation.model.options.DriveType
+import com.example.autohub.presentation.model.options.EngineType
+import com.example.autohub.presentation.model.options.SteeringWheelSideType
+import com.example.autohub.presentation.model.options.TransmissionType
 import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.cardColor
-import com.example.autohub.presentation.utils.isOnlyDigits
-import com.example.autohub.presentation.utils.isOnlyLetters
 
 @Composable
 fun AdCreateScreen(
-    onCreateAdClick: (CarAd, List<Uri>) -> Unit,
-    onBackButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AdCreateScreenViewModel = hiltViewModel<AdCreateScreenViewModel>()
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-
-    val brandState = remember { mutableStateOf("") }
-    val modelState = remember { mutableStateOf("") }
-    val colorState = remember { mutableStateOf("") }
-    val driveState = remember { mutableStateOf("") }
-    val realiseYearState = remember { mutableStateOf("") }
-    val bodyState = remember { mutableStateOf("") }
-    val typeEngineState = remember { mutableStateOf("") }
-    val engineCapacityState = remember { mutableStateOf("") }
-    val transmissionState = remember { mutableStateOf("") }
-    val steeringWheelSideState = remember { mutableStateOf("") }
-    val mileageState = remember { mutableStateOf("") }
-    val conditionState = remember { mutableStateOf("") }
-    val priceState = remember { mutableStateOf("") }
-    val descriptionState = remember { mutableStateOf("") }
-
-    val isBrandError = remember { mutableStateOf(false) }
-    val isModelError = remember { mutableStateOf(false) }
-    val isColorError = remember { mutableStateOf(false) }
-    val isDriveError = remember { mutableStateOf(false) }
-    val isRealiseYearError = remember { mutableStateOf(false) }
-    val isBodyError = remember { mutableStateOf(false) }
-    val isTypeEngineError = remember { mutableStateOf(false) }
-    val isEngineCapacityError = remember { mutableStateOf(false) }
-    val isTransmissionError = remember { mutableStateOf(false) }
-    val isSteeringWheelSideError = remember { mutableStateOf(false) }
-    val isMileageError = remember { mutableStateOf(false) }
-    val isConditionError = remember { mutableStateOf(false) }
-    val isPriceError = remember { mutableStateOf(false) }
-
-    val addImageUri = Uri.Builder()
-        .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-        .authority(context.packageName)
-        // FixMe : Захардить
-        .appendPath("drawable")
-        .appendPath("add_img")
-        .build()
-    val images = remember { mutableStateListOf<Uri>(addImageUri) }
+    val uiState = viewModel.uiState.collectAsState().value
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
-            images.add(0, uri)
+            viewModel.addImage(imageString = uri.toString())
         } else {
             Toast.makeText(context, context.getString(R.string.text_image_not_selected), Toast.LENGTH_SHORT).show()
         }
@@ -96,7 +58,7 @@ fun AdCreateScreen(
         topBar = {
             TopAdAppBar(
                 titleText = stringResource(id = R.string.text_creating_ad),
-                onBackButtonClick = onBackButtonClick,
+                onBackButtonClick = { viewModel.onBackButtonClick() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = barColor)
@@ -115,10 +77,12 @@ fun AdCreateScreen(
                     modifier = Modifier.padding(16.dp)
                 )
                 ListAddedPhotos(
-                    images = images.toList(),
+                    images = uiState.imagesValue.map { Uri.parse(it) },
+                    imageToShow = Uri.parse(uiState.imageToShow),
                     onAddImageClick = {
                         galleryLauncher.launch("image/*")
                     },
+                    changeImageToShow = { viewModel.updateImageToShow(value = it?.toString()) },
                     modifier = modifier
                         .fillMaxWidth()
                         .background(cardColor)
@@ -131,124 +95,131 @@ fun AdCreateScreen(
             ) {
                 InputField(
                     text = stringResource(id = R.string.input_brand),
-                    value = brandState.value,
-                    isError = isBrandError.value,
-                    onValueChange = { brandState.value = it },
+                    value = uiState.brandValue,
+                    isError = uiState.isBrandValueError,
+                    onValueChange = { viewModel.updateBrandValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_model),
-                    value = modelState.value,
-                    isError = isModelError.value,
-                    onValueChange = { modelState.value = it },
+                    value = uiState.modelValue,
+                    isError = uiState.isModelValueError,
+                    onValueChange = { viewModel.updateModelValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.text_color),
-                    value = colorState.value,
-                    isError = isColorError.value,
-                    onValueChange = { colorState.value = it },
+                    value = uiState.colorValue,
+                    isError = uiState.isColorValueError,
+                    onValueChange = { viewModel.updateColorValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_year_created),
-                    value = realiseYearState.value,
-                    isError = isRealiseYearError.value,
+                    value = uiState.realiseYearValue,
+                    isError = uiState.isRealiseYearValueError,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { realiseYearState.value = it },
+                    onValueChange = { viewModel.updateRealiseYearValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
+
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_bodywork),
-                    isError = isBodyError.value,
-                    typesName = OptionsTypes.bodyTypes,
+                    isError = uiState.isBodyTypeValueError,
+                    typesName = BodyType.entries,
+                    returnType = { viewModel.updateBodyTypeValue(value = it as BodyType) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
-                ) { bodyState.value = it }
+                )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_engine_type),
-                    isError = isTypeEngineError.value,
-                    typesName = OptionsTypes.typeEngineTypes,
+                    isError = uiState.isEngineTypeValueError,
+                    typesName = EngineType.entries,
+                    returnType = { viewModel.updateEngineTypeValue(value = it as EngineType) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
-                ) { typeEngineState.value = it }
+                )
                 InputField(
                     text = stringResource(id = R.string.input_engine_capacity),
-                    value = engineCapacityState.value,
-                    isError = isEngineCapacityError.value,
+                    value = uiState.engineCapacityValue,
+                    isError = uiState.isEngineCapacityValue,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { engineCapacityState.value = it },
+                    onValueChange = { viewModel.updateEngineCapacityValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_transmission_type),
-                    isError = isTransmissionError.value,
-                    typesName = OptionsTypes.transmissionsTypes,
+                    isError = uiState.isTransmissionValueError,
+                    typesName = TransmissionType.entries,
+                    returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
-                ) { transmissionState.value = it }
+                )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_drive_type),
-                    isError = isDriveError.value,
-                    typesName = OptionsTypes.driveTypes,
+                    isError = uiState.isDriveTypeValueError,
+                    typesName = DriveType.entries,
+                    returnType = { viewModel.updateDriveTypeValue(value = it as DriveType) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
-                ) { driveState.value = it }
+                )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_steering_wheel),
-                    isError = isSteeringWheelSideError.value,
-                    typesName = OptionsTypes.steeringWheelSideTypes,
+                    isError = uiState.isSteeringWheelSideValueError,
+                    typesName = SteeringWheelSideType.entries,
+                    returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
-                ) { steeringWheelSideState.value = it }
+                )
                 InputField(
                     text = stringResource(id = R.string.input_mileage),
-                    value = mileageState.value,
-                    isError = isMileageError.value,
+                    value = uiState.mileageValue,
+                    isError = uiState.isMileageValueError,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { mileageState.value = it },
+                    onValueChange = { viewModel.updateMileageValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_condition),
-                    isError = isConditionError.value,
-                    typesName = OptionsTypes.conditionTypes,
+                    isError = uiState.isConditionValueError,
+                    typesName = ConditionType.entries,
+                    returnType = { viewModel.updateConditionValue(value = it as ConditionType) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
-                ) { conditionState.value = it }
+                )
                 InputField(
                     text = stringResource(id = R.string.input_price),
-                    value = priceState.value,
-                    isError = isPriceError.value,
+                    value = uiState.priceValue,
+                    isError = uiState.isPriceValueError,
                     keyboardType = KeyboardType.Number,
-                    onValueChange = { priceState.value = it },
+                    onValueChange = { viewModel.updatePriceValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_description),
-                    value = descriptionState.value,
+                    value = uiState.descriptionValue,
                     isSingleLine = false,
-                    onValueChange = { descriptionState.value = it },
+                    onValueChange = { viewModel.updateDescriptionValue(value = it)},
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
@@ -261,96 +232,7 @@ fun AdCreateScreen(
                 ) {
                     CustomButton(
                         text = stringResource(id = R.string.button_create),
-                        onClick = {
-                            isBrandError.value = brandState.value.isEmpty()
-                            isModelError.value = modelState.value.isEmpty()
-                            isColorError.value = colorState.value.isEmpty()
-                            isDriveError.value = driveState.value.isEmpty()
-                            isRealiseYearError.value = realiseYearState.value.isEmpty()
-                            isBodyError.value = bodyState.value.isEmpty()
-                            isTypeEngineError.value = typeEngineState.value.isEmpty()
-                            isEngineCapacityError.value = engineCapacityState.value.isEmpty()
-                            isTransmissionError.value = transmissionState.value.isEmpty()
-                            isSteeringWheelSideError.value = steeringWheelSideState.value.isEmpty()
-                            isMileageError.value = mileageState.value.isEmpty()
-                            isConditionError.value = conditionState.value.isEmpty()
-                            isPriceError.value = priceState.value.isEmpty()
-
-                            if (images.size == 1) {
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_add_images), Toast.LENGTH_LONG).show()
-                            } else if (brandState.value.isBlank() || modelState.value.isBlank() ||
-                                colorState.value.isBlank() || realiseYearState.value.isBlank() ||
-                                bodyState.value.isBlank() || typeEngineState.value.isBlank() ||
-                                engineCapacityState.value.isBlank() || transmissionState.value.isBlank() ||
-                                driveState.value.isBlank() || steeringWheelSideState.value.isBlank() ||
-                                mileageState.value.isBlank() || conditionState.value.isBlank() ||
-                                priceState.value.isBlank()) {
-                                Toast.makeText(context, context.getString(R.string.content_necessary_fill_field), Toast.LENGTH_LONG).show()
-                            } else if (!colorState.value.isOnlyLetters()) {
-                                isColorError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_color), Toast.LENGTH_LONG).show()
-                            } else if (!realiseYearState.value.isOnlyDigits()) {
-                                isRealiseYearError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_year_created), Toast.LENGTH_LONG).show()
-                            } else if (!bodyState.value.isOnlyLetters()) {
-                                isBodyError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_body_type), Toast.LENGTH_LONG).show()
-                            } else if (!typeEngineState.value.isOnlyLetters()) {
-                                isTypeEngineError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_engine_type), Toast.LENGTH_LONG).show()
-                            } else if (!engineCapacityState.value.isOnlyDigits()) {
-                                isEngineCapacityError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_engine_capacity), Toast.LENGTH_LONG).show()
-                            } else if (!transmissionState.value.isOnlyLetters()) {
-                                isTransmissionError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_transmission_type), Toast.LENGTH_LONG).show()
-                            } else if (!driveState.value.isOnlyLetters()) {
-                                isDriveError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_drive_type), Toast.LENGTH_LONG).show()
-                            } else if (!steeringWheelSideState.value.isOnlyLetters()) {
-                                isSteeringWheelSideError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_steering_wheel), Toast.LENGTH_LONG).show()
-                            } else if (!mileageState.value.isOnlyDigits()) {
-                                isMileageError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_mileage), Toast.LENGTH_LONG).show()
-                            } else if (!conditionState.value.isOnlyLetters()) {
-                                isColorError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_condition), Toast.LENGTH_LONG).show()
-                            } else if (!priceState.value.isOnlyDigits()) {
-                                isPriceError.value = true
-                                Toast.makeText(context,
-                                    context.getString(R.string.text_incorrect_price), Toast.LENGTH_LONG).show()
-                            } else {
-                                val carAd = CarAd(
-                                    brand = brandState.value,
-                                    model = modelState.value,
-                                    color = colorState.value,
-                                    realiseYear = realiseYearState.value,
-                                    body = bodyState.value,
-                                    typeEngine = typeEngineState.value,
-                                    engineCapacity = engineCapacityState.value,
-                                    transmission = transmissionState.value,
-                                    drive = driveState.value,
-                                    steeringWheelSide = steeringWheelSideState.value,
-                                    mileage = mileageState.value,
-                                    condition = conditionState.value,
-                                    price = priceState.value,
-                                    description = descriptionState.value
-                                )
-                                onCreateAdClick(carAd, images.toList().dropLast(1))
-                            }
-                        },
+                        onClick = {  },
                         modifier = Modifier.fillMaxWidth(0.5f)
                     )
                 }

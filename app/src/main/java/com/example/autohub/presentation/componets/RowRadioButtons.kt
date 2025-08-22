@@ -23,6 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.autohub.R
+import com.example.autohub.presentation.mapper.StringToResourceIdMapperImpl
+import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.options.CarOption
 import com.example.autohub.presentation.theme.containerColor
 import com.example.autohub.presentation.theme.labelColor
 import com.example.autohub.presentation.theme.unfocusedTextFieldColor
@@ -37,10 +40,10 @@ modifier
 @Composable
 fun RowRadioButtons(
     option: String,
-    typesName: List<String>,
-    returnType: (String) -> Unit,
+    typesName: List<CarOption>,
+    returnType: (CarOption?) -> Unit,
     modifier: Modifier = Modifier,
-    currentType: String = "",
+    currentType: CarOption? = null,
     isError: Boolean = false,
     radioButtonColors: RadioButtonColors = RadioButtonColors(
         selectedColor = containerColor,
@@ -73,14 +76,13 @@ fun RowRadioButtons(
             modifier = modifier
         ) {
             items(typesName) { type ->
-                // TODO : Проверить как выглядит в превью
                 Box(
                     modifier = Modifier
                         .clickable {
                             if (selectedType.value != type)
                                 selectedType.value = type
                             else
-                                selectedType.value = ""
+                                selectedType.value = null
                             returnType(selectedType.value)
                         }
                 ) {
@@ -90,7 +92,7 @@ fun RowRadioButtons(
                         colors = radioButtonColors
                     )
                     Text(
-                        text = type
+                        text = stringResource(id = StringToResourceIdMapperImpl().map(resId = type.textRes))
                     )
                 }
             }

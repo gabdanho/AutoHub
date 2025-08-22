@@ -58,11 +58,6 @@ import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
-import com.example.autohub.data.remote.firebase.utils.getAuthUserUID
-import com.example.autohub.data.utils.getBuyerStatus
-import com.example.autohub.data.utils.getUserData
-import com.example.autohub.data.utils.markMessagesAsRead
-import com.example.autohub.data.utils.sendMessage
 
 @Composable
 fun ChattingScreen(
@@ -70,28 +65,27 @@ fun ChattingScreen(
     onBuyerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val text = remember { mutableStateOf("") }
     val context = LocalContext.current
-    val buyerData = remember { mutableStateOf(User()) }
-    getUserData(buyerUID) { buyerData.value = it }
-    val messages by viewModel.getChat(buyerUID).observeAsState(initial = emptyList())
     val listState = rememberLazyListState()
     val isFirstRender = remember { mutableStateOf(true) }
 
     // programming scroll to last item
-    LaunchedEffect(messages) {
+    LaunchedEffect(TODO("messages")) {
+        /*
         if ((messages.isNotEmpty() && listState.isScrolledToTheEnd()) || (messages.isNotEmpty() && isFirstRender.value)) {
             listState.animateScrollToItem(messages.size - 1)
             isFirstRender.value = false
         }
+         */
     }
 
     Scaffold(
         bottomBar = {
             MessageInputField(
-                text = text.value,
-                onValueChange = { text.value = it },
+                text = TODO("text.value"),
+                onValueChange = { TODO("text.value = it") },
                 onSendMessageClick = {
+                    /*
                     if (text.value.isNotBlank()) {
                         sendMessage(
                             getAuthUserUID(),
@@ -115,13 +109,14 @@ fun ChattingScreen(
                         )
                         text.value = ""
                     }
+                     */
                 }
             )
         },
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
-        val status = getBuyerStatus(buyerUID).observeAsState(initial = UserStatus.OFFLINE)
+        val status = TODO("getBuyerStatus(buyerUID).observeAsState(initial = UserStatus.OFFLINE)")
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -139,7 +134,7 @@ fun ChattingScreen(
 
                 Box {
                     AsyncImage(
-                        model = buyerData.value.image,
+                        model = TODO("buyerData.value.image"),
                         contentDescription = stringResource(id = R.string.content_buyer_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -153,15 +148,15 @@ fun ChattingScreen(
                         .padding(8.dp)) {
                         drawCircle(
                             radius = circleSize,
-                            color = if (status.value == UserStatus.ONLINE) Color.Green else Color.Gray
+                            color = if (TODO("status.value") == TODO("UserStatus.ONLINE")) Color.Green else Color.Gray
                         )
                     }
                 }
                 Text(
                     text = stringResource(
                         id = R.string.send_message_buyer_name,
-                        buyerData.value.firstName,
-                        buyerData.value.secondName
+                        TODO("buyerData.value.firstName"),
+                        TODO("buyerData.value.secondName")
                     ),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.W300,
@@ -173,10 +168,12 @@ fun ChattingScreen(
                 state = listState,
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(messages) { message ->
+                items(TODO("messages")) { message ->
+                    /*
                     if (!message.read && message.receiver == getAuthUserUID())
                         markMessagesAsRead(buyerUID, message.id)
                     UserMessage(message = message)
+                     */
                 }
             }
         }
@@ -184,18 +181,15 @@ fun ChattingScreen(
 }
 
 @Composable
-fun UserMessage(
+private fun UserMessage(
     message: Message,
     modifier: Modifier = Modifier
 ) {
-    println(message.read)
     val config = LocalConfiguration.current
     val maxWidth = (config.screenWidthDp * 0.9f).dp
 
-    val authUserUID = getAuthUserUID()
-
     Row(
-        horizontalArrangement = if (message.sender == authUserUID) Arrangement.End else Arrangement.Start,
+        horizontalArrangement = if (TODO("message.sender") == TODO("authUserUID")) Arrangement.End else Arrangement.Start,
         modifier = Modifier.fillMaxWidth()
     ) {
         Card(
@@ -210,7 +204,7 @@ fun UserMessage(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 4.dp)
             ) {
-                if (message.sender == authUserUID && !message.read) {
+                if (TODO("message.sender") == TODO("authUserUID") && !message.read) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -224,7 +218,7 @@ fun UserMessage(
                             append(text = message.text + " ")
                         }
                         withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 10.sp)) {
-                            append(text = message.time)
+                            append(text = "" /* TODO("message.time") */)
                         }
                     }, modifier = Modifier.padding(8.dp)
                 )
@@ -234,7 +228,7 @@ fun UserMessage(
 }
 
 @Composable
-fun MessageInputField(
+private fun MessageInputField(
     text: String,
     onValueChange: (String) -> Unit,
     onSendMessageClick: () -> Unit,
@@ -276,5 +270,5 @@ fun MessageInputField(
 }
 
 // проверяем проскроллено ли до последнего элемента в lazy list
-fun LazyListState.isScrolledToTheEnd() =
+private fun LazyListState.isScrolledToTheEnd() =
     layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 2

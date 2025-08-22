@@ -156,4 +156,5 @@
     <string name="content_send_message">Отправить сообщение</string>
     <string name="text_messenger">Мессенджер</string>
     <string name="text_messeger_is_empty">Не найдено активных чатов</string>
+    <string name="text_add_image">Добавить изображение</string>
 </resources>

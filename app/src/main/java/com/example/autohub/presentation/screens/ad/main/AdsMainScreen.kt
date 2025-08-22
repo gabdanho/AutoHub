@@ -32,19 +32,11 @@ import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.theme.containerColor
-import com.example.autohub.data.utils.getAdsBySearchText
 
 @Composable
 fun AdsMainScreen(
-    adsList: List<CarAd>,
-    onAccountClick: () -> Unit,
-    onMessageClick: () -> Unit,
-    onAdListClick: () -> Unit,
-    onAdClick: (CarAd) -> Unit,
-    onFiltersClick: () -> Unit,
-    onDoneClick: (List<CarAd>) -> Unit,
     modifier: Modifier = Modifier,
-    filters: Map<String, String> = emptyMap()
+    // filters: Map<String, String> = emptyMap()
 ) {
      Scaffold(
          topBar = {
@@ -52,35 +44,35 @@ fun AdsMainScreen(
                  horizontalArrangement = Arrangement.Center,
                  modifier = Modifier.fillMaxWidth()
              ) {
-                 SearchAdsBar(filters = filters, onDoneClick = onDoneClick, onFiltersClick = onFiltersClick)
+                 SearchAdsBar()
                  Icon(
                      imageVector = Icons.AutoMirrored.Filled.List,
                      contentDescription = stringResource(id = R.string.content_search_filters),
                      modifier = Modifier
                          .size(40.dp)
-                         .clickable { onFiltersClick() }
+                         .clickable { TODO("onFiltersClick()") }
                  )
              }
          },
          bottomBar = {
              BottomNavBar(
-                 onAdListClick = onAdListClick,
-                 onAccountClick = onAccountClick,
-                 onMessageClick = onMessageClick
+                 onAdListClick = TODO("onAdListClick()"),
+                 onAccountClick = TODO("onAccountClick()"),
+                 onMessageClick = TODO("onMessageClick()")
              )
          }
      ) { innerPadding ->
-         if (adsList.isNotEmpty()) {
+         if (TODO("adsList.isNotEmpty()")) {
              LazyVerticalGrid(
                  columns = GridCells.Fixed(2),
                  modifier = modifier
                      .padding(8.dp)
                      .padding(innerPadding)
              ) {
-                 items(adsList) { carAd ->
+                 items(TODO("adsList")) { carAd ->
                      CarAdCard(
-                         ad = carAd,
-                         onAdClick = { onAdClick(carAd) },
+                         ad = TODO("carAd"),
+                         onAdClick = { TODO("onAdClick(carAd)") },
                          modifier = Modifier
                              .fillMaxWidth()
                              .padding(8.dp)
@@ -105,14 +97,9 @@ fun AdsMainScreen(
 }
 
 @Composable
-fun SearchAdsBar(
-    filters: Map<String, String>,
-    onDoneClick: (List<CarAd>) -> Unit,
-    onFiltersClick: () -> Unit,
+private fun SearchAdsBar(
     modifier: Modifier = Modifier
 ) {
-    val searchTextState = remember { mutableStateOf("") }
-
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -121,8 +108,8 @@ fun SearchAdsBar(
             .padding(8.dp)
     ) {
         TextField(
-            value = searchTextState.value,
-            onValueChange = { searchTextState.value = it },
+            value = "", // TODO("searchTextState.value")
+            onValueChange = { TODO("searchTextState.value = it") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Search,
@@ -146,7 +133,7 @@ fun SearchAdsBar(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    getAdsBySearchText(searchTextState.value, filters, onDoneClick)
+                    TODO("getAdsBySearchText(searchTextState.value, filters, onDoneClick)")
                 }
             ),
             modifier = Modifier.fillMaxWidth(0.8f)
@@ -157,7 +144,7 @@ fun SearchAdsBar(
             modifier = Modifier
                 .size(40.dp)
                 .padding(start = 8.dp)
-                .clickable { onFiltersClick() }
+                .clickable { TODO("onFiltersClick()") }
         )
     }
 }

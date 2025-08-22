@@ -5,10 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.navigation.model.nav_type.ListCarAdNav
 import com.example.autohub.presentation.navigation.model.nav_type.ListCarAdNavType
+import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import com.example.autohub.presentation.navigation.model.nav_type.UserNavType
 import com.example.autohub.presentation.screens.account.another.AnotherAccountScreen
 import kotlin.reflect.typeOf
@@ -18,7 +18,7 @@ fun NavGraphBuilder.accountNavigationScreensGraph(
 ) {
     composable<AccountGraph.AnotherAccountScreen>(
         typeMap = mapOf(
-            typeOf<User>() to UserNavType(),
+            typeOf<UserNav>() to UserNavType(),
             typeOf<ListCarAdNav>() to ListCarAdNavType()
         )
     ) {

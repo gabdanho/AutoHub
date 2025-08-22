@@ -25,14 +25,11 @@ modifier
 @Composable
 fun ListPhotos(
     imagesUrl: List<String>,
+    imageToShow: String?,
+    changeImageToShow: (String?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isShowImageDialog = remember { mutableStateOf(false) }
-    val imageUriToShow = remember { mutableStateOf("") }
-
-    LazyRow(
-        modifier = modifier
-    ) {
+    LazyRow(modifier = modifier) {
         items(imagesUrl) { url ->
             AsyncImage(
                 model = url,
@@ -40,19 +37,16 @@ fun ListPhotos(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(300.dp)
-                    .clickable {
-                        isShowImageDialog.value = true
-                        imageUriToShow.value = url
-                    }
+                    .clickable { changeImageToShow(url) }
                     .padding(horizontal = 4.dp)
             )
         }
     }
 
-    if (isShowImageDialog.value) {
+    if (imageToShow != null) {
         ImageDialog(
-            uri = imageUriToShow.value,
-            closeDialog = { isShowImageDialog.value = false }
+            url = imageToShow,
+            closeDialog = { changeImageToShow(null) }
         )
     }
 }

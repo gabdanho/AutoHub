@@ -6,7 +6,7 @@ import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.domain.interfaces.repository.firebase.AuthUserRepository
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.domain.model.UserData as UserDataDomain
+import com.example.autohub.domain.model.User as UserDataDomain
 import com.example.autohub.domain.model.UserStatus as UserStatusDomain
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,10 +25,7 @@ class AuthUserRepositoryImpl @Inject constructor(
             fbAuth.signInWithEmailAndPassword(email, password).await()
             val user = fbAuth.currentUser ?: throw IllegalStateException("User is null after login")
 
-            if (!user.isEmailVerified) {
-                fbAuth.signOut()
-                return@safeFirebaseCall throw IllegalStateException("Email not verified")
-            }
+            if (!user.isEmailVerified) fbAuth.signOut()
 
             getUserToken()
             changeUserStatus(UserStatus.ONLINE.toUserStatusDomain())
@@ -47,7 +44,7 @@ class AuthUserRepositoryImpl @Inject constructor(
             docReference.set(user).await()
 
             fbAuth.currentUser?.sendEmailVerification()?.await().also {
-                fbAuth.signOut()
+                signOut()
             }
         }
     }
@@ -61,6 +58,12 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun signOut() {
+        safeFirebaseCall {
+            fbAuth.signOut()
+        }
+    }
+
     override suspend fun changeUserStatus(status: UserStatusDomain) {
         fbAuth.currentUser?.let {
             fbStore
@@ -71,6 +74,12 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun getAuthUserUID(): String =
+    override suspend fun changePassword(newPassword: String): FirebaseResult<Unit> {
+        return safeFirebaseCall {
+            fbAuth.currentUser?.updatePassword(newPassword)
+        }
+    }
+
+    override fun getAuthUserUID(): String =
         fbAuth.currentUser?.uid ?: throw IllegalStateException("Can't get user UID")
 }

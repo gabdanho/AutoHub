@@ -43,22 +43,14 @@ import com.google.firebase.auth.auth
 
 @Composable
 fun LoginScreen(
-    isProgressBarWork: Boolean,
-    isShowSendEmailText: Boolean,
-    onLoginClick: (String, String) -> Unit,
-    onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val emailState = remember { mutableStateOf("") }
-    val passwordState = remember { mutableStateOf("") }
-    val showDialog = remember { mutableStateOf(false) }
-    val fsAuth = Firebase.auth
 
     // Диалог со сменой пароля
-    if (showDialog.value) {
+    if (TODO("showDialog.value")) {
         ChangePasswordDialog(
-            onHideDialogClick = { showDialog.value = false }
+            onHideDialogClick = { TODO("showDialog.value = false") }
         )
     }
 
@@ -75,7 +67,7 @@ fun LoginScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .clickable {
-                    showDialog.value = true
+                    TODO("showDialog.value = true")
                 }
         )
     }
@@ -105,8 +97,8 @@ fun LoginScreen(
             modifier = Modifier.padding(bottom = 8.dp)
         )
         RoundedCornerTextField(
-            text = emailState.value,
-            onValueChange = { emailState.value = it },
+            text = TODO("emailState.value"),
+            onValueChange = { TODO("emailState.value = it") },
             label = stringResource(id = R.string.input_login),
             modifier = Modifier.border(
                 width = 1.dp,
@@ -116,8 +108,8 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         RoundedCornerTextField(
-            text = passwordState.value,
-            onValueChange = { passwordState.value = it },
+            text = TODO("passwordState.value"),
+            onValueChange = { TODO("passwordState.value = it") },
             label = stringResource(id = R.string.input_password),
             modifier = Modifier.border(
                 width = 1.dp,
@@ -129,6 +121,7 @@ fun LoginScreen(
         CustomButton(
             text = stringResource(id = R.string.button_enter),
             onClick = {
+                /*
                 if (emailState.value.isEmpty()) {
                     Toast.makeText(
                         context,
@@ -147,6 +140,7 @@ fun LoginScreen(
                 } else {
                     onLoginClick(emailState.value, passwordState.value)
                 }
+                 */
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -154,13 +148,13 @@ fun LoginScreen(
         )
         CustomButton(
             text = stringResource(id = R.string.button_registration),
-            onClick = { onRegisterClick() },
+            onClick = { TODO("onRegisterClick()") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 32.dp)
         )
         // Повторно отправить письмо
-        if (isShowSendEmailText) {
+        if (TODO("isShowSendEmailText")) {
             Text(
                 text = stringResource(id = R.string.text_send_email_message_again),
                 color = Color.Blue,
@@ -168,6 +162,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .padding(16.dp)
                     .clickable {
+                        /*
                         fsAuth.signInWithEmailAndPassword(emailState.value, passwordState.value)
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
@@ -183,11 +178,12 @@ fun LoginScreen(
                                     }
                                 }
                             }
+                         */
                     }
             )
         }
         // Прогресс бар
-        if (isProgressBarWork) {
+        if (TODO("isProgressBarWork")) {
             CircularProgressIndicator(
                 color = Color.Black,
             )
@@ -196,12 +192,10 @@ fun LoginScreen(
 }
 
 @Composable
-fun ChangePasswordDialog(
+private fun ChangePasswordDialog(
     onHideDialogClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val emailToResetPassword = remember { mutableStateOf("") }
-    val fsAuth = Firebase.auth
     val context = LocalContext.current
 
     Dialog(onHideDialogClick) {
@@ -221,8 +215,8 @@ fun ChangePasswordDialog(
                 ) {
                     InputField(
                         text = stringResource(id = R.string.input_email),
-                        onValueChange = { emailToResetPassword.value = it },
-                        value = emailToResetPassword.value,
+                        onValueChange = { TODO("emailToResetPassword.value = it") },
+                        value = TODO("emailToResetPassword.value"),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
@@ -231,6 +225,7 @@ fun ChangePasswordDialog(
                 CustomButton(
                     text = stringResource(id = R.string.button_change_password),
                     onClick = {
+                        /*
                         if (emailToResetPassword.value.isNotEmpty()) {
                             fsAuth.sendPasswordResetEmail(emailToResetPassword.value)
                                 .addOnCompleteListener { task ->
@@ -259,6 +254,7 @@ fun ChangePasswordDialog(
                                 Toast.LENGTH_LONG
                             ).show()
                         }
+                         */
                     },
                     modifier = Modifier
                         .fillMaxWidth(0.7f)

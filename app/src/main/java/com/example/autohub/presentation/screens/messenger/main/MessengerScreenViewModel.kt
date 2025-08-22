@@ -1,4 +1,6 @@
 package com.example.autohub.presentation.screens.messenger.main
 
-class MessengerScreenViewModel {
+import androidx.lifecycle.ViewModel
+
+class MessengerScreenViewModel : ViewModel() {
 }

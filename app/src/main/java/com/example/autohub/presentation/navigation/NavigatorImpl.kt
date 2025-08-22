@@ -13,12 +13,12 @@ class NavigatorImpl(
     override val navigationActions = _navigationActions.receiveAsFlow()
 
     override suspend fun navigate(
-        navigationDestination: NavigationDestination,
+        destination: NavigationDestination,
         navOptions: NavOptionsBuilder.() -> Unit
     ) {
         _navigationActions.send(
             NavigationAction.Navigate(
-                navigationDestination = navigationDestination,
+                navigationDestination = destination,
                 navOptions = navOptions
             )
         )

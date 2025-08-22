@@ -4,7 +4,7 @@ import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.firebase.utils.FirebaseStorageUtils
 import com.example.autohub.domain.interfaces.repository.firebase.UserDataRepository
 import com.example.autohub.domain.model.ImageUploadData
-import com.example.autohub.domain.model.UserData
+import com.example.autohub.domain.model.User
 import com.example.autohub.domain.model.result.FirebaseResult
 import kotlinx.coroutines.tasks.await
 import com.google.firebase.auth.FirebaseAuth
@@ -20,7 +20,7 @@ class UserDataRepositoryImpl @Inject constructor(
     private val user
         get() = fbAuth.currentUser ?: throw IllegalStateException("User not found")
 
-    override suspend fun getUserData(userUID: String): FirebaseResult<UserData> {
+    override suspend fun getUserData(userUID: String): FirebaseResult<User> {
         return safeFirebaseCall {
             val snapshot = fbFirestore
                 .collection("users")
@@ -28,38 +28,38 @@ class UserDataRepositoryImpl @Inject constructor(
                 .get()
                 .await()
 
-            snapshot.toObject(UserData::class.java)
+            snapshot.toObject(User::class.java)
                 ?: throw IllegalStateException("User $userUID not found")
         }
     }
 
     override suspend fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData) {
         safeFirebaseCall {
-            val uri = fbStorageUtils.uploadImageToFirebase(
-                bytes = imageRef.bytes,
-                path = "users/${user.uid}/profileImage.jpg"
-            )
-            updateProfileInfo("image", uri)
+            imageRef.bytes?.let {
+                val uri = fbStorageUtils.uploadImageToFirebase(
+                    bytes = imageRef.bytes,
+                    path = "users/${user.uid}/profileImage.jpg"
+                )
+                updateProfileInfo("image", uri)
+            }
         }
     }
 
-    override suspend fun updateFirstAnsSecondName(
-        firstName: String,
-        lastName: String,
-    ) {
+    override suspend fun updateFirstName(firstName: String) {
         safeFirebaseCall {
-            fbFirestore.collection("users").document(user.uid).update(
-                mapOf(
-                    "firstName" to firstName,
-                    "secondName" to lastName
-                )
-            ).await()
+            updateProfileInfo(info = "firstName", value = firstName)
+        }
+    }
+
+    override suspend fun updateLastName(lastName: String) {
+        safeFirebaseCall {
+            updateProfileInfo(info = "lastName", value = lastName)
         }
     }
 
     override suspend fun updateCity(city: String) {
         safeFirebaseCall {
-            updateProfileInfo("city", city)
+            updateProfileInfo(info = "city", value = city)
         }
     }
 

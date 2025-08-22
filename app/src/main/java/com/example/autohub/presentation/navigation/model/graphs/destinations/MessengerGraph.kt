@@ -10,5 +10,5 @@ sealed interface MessengerGraph : NavigationDestination {
     data object MessengerScreen : MessengerGraph
 
     @Serializable
-    data class ChattingScreen(val user: User = User()) : MessengerGraph
+    data object ChattingScreen : MessengerGraph
 }

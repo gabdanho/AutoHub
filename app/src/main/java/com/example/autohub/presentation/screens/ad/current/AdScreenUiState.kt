@@ -1,3 +1,8 @@
 package com.example.autohub.presentation.screens.ad.current
 
-data class AdScreenUiState()
+import com.example.autohub.presentation.model.LoadingState
+
+data class AdScreenUiState(
+    val authUserUid: String = "",
+    val loadingState: LoadingState? = null
+)

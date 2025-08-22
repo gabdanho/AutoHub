@@ -1,6 +1,7 @@
 package com.example.autohub.presentation.componets
 
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -26,12 +28,11 @@ modifier
 @Composable
 fun ListAddedPhotos(
     images: List<Uri>,
+    imageToShow: Uri?,
     onAddImageClick: () -> Unit,
+    changeImageToShow: (Uri?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isShowImageDialog = remember { mutableStateOf(false) }
-    val imageUriToShow = remember { mutableStateOf(Uri.EMPTY) }
-
     LazyRow(
         modifier = modifier
     ) {
@@ -42,23 +43,27 @@ fun ListAddedPhotos(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(300.dp)
-                    .clickable {
-                        if (imageUri == images.last()) {
-                            onAddImageClick()
-                        } else {
-                            isShowImageDialog.value = true
-                            imageUriToShow.value = imageUri
-                        }
-                    }
+                    .clickable { changeImageToShow(imageUri) }
+                    .padding(horizontal = 4.dp)
+            )
+        }
+        item {
+            Image(
+                painter = painterResource(id = R.drawable.add_img),
+                contentDescription = stringResource(id = R.string.text_add_image),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(300.dp)
+                    .clickable { onAddImageClick() }
                     .padding(horizontal = 4.dp)
             )
         }
     }
 
-    if (isShowImageDialog.value) {
+    if (imageToShow != null) {
         ImageDialog(
-            uri = imageUriToShow.value,
-            closeDialog = { isShowImageDialog.value = false }
+            uri = imageToShow,
+            closeDialog = { changeImageToShow(null) }
         )
     }
 }

@@ -2,7 +2,7 @@ package com.example.autohub.domain.usecase
 
 import com.example.autohub.domain.interfaces.repository.firebase.AuthUserRepository
 import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
-import com.example.autohub.domain.model.UserData
+import com.example.autohub.domain.model.User
 import com.example.autohub.domain.model.result.FirebaseResult
 
 class RegisterUserUseCaseImpl(
@@ -12,7 +12,7 @@ class RegisterUserUseCaseImpl(
     override suspend fun invoke(
         email: String,
         password: String,
-        user: UserData
+        user: User
     ): FirebaseResult<Unit> {
         return authUserRepository.registerUser(email = email, password = password, user = user)
     }
