@@ -14,11 +14,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.example.autohub.presentation.theme.containerColor
 
-// TODO : Заменить в экранах modifier:
-/*
-modifier.fillMaxWidth(0.5f)
- */
-
 @Composable
 fun CustomButton(
     text: String,

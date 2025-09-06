@@ -22,13 +22,6 @@ import com.example.autohub.R
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.theme.cardColor
 
-// TODO : Заменить в экрана модификатор:
-/*
-modifier
-    .fillMaxWidth()
-    .padding(8.dp)
- */
-
 @Composable
 fun CarAdCard(
     ad: CarAd,

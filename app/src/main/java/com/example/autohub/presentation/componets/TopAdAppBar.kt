@@ -12,13 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-// TODO : Заменить в экранах modifier:
-/*
-modifier
-    .fillMaxWidth()
-    .background(color = barColor)
- */
-
 @Composable
 fun TopAdAppBar(
     titleText: String,

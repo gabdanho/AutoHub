@@ -8,11 +8,6 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.example.autohub.R
 
-// TODO : Заменить в экранах modifier:
-/*
-modifier.fillMaxWidth()
- */
-
 @Composable
 fun ImageDialog(
     uri: Uri,

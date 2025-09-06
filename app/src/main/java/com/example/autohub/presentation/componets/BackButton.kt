@@ -14,13 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.containerColor as themeContainerColor
 
-// TODO : В экранах заменить modifier на тот, который указан здесь:
-/*
-modifier
-    .padding(8.dp)
-    .size(40.dp)
-*/
-
 @Composable
 fun BackButton(
     onBackClick: () -> Unit,

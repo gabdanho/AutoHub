@@ -15,11 +15,6 @@ import com.example.autohub.presentation.theme.focusedTextFieldColor
 import com.example.autohub.presentation.theme.labelColor
 import com.example.autohub.presentation.theme.unfocusedTextFieldColor
 
-// TODO : Заменить в экранах modifier:
-/*
-modifier.border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(20.dp))
- */
-
 @Composable
 fun RoundedCornerTextField(
     text: String,

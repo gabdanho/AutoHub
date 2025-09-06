@@ -20,13 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.labelColor
 
-// TODO : Заменить в экранах modifier:
-/*
-modifier
-    .fillMaxWidth()
-    .padding(horizontal = 16.dp)
- */
-
 @Composable
 fun InputField(
     text: String,

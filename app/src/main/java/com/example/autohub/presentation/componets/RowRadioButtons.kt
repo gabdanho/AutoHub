@@ -24,18 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.autohub.R
 import com.example.autohub.presentation.mapper.StringToResourceIdMapperImpl
-import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.options.CarOption
 import com.example.autohub.presentation.theme.containerColor
 import com.example.autohub.presentation.theme.labelColor
 import com.example.autohub.presentation.theme.unfocusedTextFieldColor
-
-// TODO : Заменить в экранам modifier:
-/*
-modifier
-    .fillMaxWidth()
-    .padding(end = 8.dp)
- */
 
 @Composable
 fun RowRadioButtons(
