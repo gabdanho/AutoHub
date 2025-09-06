@@ -8,7 +8,6 @@ import com.example.autohub.domain.interfaces.repository.firebase.AdDataRepositor
 import com.example.autohub.domain.model.CarAd as CarAdDomain
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.SearchFilter
-import com.example.autohub.domain.model.User as UserDataDomain
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.utils.TimeProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -78,25 +77,24 @@ class AdDataRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createAd(
-        carAd: CarAdDomain,
-        currentDate: String
+        carAdInfo: CarAdDomain,
+        images: List<ImageUploadData>
     ): FirebaseResult<Unit> {
         return safeFirebaseCall {
             val timeStamp = timeProvider.currentTimeMillis()
-            val adReference = "${carAd.userUID}_${timeStamp}"
+            val currentDate = timeProvider.millisToDate(timeStamp)
+            val adReference = "${carAdInfo.userUID}_${timeStamp}"
             val docReference = fbFirestore
                 .collection("ads")
                 .document(adReference)
-            val updatedCarAd = carAd.copy(
+            val updatedCarAd = carAdInfo.copy(
                 adID = adReference,
                 dateAdPublished = currentDate
             )
 
             docReference.set(updatedCarAd).await()
 
-            // FixMe: Пофиксить (Найти способ как преобразовывать стринги URI в UploadData) -> val imagesUploadData = carAd.imagesUrl.map { ImageUploadData(id = 1, bytes = it.to) }
-
-            uploadAdsImagesToFirebase(imagesUploadData, adReference)
+            uploadAdsImagesToFirebase(images = images, reference = adReference)
         }
     }
 
