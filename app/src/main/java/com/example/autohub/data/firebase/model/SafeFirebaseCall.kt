@@ -10,17 +10,17 @@ suspend fun <T> safeFirebaseCall(apiCall: suspend () -> T): FirebaseResult<T> {
     return try {
         FirebaseResult.Success(apiCall())
     } catch (e: HttpException) {
-        FirebaseResult.ServerError(
-            message = e.toString(),
+        FirebaseResult.Error.ServerError(
+            serverMessage = e.toString(),
             errorCode = e.code()
         )
     } catch (e: SocketTimeoutException) {
-        FirebaseResult.TimeoutError(message = e.toString())
+        FirebaseResult.Error.TimeoutError(timeoutMessage = e.toString())
     } catch (e: IOException) {
-        FirebaseResult.ConnectionError(message = e.toString())
+        FirebaseResult.Error.ConnectionError(connectionMessage = e.toString())
     } catch (e: Exception) {
-        FirebaseResult.UnknownError(message = e.toString())
+        FirebaseResult.Error.UnknownError(unknownMessage = e.toString())
     } catch (e: TimeoutCancellationException) {
-        FirebaseResult.TimeoutError(message = "The server response time has been exceeded")
+        FirebaseResult.Error.TimeoutError(timeoutMessage = "The server response time has been exceeded")
     }
 }
