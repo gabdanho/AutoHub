@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.mapper
+package com.example.autohub.presentation.mapper.resources
 
 import com.example.autohub.R
 import com.example.autohub.presentation.model.StringResNamePresentation

@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.autohub.R
-import com.example.autohub.presentation.mapper.StringToResourceIdMapperImpl
+import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.options.CarOption
 import com.example.autohub.presentation.theme.containerColor
 import com.example.autohub.presentation.theme.labelColor
