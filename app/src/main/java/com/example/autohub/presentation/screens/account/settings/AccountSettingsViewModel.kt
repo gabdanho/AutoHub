@@ -156,7 +156,7 @@ class AccountSettingsViewModel @Inject constructor(
                 }
             }
 
-            _uiState.update { state -> state.copy(passwordMessage = message) }
+            _uiState.update { state -> state.copy(passwordStateMessage = message) }
         }
     }
 
@@ -168,7 +168,7 @@ class AccountSettingsViewModel @Inject constructor(
 
     fun clearPasswordMessage() {
         _uiState.update { state ->
-            state.copy(passwordMessage = null)
+            state.copy(passwordStateMessage = null)
         }
     }
 

@@ -81,9 +81,9 @@ fun AccountSettings(
         }
     }
 
-    LaunchedEffect(uiState.passwordMessage) {
-        uiState.passwordMessage?.let {
-            Toast.makeText(context, uiState.passwordMessage, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(uiState.passwordStateMessage) {
+        uiState.passwordStateMessage?.let {
+            Toast.makeText(context, uiState.passwordStateMessage, Toast.LENGTH_SHORT).show()
             viewModel.clearPasswordMessage()
         }
     }
