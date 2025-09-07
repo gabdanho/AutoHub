@@ -190,13 +190,9 @@ object DomainModule {
     @Provides
     @Singleton
     fun provideInsertTokenUseCase(
-        tokenRepository: TokenRepository,
-        authUserRepository: AuthUserRepository
+        tokenRepository: TokenRepository
     ): InsertTokenUseCase {
-        return InsertTokenUseCaseImpl(
-            tokenRepository = tokenRepository,
-            authUserRepository = authUserRepository
-        )
+        return InsertTokenUseCaseImpl(tokenRepository = tokenRepository)
     }
 
     @Provides
