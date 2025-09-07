@@ -7,8 +7,10 @@ import com.example.autohub.domain.interfaces.repository.remote.MessengerReposito
 import com.example.autohub.domain.interfaces.repository.remote.UserDataRepository
 import com.example.autohub.domain.interfaces.usecase.ChangePasswordUseCase
 import com.example.autohub.domain.interfaces.usecase.ChangeUserStatusUseCase
+import com.example.autohub.domain.interfaces.usecase.ClearUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetAdsUseCase
+import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetBuyerStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.GetBuyersChatsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCountUnreadMessagesUseCase
@@ -16,12 +18,15 @@ import com.example.autohub.domain.interfaces.usecase.GetCurrentUserAdsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
-import com.example.autohub.domain.interfaces.usecase.GetUserIdUseCase
+import com.example.autohub.domain.interfaces.usecase.GetUserTokenUseCase
 import com.example.autohub.domain.interfaces.usecase.InsertLocalUserIdUseCase
+import com.example.autohub.domain.interfaces.usecase.LoginAndSaveUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginUserUseCase
 import com.example.autohub.domain.interfaces.usecase.MarkMessagesAsReadUseCase
+import com.example.autohub.domain.interfaces.usecase.RegisterAndSaveUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
 import com.example.autohub.domain.interfaces.usecase.SendMessageUseCase
+import com.example.autohub.domain.interfaces.usecase.SignOutAndClearUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.SignOutUseCase
 import com.example.autohub.domain.interfaces.usecase.UpdateCityUseCase
 import com.example.autohub.domain.interfaces.usecase.UpdateFirstNameUseCase
@@ -30,8 +35,10 @@ import com.example.autohub.domain.interfaces.usecase.UploadAdsImagesToFirebaseUs
 import com.example.autohub.domain.interfaces.usecase.UploadUserProfileImageToFirebaseUseCase
 import com.example.autohub.domain.usecase.ChangePasswordUseCaseImpl
 import com.example.autohub.domain.usecase.ChangeUserStatusUseCaseImpl
+import com.example.autohub.domain.usecase.ClearUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.CreateAdUseCaseImpl
 import com.example.autohub.domain.usecase.GetAdsUseCaseImpl
+import com.example.autohub.domain.usecase.GetAuthUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.GetBuyerStatusUseCaseImpl
 import com.example.autohub.domain.usecase.GetBuyersChatsUseCaseImpl
 import com.example.autohub.domain.usecase.GetCountUnreadMessagesUseCaseImpl
@@ -39,12 +46,15 @@ import com.example.autohub.domain.usecase.GetCurrentUserAdsUseCaseImpl
 import com.example.autohub.domain.usecase.GetMessagesUseCaseImpl
 import com.example.autohub.domain.usecase.GetLocalUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.GetUserDataUseCaseImpl
-import com.example.autohub.domain.usecase.GetUserIdUseCaseImpl
+import com.example.autohub.domain.usecase.GetUserTokenUseCaseImpl
 import com.example.autohub.domain.usecase.InsertLocalUserIdUseCaseImpl
+import com.example.autohub.domain.usecase.LoginAndSaveUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.LoginUserUseCaseImpl
 import com.example.autohub.domain.usecase.MarkMessagesAsReadUseCaseImpl
+import com.example.autohub.domain.usecase.RegisterAndSaveUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.RegisterUserUseCaseImpl
 import com.example.autohub.domain.usecase.SendMessageUseCaseImpl
+import com.example.autohub.domain.usecase.SignOutAndClearUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.SignOutUseCaseImpl
 import com.example.autohub.domain.usecase.UpdateCityUseCaseImpl
 import com.example.autohub.domain.usecase.UpdateFirstNameUseCaseImpl
@@ -56,6 +66,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import kotlin.math.log
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -81,8 +92,8 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideGetUserTokenUseCase(authUserRepository: AuthUserRepository): GetUserIdUseCase {
-        return GetUserIdUseCaseImpl(authUserRepository = authUserRepository)
+    fun provideGetUserTokenUseCase(authUserRepository: AuthUserRepository): GetUserTokenUseCase {
+        return GetUserTokenUseCaseImpl(authUserRepository = authUserRepository)
     }
 
     @Provides
@@ -189,7 +200,7 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideInsertUserIdUseCase(
+    fun provideInsertLocalUserIdUseCase(
         userPreferences: UserPreferencesRepository
     ): InsertLocalUserIdUseCase {
         return InsertLocalUserIdUseCaseImpl(userPreferences = userPreferences)
@@ -197,7 +208,59 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideGetTokenFromDatabaseUseCase(userPreferences: UserPreferencesRepository): GetLocalUserIdUseCase {
+    fun provideGetLocalUserIdUseCase(userPreferences: UserPreferencesRepository): GetLocalUserIdUseCase {
         return GetLocalUserIdUseCaseImpl(userPreferences = userPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAuthUserIdUseCase(authUserRepository: AuthUserRepository): GetAuthUserIdUseCase {
+        return GetAuthUserIdUseCaseImpl(authUserRepository = authUserRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLoginAndSaveUserIdUseCase(
+        loginUserUseCase: LoginUserUseCase,
+        getUserIdUseCase: GetAuthUserIdUseCase,
+        insertLocalUserIdUseCase: InsertLocalUserIdUseCase
+    ): LoginAndSaveUserIdUseCase {
+        return LoginAndSaveUserIdUseCaseImpl(
+            loginUserUseCase = loginUserUseCase,
+            getUserIdUseCase = getUserIdUseCase,
+            insertLocalUserIdUseCase = insertLocalUserIdUseCase
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideRegisterAndSaveUserIdUseCase(
+        registerUserUseCase: RegisterUserUseCase,
+        getUserIdUseCase: GetAuthUserIdUseCase,
+        insertLocalUserIdUseCase: InsertLocalUserIdUseCase
+    ): RegisterAndSaveUserIdUseCase {
+        return RegisterAndSaveUserIdUseCaseImpl(
+            registerUserUseCase = registerUserUseCase,
+            getUserIdUseCase = getUserIdUseCase,
+            insertLocalUserIdUseCase = insertLocalUserIdUseCase
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideClearUserUidUseCase(userPreferences: UserPreferencesRepository): ClearUserIdUseCase {
+        return ClearUserIdUseCaseImpl(userPreferences = userPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSignOutAndClearUserIdUseCase(
+        signOutUseCase: SignOutUseCase,
+        clearUserIdUseCase: ClearUserIdUseCase
+    ): SignOutAndClearUserIdUseCase {
+        return SignOutAndClearUserIdUseCaseImpl(
+            signOutUseCase = signOutUseCase,
+            clearUserIdUseCase = clearUserIdUseCase
+        )
     }
 }

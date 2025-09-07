@@ -5,4 +5,6 @@ interface UserPreferencesRepository {
     fun insertUserId(uid: String)
 
     fun getUserId(): String?
+
+    suspend fun clearUserId()
 }

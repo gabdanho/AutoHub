@@ -7,7 +7,7 @@ class InsertLocalUserIdUseCaseImpl(
     private val userPreferences: UserPreferencesRepository
 ) : InsertLocalUserIdUseCase {
 
-    override suspend fun invoke(uid: String) {
+    override fun invoke(uid: String) {
         userPreferences.insertUserId(uid = uid)
     }
 }

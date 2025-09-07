@@ -24,6 +24,10 @@ class UserPreferencesRepositoryImpl @Inject constructor(
             .takeIf { it != DEFAULT_USER_ID && it?.isNotBlank() == true }
     }
 
+    override suspend fun clearUserId() {
+        prefs.edit().remove(KEY_USER_ID).apply()
+    }
+
     private companion object {
         private const val PREFS_NAME = "user_preferences"
         private const val KEY_USER_ID = "user_id"
