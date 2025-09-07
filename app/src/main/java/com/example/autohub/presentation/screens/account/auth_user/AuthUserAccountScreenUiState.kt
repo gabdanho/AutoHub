@@ -5,8 +5,7 @@ import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.user.User
 
 data class AuthUserAccountScreenUiState(
-    val userLoadingState: LoadingState? = LoadingState.Loading,
-    val adsLoadingState: LoadingState? = LoadingState.Loading,
+    val loadingState: LoadingState? = LoadingState.Loading,
 
     val user: User = User(),
     val ads: List<CarAd> = emptyList()

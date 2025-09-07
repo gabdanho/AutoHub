@@ -1,5 +1,6 @@
 package com.example.autohub.presentation.screens.account.auth_user
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,9 +49,11 @@ fun AuthUserAccountScreen(
     viewModel: AuthUserAccountScreenViewModel = hiltViewModel<AuthUserAccountScreenViewModel>()
 ) {
     val uiState = viewModel.uiState.collectAsState().value
+    val context = LocalContext.current
 
-    LaunchedEffect(uiState.userLoadingState, uiState.adsLoadingState) {
-        if (uiState.userLoadingState is LoadingState.Error || uiState.adsLoadingState is LoadingState.Error) {
+    LaunchedEffect(uiState.loadingState) {
+        if (uiState.loadingState is LoadingState.Error) {
+            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
             viewModel.clearLoadingState()
         }
     }

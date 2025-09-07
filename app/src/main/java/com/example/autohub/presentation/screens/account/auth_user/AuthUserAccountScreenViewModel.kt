@@ -102,23 +102,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
     }
 
     fun clearLoadingState() {
-        when {
-            _uiState.value.adsLoadingState is LoadingState.Error -> {
-                _uiState.update { state ->
-                    state.copy(
-                        adsLoadingState = null
-                    )
-                }
-            }
-
-            _uiState.value.userLoadingState is LoadingState.Error -> {
-                _uiState.update { state ->
-                    state.copy(
-                        userLoadingState = null
-                    )
-                }
-            }
-        }
+        _uiState.update { state -> state.copy(loadingState = null) }
     }
 
     private fun getUserDataAndAds() {
@@ -131,7 +115,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                                 state.copy(
                                     user = userResult.data.toUserPresentation()
                                         .copy(uid = tokenResult.data),
-                                    userLoadingState = LoadingState.Success
+                                    loadingState = LoadingState.Success
                                 )
                             }
 
@@ -140,7 +124,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                                     _uiState.update { state ->
                                         state.copy(
                                             ads = adsResult.data.map { it.toCarAdPresentation() },
-                                            adsLoadingState = LoadingState.Success
+                                            loadingState = LoadingState.Success
                                         )
                                     }
                                 }
@@ -148,7 +132,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                                 is FirebaseResult.Error -> {
                                     _uiState.update { state ->
                                         state.copy(
-                                            adsLoadingState = LoadingState.Error(message = adsResult.message)
+                                            loadingState = LoadingState.Error(message = adsResult.message)
                                         )
                                     }
                                 }
@@ -158,7 +142,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                         is FirebaseResult.Error -> {
                             _uiState.update { state ->
                                 state.copy(
-                                    userLoadingState = LoadingState.Error(message = userResult.message)
+                                    loadingState = LoadingState.Error(message = userResult.message)
                                 )
                             }
                         }
@@ -168,7 +152,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                 is DbResult.Error -> {
                     _uiState.update { state ->
                         state.copy(
-                            userLoadingState = LoadingState.Error(message = tokenResult.message)
+                            loadingState = LoadingState.Error(message = tokenResult.message)
                         )
                     }
                 }
