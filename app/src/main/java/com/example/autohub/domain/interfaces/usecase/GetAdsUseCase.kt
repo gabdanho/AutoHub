@@ -4,7 +4,7 @@ import com.example.autohub.domain.model.CarAd
 import com.example.autohub.domain.model.SearchFilter
 import com.example.autohub.domain.model.result.FirebaseResult
 
-interface GetAdsBySearchTextAndFiltersUseCase {
+interface GetAdsUseCase {
     suspend operator fun invoke(
         searchText: String,
         filters: List<SearchFilter>
