@@ -8,8 +8,7 @@ import com.example.autohub.domain.interfaces.repository.room.TokenRepository
 import com.example.autohub.domain.interfaces.usecase.ChangePasswordUseCase
 import com.example.autohub.domain.interfaces.usecase.ChangeUserStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
-import com.example.autohub.domain.interfaces.usecase.GetAdsBySearchTextAndFiltersUseCase
-import com.example.autohub.domain.interfaces.usecase.GetAdsWithFiltersUseCase
+import com.example.autohub.domain.interfaces.usecase.GetAdsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetBuyerStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.GetBuyersChatsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCountUnreadMessagesUseCase
@@ -32,8 +31,7 @@ import com.example.autohub.domain.interfaces.usecase.UploadUserProfileImageToFir
 import com.example.autohub.domain.usecase.ChangePasswordUseCaseImpl
 import com.example.autohub.domain.usecase.ChangeUserStatusUseCaseImpl
 import com.example.autohub.domain.usecase.CreateAdUseCaseImpl
-import com.example.autohub.domain.usecase.GetAdsBySearchTextAndFiltersUseCaseImpl
-import com.example.autohub.domain.usecase.GetAdsWithFiltersUseCaseImpl
+import com.example.autohub.domain.usecase.GetAdsUseCaseImpl
 import com.example.autohub.domain.usecase.GetBuyerStatusUseCaseImpl
 import com.example.autohub.domain.usecase.GetBuyersChatsUseCaseImpl
 import com.example.autohub.domain.usecase.GetCountUnreadMessagesUseCaseImpl
@@ -107,14 +105,8 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideGetAdsBySearchTextAndFiltersUseCase(adDataRepository: AdDataRepository): GetAdsBySearchTextAndFiltersUseCase {
-        return GetAdsBySearchTextAndFiltersUseCaseImpl(adDataRepository = adDataRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetAdsWithFiltersUseCase(adDataRepository: AdDataRepository): GetAdsWithFiltersUseCase {
-        return GetAdsWithFiltersUseCaseImpl(adDataRepository = adDataRepository)
+    fun provideGetAdsUseCase(adDataRepository: AdDataRepository): GetAdsUseCase {
+        return GetAdsUseCaseImpl(adDataRepository = adDataRepository)
     }
 
     @Provides

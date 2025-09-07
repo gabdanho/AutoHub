@@ -7,9 +7,7 @@ import com.example.autohub.domain.model.result.FirebaseResult
 
 interface AdDataRepository {
 
-    suspend fun getAdsWithFilters(filters: List<SearchFilter>): FirebaseResult<List<CarAd>>
-
-    suspend fun getAdsBySearchTextAndFilters(
+    suspend fun getAds(
         searchText: String,
         filters: List<SearchFilter>,
     ): FirebaseResult<List<CarAd>>

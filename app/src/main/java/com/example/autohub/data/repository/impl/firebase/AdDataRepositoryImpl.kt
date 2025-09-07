@@ -21,29 +21,11 @@ class AdDataRepositoryImpl @Inject constructor(
     private val timeProvider: TimeProvider
 ) : AdDataRepository {
 
-    override suspend fun getAdsWithFilters(filters: List<SearchFilter>): FirebaseResult<List<CarAdDomain>> {
-        return safeFirebaseCall {
-            var fbStoreRef: Query = fbFirestore.collection("ads")
-
-            filters.forEach { (filterName, value) ->
-                if (value.isNotEmpty()) {
-                    fbStoreRef = fbStoreRef.whereEqualTo(filterName, value)
-                }
-            }
-
-            val snapshot = fbStoreRef.get().await()
-            snapshot.documents.mapNotNull { doc ->
-                doc.toObject(CarAd::class.java)?.toCarAdDomain()
-            }
-        }
-    }
-
-    override suspend fun getAdsBySearchTextAndFilters(
+    override suspend fun getAds(
         searchText: String,
         filters: List<SearchFilter>
     ): FirebaseResult<List<CarAdDomain>> {
         return safeFirebaseCall {
-            val words = searchText.trim().lowercase().split(' ')
             var fbStoreRef: Query = fbFirestore.collection("ads")
 
             filters.forEach { (filterName, value) ->
@@ -53,13 +35,22 @@ class AdDataRepositoryImpl @Inject constructor(
             }
 
             val snapshot = fbStoreRef.get().await()
-            snapshot.documents.mapNotNull { doc ->
-                val adDto = doc.toObject(CarAd::class.java) ?: return@mapNotNull null
-                val adInfo = "${adDto.brand} ${adDto.model} ${adDto.realiseYear}".lowercase()
 
-                if (words.any { word -> word in adInfo }) {
-                    adDto.toCarAdDomain()
-                } else null
+            if (searchText.isNotBlank()) {
+                val words = searchText.trim().lowercase().split(' ')
+
+                snapshot.documents.mapNotNull { doc ->
+                    val adDto = doc.toObject(CarAd::class.java) ?: return@mapNotNull null
+                    val adInfo = "${adDto.brand} ${adDto.model} ${adDto.realiseYear}".lowercase()
+
+                    if (words.any { word -> word in adInfo }) {
+                        adDto.toCarAdDomain()
+                    } else null
+                }
+            } else {
+                snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(CarAd::class.java)?.toCarAdDomain()
+                }
             }
         }
     }
