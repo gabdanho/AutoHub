@@ -4,7 +4,7 @@ import com.example.autohub.data.mapper.toUserStatusDomain
 import com.example.autohub.data.mapper.toUserStatusData
 import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
-import com.example.autohub.domain.interfaces.repository.firebase.AuthUserRepository
+import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.User as UserDataDomain
 import com.example.autohub.domain.model.UserStatus as UserStatusDomain

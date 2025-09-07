@@ -8,7 +8,7 @@ import com.example.autohub.data.firebase.model.chat.Message
 import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.mapper.toChatInfoDomain
-import com.example.autohub.domain.interfaces.repository.firebase.MessengerRepository
+import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
 import com.example.autohub.domain.model.SenderData
 import com.example.autohub.domain.model.Message as MessageDomain
 import com.example.autohub.domain.model.ReceiverData

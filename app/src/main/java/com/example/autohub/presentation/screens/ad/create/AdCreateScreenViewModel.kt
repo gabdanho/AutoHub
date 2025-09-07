@@ -3,7 +3,7 @@ package com.example.autohub.presentation.screens.ad.create
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
-import com.example.autohub.domain.interfaces.usecase.GetTokenFromDatabaseUseCase
+import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.result.DbResult
@@ -31,7 +31,7 @@ import javax.inject.Inject
 class AdCreateScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val createAd: CreateAdUseCase,
-    private val getToken: GetTokenFromDatabaseUseCase,
+    private val getToken: GetLocalUserIdUseCase,
     private val getUserData: GetUserDataUseCase,
 ) : ViewModel() {
 

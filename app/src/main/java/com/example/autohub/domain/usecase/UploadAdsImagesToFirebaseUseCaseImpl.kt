@@ -1,6 +1,6 @@
 package com.example.autohub.domain.usecase
 
-import com.example.autohub.domain.interfaces.repository.firebase.AdDataRepository
+import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
 import com.example.autohub.domain.interfaces.usecase.UploadAdsImagesToFirebaseUseCase
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.result.FirebaseResult

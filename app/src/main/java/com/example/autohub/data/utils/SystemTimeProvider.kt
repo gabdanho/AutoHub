@@ -1,4 +1,4 @@
-package com.example.autohub.data.time
+package com.example.autohub.data.utils
 
 import com.example.autohub.domain.utils.TimeProvider
 import java.text.SimpleDateFormat

@@ -2,19 +2,16 @@ package com.example.autohub.di
 
 import android.content.Context
 import com.example.autohub.data.firebase.utils.FirebaseStorageUtils
-import com.example.autohub.data.local.dao.TokenRepositoryDao
-import com.example.autohub.data.local.database.TokenRepositoryDatabase
 import com.example.autohub.data.repository.impl.firebase.AdDataRepositoryImpl
 import com.example.autohub.data.repository.impl.firebase.AuthUserRepositoryImpl
 import com.example.autohub.data.repository.impl.firebase.MessengerRepositoryImpl
 import com.example.autohub.data.repository.impl.firebase.UserDataRepositoryImpl
-import com.example.autohub.data.repository.impl.room.TokenRepositoryImpl
-import com.example.autohub.data.time.SystemTimeProvider
-import com.example.autohub.domain.interfaces.repository.firebase.AdDataRepository
-import com.example.autohub.domain.interfaces.repository.firebase.AuthUserRepository
-import com.example.autohub.domain.interfaces.repository.firebase.MessengerRepository
-import com.example.autohub.domain.interfaces.repository.firebase.UserDataRepository
-import com.example.autohub.domain.interfaces.repository.room.TokenRepository
+import com.example.autohub.data.repository.impl.preferences.UserPreferencesRepositoryImpl
+import com.example.autohub.data.utils.SystemTimeProvider
+import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
+import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
+import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
+import com.example.autohub.domain.interfaces.repository.remote.UserDataRepository
 import com.example.autohub.domain.utils.TimeProvider
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -128,19 +125,7 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideTokenDatabase(@ApplicationContext context: Context): TokenRepositoryDatabase {
-        return TokenRepositoryDatabase.getDatabase(context = context)
-    }
-
-    @Provides
-    @Singleton
-    fun provideTokenRepositoryDao(database: TokenRepositoryDatabase): TokenRepositoryDao {
-        return database.tokenDao()
-    }
-
-    @Provides
-    @Singleton
-    fun provideTokenRepository(tokenDao: TokenRepositoryDao): TokenRepository {
-        return TokenRepositoryImpl(tokenRepositoryDao = tokenDao)
+    fun provideUserPreferencesRepository(@ApplicationContext context: Context): UserPreferencesRepositoryImpl {
+        return UserPreferencesRepositoryImpl(context = context)
     }
 }

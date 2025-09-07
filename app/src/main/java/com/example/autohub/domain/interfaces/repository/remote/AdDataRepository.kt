@@ -1,4 +1,4 @@
-package com.example.autohub.domain.interfaces.repository.firebase
+package com.example.autohub.domain.interfaces.repository.remote
 
 import com.example.autohub.domain.model.CarAd
 import com.example.autohub.domain.model.SearchFilter

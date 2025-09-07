@@ -1,6 +1,6 @@
 package com.example.autohub.domain.usecase
 
-import com.example.autohub.domain.interfaces.repository.firebase.AuthUserRepository
+import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
 import com.example.autohub.domain.interfaces.usecase.LoginUserUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
 

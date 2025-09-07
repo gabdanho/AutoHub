@@ -1,10 +1,10 @@
 package com.example.autohub.di
 
-import com.example.autohub.domain.interfaces.repository.firebase.AdDataRepository
-import com.example.autohub.domain.interfaces.repository.firebase.AuthUserRepository
-import com.example.autohub.domain.interfaces.repository.firebase.MessengerRepository
-import com.example.autohub.domain.interfaces.repository.firebase.UserDataRepository
-import com.example.autohub.domain.interfaces.repository.room.TokenRepository
+import com.example.autohub.domain.interfaces.repository.local.UserPreferencesRepository
+import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
+import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
+import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
+import com.example.autohub.domain.interfaces.repository.remote.UserDataRepository
 import com.example.autohub.domain.interfaces.usecase.ChangePasswordUseCase
 import com.example.autohub.domain.interfaces.usecase.ChangeUserStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
@@ -14,10 +14,10 @@ import com.example.autohub.domain.interfaces.usecase.GetBuyersChatsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCountUnreadMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCurrentUserAdsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
-import com.example.autohub.domain.interfaces.usecase.GetTokenFromDatabaseUseCase
+import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
-import com.example.autohub.domain.interfaces.usecase.GetUserTokenUseCase
-import com.example.autohub.domain.interfaces.usecase.InsertTokenUseCase
+import com.example.autohub.domain.interfaces.usecase.GetUserIdUseCase
+import com.example.autohub.domain.interfaces.usecase.InsertLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginUserUseCase
 import com.example.autohub.domain.interfaces.usecase.MarkMessagesAsReadUseCase
 import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
@@ -37,10 +37,10 @@ import com.example.autohub.domain.usecase.GetBuyersChatsUseCaseImpl
 import com.example.autohub.domain.usecase.GetCountUnreadMessagesUseCaseImpl
 import com.example.autohub.domain.usecase.GetCurrentUserAdsUseCaseImpl
 import com.example.autohub.domain.usecase.GetMessagesUseCaseImpl
-import com.example.autohub.domain.usecase.GetTokenFromDatabaseUseCaseImpl
+import com.example.autohub.domain.usecase.GetLocalUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.GetUserDataUseCaseImpl
-import com.example.autohub.domain.usecase.GetUserTokenUseCaseImpl
-import com.example.autohub.domain.usecase.InsertTokenUseCaseImpl
+import com.example.autohub.domain.usecase.GetUserIdUseCaseImpl
+import com.example.autohub.domain.usecase.InsertLocalUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.LoginUserUseCaseImpl
 import com.example.autohub.domain.usecase.MarkMessagesAsReadUseCaseImpl
 import com.example.autohub.domain.usecase.RegisterUserUseCaseImpl
@@ -81,8 +81,8 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideGetUserTokenUseCase(authUserRepository: AuthUserRepository): GetUserTokenUseCase {
-        return GetUserTokenUseCaseImpl(authUserRepository = authUserRepository)
+    fun provideGetUserTokenUseCase(authUserRepository: AuthUserRepository): GetUserIdUseCase {
+        return GetUserIdUseCaseImpl(authUserRepository = authUserRepository)
     }
 
     @Provides
@@ -189,15 +189,15 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideInsertTokenUseCase(
-        tokenRepository: TokenRepository
-    ): InsertTokenUseCase {
-        return InsertTokenUseCaseImpl(tokenRepository = tokenRepository)
+    fun provideInsertUserIdUseCase(
+        userPreferences: UserPreferencesRepository
+    ): InsertLocalUserIdUseCase {
+        return InsertLocalUserIdUseCaseImpl(userPreferences = userPreferences)
     }
 
     @Provides
     @Singleton
-    fun provideGetTokenFromDatabaseUseCase(tokenRepository: TokenRepository): GetTokenFromDatabaseUseCase {
-        return GetTokenFromDatabaseUseCaseImpl(tokenRepository = tokenRepository)
+    fun provideGetTokenFromDatabaseUseCase(userPreferences: UserPreferencesRepository): GetLocalUserIdUseCase {
+        return GetLocalUserIdUseCaseImpl(userPreferences = userPreferences)
     }
 }

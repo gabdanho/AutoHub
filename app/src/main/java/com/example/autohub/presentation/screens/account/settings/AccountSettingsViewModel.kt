@@ -3,7 +3,7 @@ package com.example.autohub.presentation.screens.account.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.ChangePasswordUseCase
-import com.example.autohub.domain.interfaces.usecase.GetTokenFromDatabaseUseCase
+import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.interfaces.usecase.UpdateCityUseCase
 import com.example.autohub.domain.interfaces.usecase.UpdateFirstNameUseCase
@@ -29,7 +29,7 @@ class AccountSettingsViewModel @Inject constructor(
     private val navigator: Navigator,
     private val uploadProfileImage: UploadUserProfileImageToFirebaseUseCase,
     private val getUserData: GetUserDataUseCase,
-    private val getToken: GetTokenFromDatabaseUseCase,
+    private val getToken: GetLocalUserIdUseCase,
     private val updateFirstNameName: UpdateFirstNameUseCase,
     private val updateLastNameName: UpdateLastNameUseCase,
     private val updateCity: UpdateCityUseCase,

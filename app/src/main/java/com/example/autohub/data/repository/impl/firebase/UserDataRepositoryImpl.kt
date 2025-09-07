@@ -2,7 +2,7 @@ package com.example.autohub.data.repository.impl.firebase
 
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.firebase.utils.FirebaseStorageUtils
-import com.example.autohub.domain.interfaces.repository.firebase.UserDataRepository
+import com.example.autohub.domain.interfaces.repository.remote.UserDataRepository
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.User
 import com.example.autohub.domain.model.result.FirebaseResult

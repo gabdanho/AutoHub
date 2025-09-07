@@ -4,7 +4,7 @@ import com.example.autohub.data.mapper.toCarAdDomain
 import com.example.autohub.data.firebase.model.ad.CarAd
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.firebase.utils.FirebaseStorageUtils
-import com.example.autohub.domain.interfaces.repository.firebase.AdDataRepository
+import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
 import com.example.autohub.domain.model.CarAd as CarAdDomain
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.SearchFilter

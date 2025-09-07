@@ -1,5 +1,5 @@
 package com.example.autohub.domain.interfaces.usecase
 
-interface GetUserTokenUseCase {
+interface GetUserIdUseCase {
     suspend operator fun invoke()
 }

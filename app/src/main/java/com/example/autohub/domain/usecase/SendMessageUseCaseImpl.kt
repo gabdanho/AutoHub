@@ -1,6 +1,6 @@
 package com.example.autohub.domain.usecase
 
-import com.example.autohub.domain.interfaces.repository.firebase.MessengerRepository
+import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
 import com.example.autohub.domain.interfaces.usecase.SendMessageUseCase
 import com.example.autohub.domain.model.ReceiverData
 import com.example.autohub.domain.model.SenderData

@@ -1,14 +1,13 @@
 package com.example.autohub.domain.usecase
 
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
-import com.example.autohub.domain.interfaces.usecase.SignOutUseCase
-import javax.inject.Inject
+import com.example.autohub.domain.interfaces.usecase.GetUserIdUseCase
 
-class SignOutUseCaseImpl @Inject constructor(
+class GetUserIdUseCaseImpl(
     private val authUserRepository: AuthUserRepository
-) : SignOutUseCase {
+) : GetUserIdUseCase {
 
     override suspend fun invoke() {
-        authUserRepository.signOut()
+        authUserRepository.getUserToken()
     }
 }

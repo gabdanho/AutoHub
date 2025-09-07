@@ -1,10 +1,9 @@
-package com.example.autohub.domain.interfaces.repository.firebase
+package com.example.autohub.domain.interfaces.repository.remote
 
 import com.example.autohub.domain.model.ChatInfo
 import com.example.autohub.domain.model.SenderData
 import com.example.autohub.domain.model.Message
 import com.example.autohub.domain.model.ReceiverData
-import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.UserStatus
 import kotlinx.coroutines.flow.Flow
 

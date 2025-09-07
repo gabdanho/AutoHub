@@ -1,4 +1,4 @@
-package com.example.autohub.domain.interfaces.repository.firebase
+package com.example.autohub.domain.interfaces.repository.remote
 
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.User
