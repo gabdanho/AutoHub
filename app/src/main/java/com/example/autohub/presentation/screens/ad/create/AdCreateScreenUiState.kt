@@ -1,6 +1,7 @@
 package com.example.autohub.presentation.screens.ad.create
 
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.UiImage
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.options.BodyType
 import com.example.autohub.presentation.model.options.ConditionType
@@ -26,8 +27,8 @@ data class AdCreateScreenUiState(
     val steeringWheelSideValue: SteeringWheelSideType? = null,
     val conditionValue: ConditionType? = null,
 
-    val imagesValue: List<String> = emptyList(),
-    val imageToShow: String? = null,
+    val images: List<UiImage> = emptyList(),
+    val imageToShow: UiImage? = null,
 
     val isBrandValueError: Boolean = false,
     val isModelValueError: Boolean = false,
@@ -46,5 +47,7 @@ data class AdCreateScreenUiState(
     val isDescriptionValueError: Boolean = false,
 
     val message: String? = null,
-    val loadingState: LoadingState? = null
+    val loadingState: LoadingState? = null,
+
+    val carAd: CarAd? = null
 )

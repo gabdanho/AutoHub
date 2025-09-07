@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.screens.ad.create
 
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,6 +28,7 @@ import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.ListAddedPhotos
 import com.example.autohub.presentation.componets.RowRadioButtons
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.model.UiImage
 import com.example.autohub.presentation.model.options.BodyType
 import com.example.autohub.presentation.model.options.ConditionType
 import com.example.autohub.presentation.model.options.DriveType
@@ -37,22 +37,33 @@ import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
 import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.cardColor
+import com.example.autohub.presentation.utils.convertUriToBytes
 
 @Composable
 fun AdCreateScreen(
     modifier: Modifier = Modifier,
-    viewModel: AdCreateScreenViewModel = hiltViewModel<AdCreateScreenViewModel>()
+    viewModel: AdCreateScreenViewModel = hiltViewModel<AdCreateScreenViewModel>(),
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val uiState = viewModel.uiState.collectAsState().value
-    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        if (uri != null) {
-            viewModel.addImage(imageString = uri.toString())
-        } else {
-            Toast.makeText(context, context.getString(R.string.text_image_not_selected), Toast.LENGTH_SHORT).show()
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            if (uri != null) {
+                viewModel.addImage(
+                    image = UiImage(
+                        uri = uri,
+                        byteArray = context.convertUriToBytes(uri = uri)
+                    )
+                )
+            } else {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.text_image_not_selected),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-    }
 
     Scaffold(
         topBar = {
@@ -77,12 +88,12 @@ fun AdCreateScreen(
                     modifier = Modifier.padding(16.dp)
                 )
                 ListAddedPhotos(
-                    images = uiState.imagesValue.map { Uri.parse(it) },
-                    imageToShow = Uri.parse(uiState.imageToShow),
+                    images = uiState.images.map { it.uri },
+                    imageToShow = uiState.imageToShow?.uri,
                     onAddImageClick = {
                         galleryLauncher.launch("image/*")
                     },
-                    changeImageToShow = { viewModel.updateImageToShow(value = it?.toString()) },
+                    changeImageToShow = { viewModel.updateImageToShow(value = it?.let { UiImage(uri = it) }) },
                     modifier = modifier
                         .fillMaxWidth()
                         .background(cardColor)
@@ -219,7 +230,7 @@ fun AdCreateScreen(
                     text = stringResource(id = R.string.input_description),
                     value = uiState.descriptionValue,
                     isSingleLine = false,
-                    onValueChange = { viewModel.updateDescriptionValue(value = it)},
+                    onValueChange = { viewModel.updateDescriptionValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
@@ -232,7 +243,7 @@ fun AdCreateScreen(
                 ) {
                     CustomButton(
                         text = stringResource(id = R.string.button_create),
-                        onClick = {  },
+                        onClick = { },
                         modifier = Modifier.fillMaxWidth(0.5f)
                     )
                 }

@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetTokenFromDatabaseUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
+import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.result.DbResult
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.presentation.mapper.toUserPresentation
+import com.example.autohub.presentation.mapper.toCarAdDomain
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.UiImage
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.options.BodyType
 import com.example.autohub.presentation.model.options.ConditionType
@@ -30,7 +32,7 @@ class AdCreateScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val createAd: CreateAdUseCase,
     private val getToken: GetTokenFromDatabaseUseCase,
-    private val getUserData: GetUserDataUseCase
+    private val getUserData: GetUserDataUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdCreateScreenUiState())
@@ -110,14 +112,14 @@ class AdCreateScreenViewModel @Inject constructor(
         _uiState.update { state -> state.copy(conditionValue = value) }
     }
 
-    fun updateImageToShow(value: String?) {
+    fun updateImageToShow(value: UiImage?) {
         _uiState.update { state ->
             state.copy(imageToShow = value)
         }
     }
 
-    fun addImage(imageString: String) {
-        _uiState.update { state -> state.copy(imagesValue = state.imagesValue + imageString) }
+    fun addImage(image: UiImage) {
+        _uiState.update { state -> state.copy(images = state.images + image) }
     }
 
     fun onCreateAdClick() {
@@ -140,64 +142,78 @@ class AdCreateScreenViewModel @Inject constructor(
                 )
             }
 
-            val message = if (_uiState.value.imagesValue.isEmpty()) {
+            val message = if (_uiState.value.images.isEmpty()) {
                 "Necessary add images!"
             } else if (hasValidationErrors()) {
                 "Necessary fill all fields and choose all options!"
             } else {
-                val carAd = formingCarAd()
-                createAd()
+                formingCarAd()
+                _uiState.value.carAd?.let {
+                    createAd(
+                        carAdInfo = it.toCarAdDomain(),
+                        images = _uiState.value.images.mapIndexed { index, image ->
+                            ImageUploadData(id = index, bytes = image.byteArray)
+                        }
+                    )
+                }
                 "Add is created successfully"
             }
+
+            _uiState.update { state ->
+                state.copy(message = message)
+            }
         }
     }
 
-    private fun formingCarAd(): CarAd {
-        viewModelScope.launch {
-            when (val tokenResult = getToken()) {
-                is DbResult.Success -> {
-                    when (val userResult = getUserData(userUID = tokenResult.data)) {
-                        is FirebaseResult.Success -> {
-                            CarAd(
-                                brand = _uiState.value.brandValue,
-                                model = _uiState.value.modelValue,
-                                color = _uiState.value.colorValue,
-                                realiseYear = _uiState.value.realiseYearValue,
-                                body = _uiState.value.bodyTypeValue,
-                                typeEngine = _uiState.value.engineTypeValue,
-                                engineCapacity = _uiState.value.engineCapacityValue,
-                                transmission = _uiState.value.transmissionValue,
-                                drive = _uiState.value.driveTypeValue,
-                                steeringWheelSide = _uiState.value.steeringWheelSideValue,
-                                mileage = _uiState.value.mileageValue,
-                                condition = _uiState.value.conditionValue,
-                                price = _uiState.value.priceValue,
-                                description = _uiState.value.descriptionValue,
-                                userUID = tokenResult.data,
-                                city = userResult.data.city
+    private suspend fun formingCarAd() {
+        when (val tokenResult = getToken()) {
+            is DbResult.Success -> {
+                when (val userResult = getUserData(userUID = tokenResult.data)) {
+                    is FirebaseResult.Success -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                carAd = CarAd(
+                                    brand = _uiState.value.brandValue,
+                                    model = _uiState.value.modelValue,
+                                    color = _uiState.value.colorValue,
+                                    realiseYear = _uiState.value.realiseYearValue,
+                                    body = _uiState.value.bodyTypeValue,
+                                    typeEngine = _uiState.value.engineTypeValue,
+                                    engineCapacity = _uiState.value.engineCapacityValue,
+                                    transmission = _uiState.value.transmissionValue,
+                                    drive = _uiState.value.driveTypeValue,
+                                    steeringWheelSide = _uiState.value.steeringWheelSideValue,
+                                    mileage = _uiState.value.mileageValue,
+                                    condition = _uiState.value.conditionValue,
+                                    price = _uiState.value.priceValue,
+                                    description = _uiState.value.descriptionValue,
+                                    userUID = tokenResult.data,
+                                    city = userResult.data.city
+                                )
                             )
                         }
+                    }
 
-                        is FirebaseResult.Error -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    loadingState = LoadingState.Error(message = userResult.message)
-                                )
-                            }
+                    is FirebaseResult.Error -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Error(message = userResult.message)
+                            )
                         }
                     }
                 }
+            }
 
-                is DbResult.Error -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            loadingState = LoadingState.Error(message = tokenResult.message)
-                        )
-                    }
+            is DbResult.Error -> {
+                _uiState.update { state ->
+                    state.copy(
+                        loadingState = LoadingState.Error(message = tokenResult.message)
+                    )
                 }
             }
         }
     }
+
 
     private fun hasValidationErrors(): Boolean {
         val state = _uiState.value
