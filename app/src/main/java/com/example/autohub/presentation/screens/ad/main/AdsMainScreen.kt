@@ -1,5 +1,6 @@
 package com.example.autohub.presentation.screens.ad.main
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -20,84 +21,104 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
-import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.CarAdCard
+import com.example.autohub.presentation.model.SearchFilter
+import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.containerColor
 
 @Composable
 fun AdsMainScreen(
     modifier: Modifier = Modifier,
-    // filters: Map<String, String> = emptyMap()
+    filters: List<SearchFilter> = emptyList(),
+    viewModel: AdsMainScreenViewModel = hiltViewModel<AdsMainScreenViewModel>(),
 ) {
-     Scaffold(
-         topBar = {
-             Row(
-                 horizontalArrangement = Arrangement.Center,
-                 modifier = Modifier.fillMaxWidth()
-             ) {
-                 SearchAdsBar()
-                 Icon(
-                     imageVector = Icons.AutoMirrored.Filled.List,
-                     contentDescription = stringResource(id = R.string.content_search_filters),
-                     modifier = Modifier
-                         .size(40.dp)
-                         .clickable { TODO("onFiltersClick()") }
-                 )
-             }
-         },
-         bottomBar = {
-             BottomNavBar(
-                 onAdListClick = TODO("onAdListClick()"),
-                 onAccountClick = TODO("onAccountClick()"),
-                 onMessageClick = TODO("onMessageClick()")
-             )
-         }
-     ) { innerPadding ->
-         if (TODO("adsList.isNotEmpty()")) {
-             LazyVerticalGrid(
-                 columns = GridCells.Fixed(2),
-                 modifier = modifier
-                     .padding(8.dp)
-                     .padding(innerPadding)
-             ) {
-                 items(TODO("adsList")) { carAd ->
-                     CarAdCard(
-                         ad = TODO("carAd"),
-                         onAdClick = { TODO("onAdClick(carAd)") },
-                         modifier = Modifier
-                             .fillMaxWidth()
-                             .padding(8.dp)
-                     )
-                 }
-             }
-         } else {
-             Row(
-                 horizontalArrangement = Arrangement.Center,
-                 modifier = Modifier
-                     .fillMaxWidth()
-                     .padding(innerPadding)
-                     .padding(8.dp)
-             ) {
-                 Text(
-                     text = stringResource(id = R.string.text_ads_not_found),
-                     color = Color.LightGray
-                 )
-             }
-         }
-     }
+    val uiState = viewModel.uiState.collectAsState().value
+    val context = LocalContext.current
+
+    LaunchedEffect(filters) {
+        viewModel.getAds(filters = filters)
+    }
+
+    LaunchedEffect(uiState.loadingState) {
+        if (uiState.loadingState is LoadingState.Error) {
+            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
+            viewModel.clearLoadingState()
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                SearchAdsBar(
+                    searchText = uiState.searchTextValue,
+                    onFiltersClick = { viewModel.onFiltersClick() },
+                    onSearchTextChange = { viewModel.updateSearchText(value = it) },
+                    getAds = { viewModel.getAds(filters = filters) }
+                )
+            }
+        },
+        bottomBar = {
+            BottomNavBar(
+                onAdListClick = { /* Nothing */ },
+                onAccountClick = { viewModel.onAccountClick() },
+                onMessageClick = { viewModel.onMessageClick() }
+            )
+        }
+    ) { innerPadding ->
+        if (uiState.adsList.isNotEmpty()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = modifier
+                    .padding(8.dp)
+                    .padding(innerPadding)
+            ) {
+                items(uiState.adsList) { carAd ->
+                    CarAdCard(
+                        ad = carAd,
+                        onAdClick = { viewModel.onAdClick(carAd = carAd) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    )
+                }
+            }
+        } else {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding)
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.text_ads_not_found),
+                    color = Color.LightGray
+                )
+            }
+        }
+    }
 }
 
 @Composable
 private fun SearchAdsBar(
+    searchText: String,
+    onSearchTextChange: (String) -> Unit,
+    getAds: () -> Unit,
+    onFiltersClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -108,8 +129,8 @@ private fun SearchAdsBar(
             .padding(8.dp)
     ) {
         TextField(
-            value = "", // TODO("searchTextState.value")
-            onValueChange = { TODO("searchTextState.value = it") },
+            value = searchText,
+            onValueChange = { onSearchTextChange(it) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Search,
@@ -133,7 +154,7 @@ private fun SearchAdsBar(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    TODO("getAdsBySearchText(searchTextState.value, filters, onDoneClick)")
+                    getAds()
                 }
             ),
             modifier = Modifier.fillMaxWidth(0.8f)
@@ -144,7 +165,7 @@ private fun SearchAdsBar(
             modifier = Modifier
                 .size(40.dp)
                 .padding(start = 8.dp)
-                .clickable { TODO("onFiltersClick()") }
+                .clickable { onFiltersClick() }
         )
     }
 }
