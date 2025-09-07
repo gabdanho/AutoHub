@@ -37,6 +37,8 @@ class StringToResourceIdMapperImpl : StringToResourceIdMapper {
         StringResNamePresentation.LABEL_FWD to R.string.drive_type_fwd,
         StringResNamePresentation.LABEL_RWD to R.string.drive_type_rwd,
         StringResNamePresentation.LABEL_FULL_WD to R.string.drive_type_4wd,
+
+        StringResNamePresentation.NO_DATA to R.string.text_no_data
     )
 
     override fun map(resId: StringResNamePresentation): Int {

@@ -31,5 +31,7 @@ enum class StringResNamePresentation {
 
     LABEL_FWD,
     LABEL_RWD,
-    LABEL_FULL_WD;
+    LABEL_FULL_WD,
+
+    NO_DATA;
 }
