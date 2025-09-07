@@ -93,10 +93,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
             }
 
             navigator.navigate(
-                destination = AdGraph.CurrentAdScreen(
-                    carAd = ad,
-                    user = userNav
-                )
+                destination = AdGraph.CurrentAdScreen(carAd = ad)
             )
         }
     }
