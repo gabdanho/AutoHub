@@ -25,7 +25,10 @@ class AuthUserRepositoryImpl @Inject constructor(
             fbAuth.signInWithEmailAndPassword(email, password).await()
             val user = fbAuth.currentUser ?: throw IllegalStateException("User is null after login")
 
-            if (!user.isEmailVerified) fbAuth.signOut()
+            if (!user.isEmailVerified) {
+                fbAuth.signOut()
+                throw IllegalStateException("Email is not verified")
+            }
 
             getUserToken()
             changeUserStatus(UserStatus.ONLINE.toUserStatusDomain())
