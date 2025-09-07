@@ -243,7 +243,7 @@ fun AdCreateScreen(
                 ) {
                     CustomButton(
                         text = stringResource(id = R.string.button_create),
-                        onClick = { },
+                        onClick = { viewModel.onCreateAdClick() },
                         modifier = Modifier.fillMaxWidth(0.5f)
                     )
                 }

@@ -214,7 +214,6 @@ class AdCreateScreenViewModel @Inject constructor(
         }
     }
 
-
     private fun hasValidationErrors(): Boolean {
         val state = _uiState.value
 
