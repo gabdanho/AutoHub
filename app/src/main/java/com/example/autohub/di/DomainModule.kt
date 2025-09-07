@@ -25,6 +25,7 @@ import com.example.autohub.domain.interfaces.usecase.LoginUserUseCase
 import com.example.autohub.domain.interfaces.usecase.MarkMessagesAsReadUseCase
 import com.example.autohub.domain.interfaces.usecase.RegisterAndSaveUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
+import com.example.autohub.domain.interfaces.usecase.ResendEmailVerificationUseCase
 import com.example.autohub.domain.interfaces.usecase.SendMessageUseCase
 import com.example.autohub.domain.interfaces.usecase.SignOutAndClearUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.SignOutUseCase
@@ -53,6 +54,7 @@ import com.example.autohub.domain.usecase.LoginUserUseCaseImpl
 import com.example.autohub.domain.usecase.MarkMessagesAsReadUseCaseImpl
 import com.example.autohub.domain.usecase.RegisterAndSaveUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.RegisterUserUseCaseImpl
+import com.example.autohub.domain.usecase.ResendEmailVerificationUseCaseImpl
 import com.example.autohub.domain.usecase.SendMessageUseCaseImpl
 import com.example.autohub.domain.usecase.SignOutAndClearUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.SignOutUseCaseImpl
@@ -262,5 +264,11 @@ object DomainModule {
             signOutUseCase = signOutUseCase,
             clearUserIdUseCase = clearUserIdUseCase
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideResendEmailVerificationUseCase(authUserRepository: AuthUserRepository): ResendEmailVerificationUseCase {
+        return ResendEmailVerificationUseCaseImpl(authUserRepository = authUserRepository)
     }
 }

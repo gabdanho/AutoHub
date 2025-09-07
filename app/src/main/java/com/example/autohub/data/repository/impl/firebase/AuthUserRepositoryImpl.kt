@@ -49,6 +49,16 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun resendEmailVerification(email: String, password: String): FirebaseResult<Unit> {
+        return safeFirebaseCall {
+            fbAuth.signInWithEmailAndPassword(email, password).await()
+            val authUser = fbAuth.currentUser ?: throw IllegalStateException("User not found after login")
+            authUser.sendEmailVerification().await().also {
+                signOut()
+            }
+        }
+    }
+
     override suspend fun getUserToken() {
         safeFirebaseCall {
             val fbStoreRef = fbStore.collection("users").document(getAuthUserUID())
@@ -79,6 +89,8 @@ class AuthUserRepositoryImpl @Inject constructor(
             fbAuth.currentUser?.updatePassword(newPassword)
         }
     }
+
+
 
     override fun getAuthUserUID(): String =
         fbAuth.currentUser?.uid ?: throw IllegalStateException("Can't get user UID")

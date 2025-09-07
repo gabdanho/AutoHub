@@ -10,6 +10,8 @@ interface AuthUserRepository {
 
     suspend fun registerUser(email: String, password: String, user: User): FirebaseResult<Unit>
 
+    suspend fun resendEmailVerification(email: String, password: String): FirebaseResult<Unit>
+
     suspend fun changeUserStatus(status: UserStatus)
 
     suspend fun getUserToken()

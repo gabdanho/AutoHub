@@ -8,6 +8,7 @@ import com.example.autohub.data.repository.impl.firebase.MessengerRepositoryImpl
 import com.example.autohub.data.repository.impl.firebase.UserDataRepositoryImpl
 import com.example.autohub.data.repository.impl.preferences.UserPreferencesRepositoryImpl
 import com.example.autohub.data.utils.SystemTimeProvider
+import com.example.autohub.domain.interfaces.repository.local.UserPreferencesRepository
 import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
@@ -125,7 +126,7 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideUserPreferencesRepository(@ApplicationContext context: Context): UserPreferencesRepositoryImpl {
+    fun provideUserPreferencesRepository(@ApplicationContext context: Context): UserPreferencesRepository {
         return UserPreferencesRepositoryImpl(context = context)
     }
 }
