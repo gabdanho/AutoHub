@@ -1,5 +1,6 @@
 package com.example.autohub.presentation.screens.ad.current
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,12 +20,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,20 +39,42 @@ import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.ListPhotos
 import com.example.autohub.presentation.componets.TopAdAppBar
-import com.example.autohub.presentation.navigation.model.nav_type.UserNav
+import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
+import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
+import com.example.autohub.presentation.utils.launchDialIntent
 
 @Composable
 fun AdScreen(
-    user: UserNav,
     carAd: CarAd,
     modifier: Modifier = Modifier,
-    viewModel: AdScreenViewModel = hiltViewModel<AdScreenViewModel>()
+    viewModel: AdScreenViewModel = hiltViewModel<AdScreenViewModel>(),
 ) {
     val scrollState = rememberScrollState()
     val uiState = viewModel.uiState.collectAsState().value
+    val callEvent = viewModel.callEvent.collectAsState().value
+    val context = LocalContext.current
+
+    LaunchedEffect(carAd) {
+        viewModel.getUserData(uid = carAd.userUID)
+    }
+
+    LaunchedEffect(callEvent) {
+        callEvent?.let {
+            context.launchDialIntent(phoneNumber = it)
+        }
+        viewModel.clearCallEvent()
+    }
+
+    LaunchedEffect(uiState.loadingState) {
+        if (uiState.loadingState is LoadingState.Error) {
+            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
+            viewModel.clearLoadingState()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -76,6 +101,8 @@ fun AdScreen(
         ) {
             ListPhotos(
                 imagesUrl = carAd.imagesUrl,
+                imageToShow = uiState.imageToShow,
+                changeImageToShow = { viewModel.changeImageToShow(value = it) },
                 modifier = Modifier
                     .weight(1.4f)
                     .fillMaxWidth()
@@ -97,7 +124,7 @@ fun AdScreen(
                             .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                     ) {
                         AsyncImage(
-                            model = user.image,
+                            model = uiState.user.image,
                             contentDescription = stringResource(id = R.string.content_user_image),
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -112,9 +139,9 @@ fun AdScreen(
                             Text(
                                 text = stringResource(
                                     id = R.string.text_seller_main_info,
-                                    user.firstName,
-                                    user.lastName,
-                                    user.city
+                                    uiState.user.firstName,
+                                    uiState.user.secondName,
+                                    uiState.user.city
                                 ),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -213,7 +240,12 @@ fun AdScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = carAd.body
+                                text = stringResource(
+                                    id = StringToResourceIdMapperImpl().map(
+                                        resId = carAd.body?.textRes
+                                            ?: StringResNamePresentation.NO_DATA
+                                    )
+                                )
                             )
                         }
                     }
@@ -230,7 +262,12 @@ fun AdScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = carAd.typeEngine
+                                text = stringResource(
+                                    id = StringToResourceIdMapperImpl().map(
+                                        resId = carAd.typeEngine?.textRes
+                                            ?: StringResNamePresentation.NO_DATA
+                                    )
+                                )
                             )
                         }
                     }
@@ -247,7 +284,12 @@ fun AdScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = carAd.transmission
+                                text = stringResource(
+                                    id = StringToResourceIdMapperImpl().map(
+                                        resId = carAd.transmission?.textRes
+                                            ?: StringResNamePresentation.NO_DATA
+                                    )
+                                )
                             )
                         }
                     }
@@ -264,7 +306,12 @@ fun AdScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = carAd.drive
+                                text = stringResource(
+                                    id = StringToResourceIdMapperImpl().map(
+                                        resId = carAd.drive?.textRes
+                                            ?: StringResNamePresentation.NO_DATA
+                                    )
+                                )
                             )
                         }
                     }
@@ -281,7 +328,12 @@ fun AdScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = carAd.condition
+                                text = stringResource(
+                                    id = StringToResourceIdMapperImpl().map(
+                                        resId = carAd.condition?.textRes
+                                            ?: StringResNamePresentation.NO_DATA
+                                    )
+                                )
                             )
                         }
                     }
@@ -315,7 +367,12 @@ fun AdScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = carAd.steeringWheelSide
+                                text = stringResource(
+                                    id = StringToResourceIdMapperImpl().map(
+                                        resId = carAd.steeringWheelSide?.textRes
+                                            ?: StringResNamePresentation.NO_DATA
+                                    )
+                                )
                             )
                         }
                     }
