@@ -9,6 +9,7 @@ import com.example.autohub.domain.interfaces.usecase.ChangePasswordUseCase
 import com.example.autohub.domain.interfaces.usecase.ChangeUserStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.ClearUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
+import com.example.autohub.domain.interfaces.usecase.ForgotPasswordUseCase
 import com.example.autohub.domain.interfaces.usecase.GetAdsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetBuyerStatusUseCase
@@ -38,6 +39,7 @@ import com.example.autohub.domain.usecase.ChangePasswordUseCaseImpl
 import com.example.autohub.domain.usecase.ChangeUserStatusUseCaseImpl
 import com.example.autohub.domain.usecase.ClearUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.CreateAdUseCaseImpl
+import com.example.autohub.domain.usecase.ForgotPasswordUseCaseImpl
 import com.example.autohub.domain.usecase.GetAdsUseCaseImpl
 import com.example.autohub.domain.usecase.GetAuthUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.GetBuyerStatusUseCaseImpl
@@ -270,5 +272,11 @@ object DomainModule {
     @Singleton
     fun provideResendEmailVerificationUseCase(authUserRepository: AuthUserRepository): ResendEmailVerificationUseCase {
         return ResendEmailVerificationUseCaseImpl(authUserRepository = authUserRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideForgotPasswordUseCase(authUserRepository: AuthUserRepository): ForgotPasswordUseCase {
+        return ForgotPasswordUseCaseImpl(authUserRepository = authUserRepository)
     }
 }

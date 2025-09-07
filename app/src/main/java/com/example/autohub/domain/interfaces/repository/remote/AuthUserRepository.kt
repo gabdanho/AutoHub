@@ -20,5 +20,7 @@ interface AuthUserRepository {
 
     suspend fun changePassword(newPassword: String): FirebaseResult<Unit>
 
+    suspend fun forgotPassword(email: String): FirebaseResult<Unit>
+
     fun getAuthUserUID(): String
 }

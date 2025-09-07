@@ -90,7 +90,11 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
-
+    override suspend fun forgotPassword(email: String): FirebaseResult<Unit> {
+        return safeFirebaseCall {
+            fbAuth.sendPasswordResetEmail(email).await()
+        }
+    }
 
     override fun getAuthUserUID(): String =
         fbAuth.currentUser?.uid ?: throw IllegalStateException("Can't get user UID")
