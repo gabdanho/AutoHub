@@ -63,7 +63,9 @@ class AdScreenViewModel @Inject constructor(
     fun onMessageClick() {
         viewModelScope.launch {
             navigator.navigate(
-                destination = MessengerGraph.ChattingScreen
+                destination = MessengerGraph.ChattingScreen(
+                    participant = _uiState.value.user.toUserNav()
+                )
             )
         }
     }
