@@ -130,7 +130,7 @@ fun AnotherAccountScreen(
             ) {
                 CustomButton(
                     text = stringResource(id = R.string.button_write_message),
-                    onClick = { viewModel.writeToUser() },
+                    onClick = { viewModel.writeToUser(user = user) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)

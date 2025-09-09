@@ -53,9 +53,13 @@ class AnotherAccountScreenViewModel @Inject constructor(
         }
     }
 
-    fun writeToUser() {
+    fun writeToUser(user: UserNav) {
         viewModelScope.launch {
-            navigator.navigate(destination = MessengerGraph.ChattingScreen)
+            navigator.navigate(
+                destination = MessengerGraph.ChattingScreen(
+                    participant = user
+                )
+            )
         }
     }
 
@@ -70,10 +74,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
     fun onAdClick(ad: CarAd, user: UserNav) {
         viewModelScope.launch {
             navigator.navigate(
-                destination = AdGraph.CurrentAdScreen(
-                    carAd = ad,
-                    user = user
-                )
+                destination = AdGraph.CurrentAdScreen(carAd = ad)
             )
         }
     }
