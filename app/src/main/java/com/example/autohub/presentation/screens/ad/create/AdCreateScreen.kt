@@ -251,9 +251,3 @@ fun AdCreateScreen(
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//private fun AdCreateScreenPreview() {
-//    AdCreateScreen({ _, _ -> }, { })
-//}

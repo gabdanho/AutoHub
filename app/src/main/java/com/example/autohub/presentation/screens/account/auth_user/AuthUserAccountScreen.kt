@@ -201,12 +201,3 @@ fun AuthUserAccountScreen(
         }
     }
 }
-
-//@Preview
-//@Composable
-//private fun AuthUserAccountScreenPreview() {
-//    AuthUserAccountScreen(
-//        yourAds = CarAdFake.ads,
-//        { }, { }, { }, { }, { }, { }, { }
-//    )
-//}

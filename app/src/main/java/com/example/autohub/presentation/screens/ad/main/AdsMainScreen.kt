@@ -169,11 +169,3 @@ private fun SearchAdsBar(
         )
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//private fun AdsMainScreenPreview() {
-//    AdsMainScreen(
-//        listOf(CarAd()), mapOf(), { }, { }, { }, { }, { }, { }
-//    )
-//}

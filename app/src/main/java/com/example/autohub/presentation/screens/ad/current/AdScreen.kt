@@ -423,13 +423,3 @@ fun AdScreen(
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//private fun AdScreenPreview() {
-//    AdScreen(
-//        User(),
-//        CarAd(),
-//        { }, { }, { }, { }
-//    )
-//}

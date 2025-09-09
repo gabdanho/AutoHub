@@ -7,7 +7,11 @@ import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetBuyerStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.GetBuyersChatsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCountUnreadMessagesUseCase
+import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
+import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toChatInfoPresentation
+import com.example.autohub.presentation.mapper.toUserNav
+import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.mapper.toUserStatusPresentation
 import com.example.autohub.presentation.model.messenger.ChatInfo
 import com.example.autohub.presentation.model.messenger.ChatStatus
@@ -15,6 +19,7 @@ import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.MessengerGraph
+import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +40,7 @@ class MessengerScreenViewModel @Inject constructor(
     private val getBuyersChatsUseCase: GetBuyersChatsUseCase,
     private val getAuthUserIdUseCase: GetAuthUserIdUseCase,
     private val getCountUnreadMessagesUseCase: GetCountUnreadMessagesUseCase,
+    private val getUserDataUseCase: GetUserDataUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MessengerScreenUiState())
@@ -78,16 +84,43 @@ class MessengerScreenViewModel @Inject constructor(
         }
     }
 
-    fun onAnswerClick() {
+    fun onAnswerClick(uid: String) {
         viewModelScope.launch {
-            navigator.navigate(
-                destination = MessengerGraph.ChattingScreen
-            )
+            val user = getUserData(uid = uid).getOrNull()
+
+            if (user != null) {
+                navigator.navigate(
+                    destination = MessengerGraph.ChattingScreen(
+                        participant = user
+                    )
+                )
+            } else {
+                _uiState.update { state -> state.copy(errorMessage = "Can't navigate to chat. Cause: can't get user data.") }
+            }
         }
     }
 
     fun clearErrorMessage() {
         _uiState.update { state -> state.copy(errorMessage = null) }
+    }
+
+    private suspend fun getUserData(uid: String): Result<UserNav> {
+        return runCatching {
+            when (val userResult = getUserDataUseCase(userUID = uid)) {
+                is FirebaseResult.Success -> {
+                    return Result.success(userResult.data.toUserPresentation().toUserNav())
+                }
+
+                is FirebaseResult.Error -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            errorMessage = userResult.message
+                        )
+                    }
+                    return Result.failure(exception = Exception(userResult.message))
+                }
+            }
+        }
     }
 
     private fun startListeningChats() {
@@ -116,7 +149,10 @@ class MessengerScreenViewModel @Inject constructor(
             getBuyerStatusUseCase(buyerUID = participantId),
             getCountUnreadMessagesUseCase(authUserUID = authUserId, buyerUID = participantId)
         ) { status, countUnreadMessages ->
-            ChatStatus(status = status.toUserStatusPresentation(), countUnreadMessages = countUnreadMessages)
+            ChatStatus(
+                status = status.toUserStatusPresentation(),
+                countUnreadMessages = countUnreadMessages
+            )
         }
             .onEach { chatStatus ->
                 updateChatInfo(uid = participantId, chatStatus = chatStatus)

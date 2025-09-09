@@ -143,9 +143,3 @@ fun RegisterScreen(
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//private fun RegisterScreenPreview() {
-//    RegisterScreen({ }, { _, _, _ -> })
-//}

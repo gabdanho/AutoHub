@@ -214,9 +214,3 @@ fun FiltersScreen(
         }
     }
 }
-
-//@Preview
-//@Composable
-//private fun FiltersScreenPreview() {
-//    FiltersScreen(mapOf(), { }, { }, { }, modifier = Modifier)
-//}

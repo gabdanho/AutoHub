@@ -104,7 +104,7 @@ fun MessengerScreen(
                         ChatCard(
                             chatInfo = chat,
                             chatStatus = it,
-                            onAnswerClick = { viewModel.onAnswerClick() }
+                            onAnswerClick = { viewModel.onAnswerClick(uid = chat.uid) }
                         )
                     }
                 }
@@ -205,11 +205,3 @@ private fun ChatCard(
         }
     }
 }
-
-//@Preview
-//@Composable
-//private fun MessengerScreenPreview() {
-//    MessengerScreen(
-//        { }, { }, { }, { }
-//    )
-//}

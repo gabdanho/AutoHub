@@ -66,6 +66,7 @@ class AdsMainScreenViewModel @Inject constructor(
 
     fun getAds(filters: List<SearchFilter>) {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
             when (
                 val result = getAdsWithParams(
                     searchText = _uiState.value.searchTextValue,
