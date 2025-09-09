@@ -5,7 +5,7 @@ data class Message(
     val senderUid: String = "",
     val receiverUID: String = "",
     val text: String = "",
-    val timeFormatted: String = "",
+    val formattedData: String = "",
     val timeMillis: Long = 0L,
     val read: Boolean = false
 )

@@ -9,9 +9,7 @@ import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.mapper.toChatInfoDomain
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
-import com.example.autohub.domain.model.SenderData
 import com.example.autohub.domain.model.Message as MessageDomain
-import com.example.autohub.domain.model.ReceiverData
 import com.example.autohub.domain.utils.TimeProvider
 import com.example.autohub.domain.model.UserStatus as UserStatusDomain
 import com.example.autohub.domain.model.ChatInfo as ChatInfoDomain
@@ -30,34 +28,32 @@ class MessengerRepositoryImpl @Inject constructor(
 ) : MessengerRepository {
 
     override suspend fun sendMessage(
-        sender: SenderData,
-        receiver: ReceiverData,
+        senderId: String,
+        receiverId: String,
         text: String
     ) {
         safeFirebaseCall {
             val timeSend = timeProvider.currentTimeMillis()
+            val formattedData = timeProvider.millisToDate(millis = timeSend)
             val messageId = "message_${timeSend}"
-            val uniqueChatID = getUniqueId(sender.uid, receiver.uid)
+            val uniqueChatID = getUniqueId(senderId, receiverId)
             val message = MessageDomain(
                 id = messageId,
-                senderUID = sender.uid,
-                receiverUID = receiver.uid,
+                senderUID = senderId,
+                receiverUID = receiverId,
                 text = text,
-                timeMillis = timeSend
+                timeMillis = timeSend,
+                formattedData = formattedData
             )
             val senderConservation = ChatInfo(
-                name = sender.name,
-                image = sender.image,
                 lastMessage = message.text,
                 time = timeSend.toString(),
-                uid = receiver.uid
+                uid = receiverId
             )
             val receiverConservation = ChatInfo(
-                name = receiver.name,
-                image = receiver.image,
                 lastMessage = message.text,
                 time = timeSend.toString(),
-                uid = sender.uid
+                uid = senderId
             )
 
             fbFirestore
@@ -71,16 +67,16 @@ class MessengerRepositoryImpl @Inject constructor(
             fbFirestore
                 .collection("conservations")
                 .document("users")
-                .collection(sender.uid)
-                .document(receiver.uid)
+                .collection(senderId)
+                .document(receiverId)
                 .set(senderConservation)
                 .await()
 
             fbFirestore
                 .collection("conservations")
                 .document("users")
-                .collection(receiver.uid)
-                .document(sender.uid)
+                .collection(receiverId)
+                .document(senderId)
                 .set(receiverConservation)
                 .await()
         }

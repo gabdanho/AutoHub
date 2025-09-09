@@ -1,17 +1,15 @@
 package com.example.autohub.domain.interfaces.repository.remote
 
 import com.example.autohub.domain.model.ChatInfo
-import com.example.autohub.domain.model.SenderData
 import com.example.autohub.domain.model.Message
-import com.example.autohub.domain.model.ReceiverData
 import com.example.autohub.domain.model.UserStatus
 import kotlinx.coroutines.flow.Flow
 
 interface MessengerRepository {
 
     suspend fun sendMessage(
-        sender: SenderData,
-        receiver: ReceiverData,
+        senderId: String,
+        receiverId: String,
         text: String
     )
 

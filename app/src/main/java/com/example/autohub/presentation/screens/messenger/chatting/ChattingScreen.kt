@@ -153,7 +153,7 @@ fun ChattingScreen(
                     if (!message.read) viewModel.markMessageAsRead(messageId = message.id)
                     UserMessage(
                         text = message.text,
-                        time = message.timeFormatted,
+                        time = message.formattedData,
                         authUserId = uiState.authUserId,
                         senderUid = message.senderUid,
                         isRead = message.read
