@@ -5,8 +5,6 @@ import com.example.autohub.domain.model.ChatInfo as ChatInfoDomain
 
 fun ChatInfoDomain.toChatInfoData(): ChatInfo {
     return ChatInfo(
-        name = name,
-        image = image,
         lastMessage = lastMessage,
         time = time.toString(),
         uid = uid
@@ -15,8 +13,6 @@ fun ChatInfoDomain.toChatInfoData(): ChatInfo {
 
 fun ChatInfo.toChatInfoDomain(): ChatInfoDomain {
     return ChatInfoDomain(
-        name = name,
-        image = image,
         lastMessage = lastMessage,
         time = time.toLong(),
         uid = uid
