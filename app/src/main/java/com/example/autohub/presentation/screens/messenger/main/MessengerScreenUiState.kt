@@ -1,3 +1,5 @@
 package com.example.autohub.presentation.screens.messenger.main
 
-data class MessengerScreenUiState()
+data class MessengerScreenUiState(
+    val errorMessage: String? = null
+)
