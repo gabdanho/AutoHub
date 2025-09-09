@@ -3,10 +3,9 @@ package com.example.autohub.presentation.screens.account.auth_user
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetCurrentUserAdsUseCase
-import com.example.autohub.domain.interfaces.usecase.GetTokenFromDatabaseUseCase
+import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
-import com.example.autohub.domain.interfaces.usecase.SignOutUseCase
-import com.example.autohub.domain.model.result.DbResult
+import com.example.autohub.domain.interfaces.usecase.SignOutAndClearUserIdUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toCarAdPresentation
 import com.example.autohub.presentation.mapper.toUserPresentation
@@ -16,7 +15,6 @@ import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.MessengerGraph
-import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,8 +28,8 @@ class AuthUserAccountScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getUserData: GetUserDataUseCase,
     private val getCurrentUserAds: GetCurrentUserAdsUseCase,
-    private val getToken: GetTokenFromDatabaseUseCase,
-    private val signOut: SignOutUseCase
+    private val getToken: GetLocalUserIdUseCase,
+    private val signOut: SignOutAndClearUserIdUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUserAccountScreenUiState())
@@ -67,9 +65,8 @@ class AuthUserAccountScreenViewModel @Inject constructor(
 
     fun onSignOutClick() {
         viewModelScope.launch {
-            signOut().also {
-                navigator.navigate(destination = AdGraph.AdsMainScreen)
-            }
+            signOut()
+            navigator.navigate(destination = AdGraph.AdsMainScreen)
         }
     }
 
@@ -81,17 +78,6 @@ class AuthUserAccountScreenViewModel @Inject constructor(
 
     fun onAdClick(ad: CarAd) {
         viewModelScope.launch {
-            val userNav = with(_uiState.value.user) {
-                UserNav(
-                    uid = this.uid,
-                    image = this.image,
-                    firstName = this.firstName,
-                    lastName = this.secondName,
-                    city = this.city,
-                    phone = this.phoneNumber
-                )
-            }
-
             navigator.navigate(
                 destination = AdGraph.CurrentAdScreen(carAd = ad)
             )
@@ -104,53 +90,44 @@ class AuthUserAccountScreenViewModel @Inject constructor(
 
     private fun getUserDataAndAds() {
         viewModelScope.launch {
-            when (val tokenResult = getToken()) {
-                is DbResult.Success -> {
-                    when (val userResult = getUserData(userUID = tokenResult.data)) {
-                        is FirebaseResult.Success -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    user = userResult.data.toUserPresentation()
-                                        .copy(uid = tokenResult.data),
-                                    loadingState = LoadingState.Success
-                                )
-                            }
+            val uid = getToken()
 
-                            when (val adsResult = getCurrentUserAds(uid = tokenResult.data)) {
-                                is FirebaseResult.Success -> {
-                                    _uiState.update { state ->
-                                        state.copy(
-                                            ads = adsResult.data.map { it.toCarAdPresentation() },
-                                            loadingState = LoadingState.Success
-                                        )
-                                    }
-                                }
-
-                                is FirebaseResult.Error -> {
-                                    _uiState.update { state ->
-                                        state.copy(
-                                            loadingState = LoadingState.Error(message = adsResult.message)
-                                        )
-                                    }
-                                }
-                            }
+            uid?.let {
+                when (val userResult = getUserData(userUID = uid)) {
+                    is FirebaseResult.Success -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                user = userResult.data.toUserPresentation().copy(uid = uid),
+                                loadingState = LoadingState.Success
+                            )
                         }
 
-                        is FirebaseResult.Error -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    loadingState = LoadingState.Error(message = userResult.message)
-                                )
+                        when (val adsResult = getCurrentUserAds(uid = uid)) {
+                            is FirebaseResult.Success -> {
+                                _uiState.update { state ->
+                                    state.copy(
+                                        ads = adsResult.data.map { it.toCarAdPresentation() },
+                                        loadingState = LoadingState.Success
+                                    )
+                                }
+                            }
+
+                            is FirebaseResult.Error -> {
+                                _uiState.update { state ->
+                                    state.copy(
+                                        loadingState = LoadingState.Error(message = adsResult.message)
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                is DbResult.Error -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            loadingState = LoadingState.Error(message = tokenResult.message)
-                        )
+                    is FirebaseResult.Error -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Error(message = userResult.message)
+                            )
+                        }
                     }
                 }
             }
