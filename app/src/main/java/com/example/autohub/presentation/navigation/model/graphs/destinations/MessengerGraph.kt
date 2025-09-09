@@ -1,6 +1,6 @@
 package com.example.autohub.presentation.navigation.model.graphs.destinations
 
-import com.example.autohub.presentation.model.user.User
+import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,5 +10,5 @@ sealed interface MessengerGraph : NavigationDestination {
     data object MessengerScreen : MessengerGraph
 
     @Serializable
-    data object ChattingScreen : MessengerGraph
+    data class ChattingScreen(val participant: UserNav = UserNav()) : MessengerGraph
 }

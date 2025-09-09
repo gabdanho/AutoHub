@@ -1,16 +1,15 @@
 package com.example.autohub.presentation.navigation.graphs
 
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
-import com.example.autohub.presentation.navigation.model.nav_type.ListCarAdNav
-import com.example.autohub.presentation.navigation.model.nav_type.ListCarAdNavType
 import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import com.example.autohub.presentation.navigation.model.nav_type.UserNavType
 import com.example.autohub.presentation.screens.account.another.AnotherAccountScreen
+import com.example.autohub.presentation.screens.account.auth_user.AuthUserAccountScreen
+import com.example.autohub.presentation.screens.account.settings.AccountSettings
 import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.accountNavigationScreensGraph(
@@ -18,8 +17,7 @@ fun NavGraphBuilder.accountNavigationScreensGraph(
 ) {
     composable<AccountGraph.AnotherAccountScreen>(
         typeMap = mapOf(
-            typeOf<UserNav>() to UserNavType(),
-            typeOf<ListCarAdNav>() to ListCarAdNavType()
+            typeOf<UserNav>() to UserNavType()
         )
     ) {
         val args = it.toRoute<AccountGraph.AnotherAccountScreen>()
@@ -30,10 +28,10 @@ fun NavGraphBuilder.accountNavigationScreensGraph(
     }
 
     composable<AccountGraph.AccountSettingsScreen> {
-        Text(text = "AccountGraph.AccountSettingsScreen")
+        AccountSettings(modifier = modifier)
     }
 
     composable<AccountGraph.AuthUserAccountScreen> {
-        Text(text = "AccountGraph.AuthUserAccountScreen")
+        AuthUserAccountScreen(modifier = modifier)
     }
 }

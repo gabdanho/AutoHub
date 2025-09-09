@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.navigation.graphs
 
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -10,14 +9,17 @@ import com.example.autohub.presentation.navigation.model.graphs.destinations.AdG
 import com.example.autohub.presentation.navigation.model.nav_type.CarAdNavType
 import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import com.example.autohub.presentation.navigation.model.nav_type.UserNavType
+import com.example.autohub.presentation.screens.ad.create.AdCreateScreen
 import com.example.autohub.presentation.screens.ad.current.AdScreen
+import com.example.autohub.presentation.screens.ad.filters.FiltersScreen
+import com.example.autohub.presentation.screens.ad.main.AdsMainScreen
 import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.adNavigationScreensGraph(
     modifier: Modifier = Modifier
 ) {
     composable<AdGraph.CreateAdScreen> {
-        Text(text = "AdGraph.CreateAdScreen")
+        AdCreateScreen(modifier = modifier)
     }
 
     composable<AdGraph.CurrentAdScreen>(
@@ -28,17 +30,16 @@ fun NavGraphBuilder.adNavigationScreensGraph(
     ) {
         val args = it.toRoute<AdGraph.CurrentAdScreen>()
         AdScreen(
-            user = args.user,
             carAd = args.carAd,
             modifier = modifier
         )
     }
 
     composable<AdGraph.FiltersScreen> {
-        Text(text = "AdGraph.FiltersScreen")
+        FiltersScreen(modifier = modifier)
     }
 
     composable<AdGraph.AdsMainScreen> {
-        Text(text = "AdGraph.AdsMainScreen")
+        AdsMainScreen(modifier = modifier)
     }
 }
