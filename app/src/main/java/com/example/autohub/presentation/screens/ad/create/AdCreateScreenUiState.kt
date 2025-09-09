@@ -2,7 +2,6 @@ package com.example.autohub.presentation.screens.ad.create
 
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.UiImage
-import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.options.BodyType
 import com.example.autohub.presentation.model.options.ConditionType
 import com.example.autohub.presentation.model.options.DriveType
