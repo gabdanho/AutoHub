@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -31,18 +32,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -51,72 +49,55 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
-import com.example.autohub.presentation.model.messenger.Message
-import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
+import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
 
 @Composable
 fun ChattingScreen(
-    buyerUID: String,
-    onBuyerClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    participant: UserNav,
+    modifier: Modifier = Modifier,
+    viewModel: ChattingScreenViewModel = hiltViewModel<ChattingScreenViewModel>()
 ) {
-    val context = LocalContext.current
+    val uiState = viewModel.uiState.collectAsState().value
+    val participantStatus = viewModel.participantStatus.collectAsState().value
+    val messages = viewModel.messages.collectAsState().value
     val listState = rememberLazyListState()
-    val isFirstRender = remember { mutableStateOf(true) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.stopListening()
+        }
+    }
+
+    LaunchedEffect(participant) {
+        viewModel.initChat(user = participant)
+    }
 
     // programming scroll to last item
-    LaunchedEffect(TODO("messages")) {
-        /*
-        if ((messages.isNotEmpty() && listState.isScrolledToTheEnd()) || (messages.isNotEmpty() && isFirstRender.value)) {
+    LaunchedEffect(messages) {
+        if (messages.isNotEmpty() && listState.isScrolledToTheEnd()) {
             listState.animateScrollToItem(messages.size - 1)
-            isFirstRender.value = false
         }
-         */
     }
 
     Scaffold(
         bottomBar = {
             MessageInputField(
-                text = TODO("text.value"),
-                onValueChange = { TODO("text.value = it") },
+                text = uiState.messageTextValue,
+                onValueChange = { viewModel.updateMessageTextValue(value = it) },
                 onSendMessageClick = {
-                    /*
-                    if (text.value.isNotBlank()) {
-                        sendMessage(
-                            getAuthUserUID(),
-                            buyerUID,
-                            context.getString(
-                                R.string.send_message_buyer_name,
-                                buyerData.value.firstName,
-                                buyerData.value.secondName
-                            ),
-                            buyerData.value.image,
-                            text.value
-                        )
-                        viewModel.sendMessage(
-                            context.getString(
-                                R.string.send_message_buyer_name,
-                                buyerData.value.firstName,
-                                buyerData.value.secondName
-                            ),
-                            text.value,
-                            buyerData.value.localToken
-                        )
-                        text.value = ""
-                    }
-                     */
+                    viewModel.sendMessage()
                 }
             )
         },
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
-        val status = TODO("getBuyerStatus(buyerUID).observeAsState(initial = UserStatus.OFFLINE)")
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -129,12 +110,12 @@ fun ChattingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(cardColor)
-                    .clickable { onBuyerClick(buyerUID) }
+                    .clickable { viewModel.onParticipantClick(user = participant) }
             ) {
 
                 Box {
                     AsyncImage(
-                        model = TODO("buyerData.value.image"),
+                        model = participant.image,
                         contentDescription = stringResource(id = R.string.content_buyer_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -148,15 +129,15 @@ fun ChattingScreen(
                         .padding(8.dp)) {
                         drawCircle(
                             radius = circleSize,
-                            color = if (TODO("status.value") == TODO("UserStatus.ONLINE")) Color.Green else Color.Gray
+                            color = if (participantStatus == UserStatus.Online) Color.Green else Color.Gray
                         )
                     }
                 }
                 Text(
                     text = stringResource(
                         id = R.string.send_message_buyer_name,
-                        TODO("buyerData.value.firstName"),
-                        TODO("buyerData.value.secondName")
+                        participant.firstName,
+                        participant.lastName
                     ),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.W300,
@@ -168,12 +149,15 @@ fun ChattingScreen(
                 state = listState,
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(TODO("messages")) { message ->
-                    /*
-                    if (!message.read && message.receiver == getAuthUserUID())
-                        markMessagesAsRead(buyerUID, message.id)
-                    UserMessage(message = message)
-                     */
+                items(messages) { message ->
+                    if (!message.read) viewModel.markMessageAsRead(messageId = message.id)
+                    UserMessage(
+                        text = message.text,
+                        time = message.timeFormatted,
+                        authUserId = uiState.authUserId,
+                        senderUid = message.senderUid,
+                        isRead = message.read
+                    )
                 }
             }
         }
@@ -182,14 +166,18 @@ fun ChattingScreen(
 
 @Composable
 private fun UserMessage(
-    message: Message,
+    text: String,
+    time: String,
+    authUserId: String,
+    senderUid: String,
+    isRead: Boolean,
     modifier: Modifier = Modifier
 ) {
     val config = LocalConfiguration.current
     val maxWidth = (config.screenWidthDp * 0.9f).dp
 
     Row(
-        horizontalArrangement = if (TODO("message.sender") == TODO("authUserUID")) Arrangement.End else Arrangement.Start,
+        horizontalArrangement = if (senderUid == authUserId) Arrangement.End else Arrangement.Start,
         modifier = Modifier.fillMaxWidth()
     ) {
         Card(
@@ -204,7 +192,7 @@ private fun UserMessage(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 4.dp)
             ) {
-                if (TODO("message.sender") == TODO("authUserUID") && !message.read) {
+                if (senderUid == authUserId && !isRead) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -215,10 +203,10 @@ private fun UserMessage(
                 Text(
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(fontSize = 15.sp)) {
-                            append(text = message.text + " ")
+                            append(text = "$text ")
                         }
                         withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 10.sp)) {
-                            append(text = "" /* TODO("message.time") */)
+                            append(text = time)
                         }
                     }, modifier = Modifier.padding(8.dp)
                 )
