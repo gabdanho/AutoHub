@@ -25,10 +25,10 @@ import com.example.autohub.presentation.theme.containerColor
 
 @Composable
 fun BottomNavBar(
-    onAdListClick: () -> Unit,
-    onAccountClick: () -> Unit,
-    onMessageClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAdListClick: () -> Unit = { },
+    onAccountClick: () -> Unit = { },
+    onMessageClick: () -> Unit = { }
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
