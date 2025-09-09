@@ -10,7 +10,6 @@ import com.example.autohub.domain.interfaces.usecase.UpdateFirstNameUseCase
 import com.example.autohub.domain.interfaces.usecase.UpdateLastNameUseCase
 import com.example.autohub.domain.interfaces.usecase.UploadUserProfileImageToFirebaseUseCase
 import com.example.autohub.domain.model.ImageUploadData
-import com.example.autohub.domain.model.result.DbResult
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.model.LoadingState
@@ -186,34 +185,26 @@ class AccountSettingsViewModel @Inject constructor(
 
     private fun getUser() {
         viewModelScope.launch {
-            when (val tokenResult = getToken()) {
-                is DbResult.Success -> {
-                    when (val userResult = getUserData(userUID = tokenResult.data)) {
-                        is FirebaseResult.Success -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    user = userResult.data.toUserPresentation()
-                                        .copy(uid = tokenResult.data),
-                                    loadingState = LoadingState.Success
-                                )
-                            }
-                        }
+            val uid = getToken()
 
-                        is FirebaseResult.Error -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    loadingState = LoadingState.Error(message = userResult.message)
-                                )
-                            }
+            uid?.let {
+                when (val userResult = getUserData(userUID = uid)) {
+                    is FirebaseResult.Success -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                user = userResult.data.toUserPresentation()
+                                    .copy(uid = uid),
+                                loadingState = LoadingState.Success
+                            )
                         }
                     }
-                }
 
-                is DbResult.Error -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            loadingState = LoadingState.Error(message = tokenResult.message)
-                        )
+                    is FirebaseResult.Error -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Error(message = userResult.message)
+                            )
+                        }
                     }
                 }
             }
