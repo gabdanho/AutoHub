@@ -1,6 +1,5 @@
 package com.example.autohub.domain.usecase
 
-import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.InsertLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginAndSaveUserIdUseCase
@@ -13,14 +12,14 @@ class LoginAndSaveUserIdUseCaseImpl(
     private val insertLocalUserIdUseCase: InsertLocalUserIdUseCase
 ) : LoginAndSaveUserIdUseCase {
     override suspend fun invoke(email: String, password: String): FirebaseResult<Unit> {
-        return safeFirebaseCall {
-            when (val loginResult = loginUserUseCase(email, password)) {
-                is FirebaseResult.Success -> {
-                    val uid = getUserIdUseCase()
-                    insertLocalUserIdUseCase(uid)
-                    FirebaseResult.Success(Unit)
-                }
-                is FirebaseResult.Error -> loginResult
+        return when (val loginResult = loginUserUseCase(email, password)) {
+            is FirebaseResult.Success -> {
+                val uid = getUserIdUseCase()
+                insertLocalUserIdUseCase(uid)
+                FirebaseResult.Success(Unit)
+            }
+            is FirebaseResult.Error -> {
+                loginResult
             }
         }
     }

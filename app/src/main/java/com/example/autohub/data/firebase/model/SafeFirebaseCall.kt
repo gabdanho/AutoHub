@@ -1,6 +1,5 @@
 package com.example.autohub.data.firebase.model
 
-import android.util.Log
 import com.example.autohub.domain.model.result.FirebaseResult
 import kotlinx.coroutines.TimeoutCancellationException
 import retrofit2.HttpException
@@ -10,7 +9,6 @@ import java.net.SocketTimeoutException
 suspend fun <T> safeFirebaseCall(apiCall: suspend () -> T): FirebaseResult<T> {
     return try {
         val result = apiCall()
-        Log.i("SafeFirebaseCall", apiCall().toString())
         FirebaseResult.Success(data = result)
     } catch (e: HttpException) {
         FirebaseResult.Error.ServerError(
