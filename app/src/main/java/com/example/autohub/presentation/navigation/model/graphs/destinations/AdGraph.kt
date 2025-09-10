@@ -1,5 +1,6 @@
 package com.example.autohub.presentation.navigation.model.graphs.destinations
 
+import com.example.autohub.presentation.model.SearchFilter
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import kotlinx.serialization.Serializable
@@ -17,5 +18,5 @@ sealed interface AdGraph : NavigationDestination {
     data object FiltersScreen: AdGraph
 
     @Serializable
-    data object AdsMainScreen: AdGraph
+    data class AdsMainScreen(val filters: List<SearchFilter>): AdGraph
 }
