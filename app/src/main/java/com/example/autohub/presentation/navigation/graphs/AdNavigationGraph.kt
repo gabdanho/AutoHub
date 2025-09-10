@@ -4,11 +4,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.example.autohub.presentation.model.SearchFilter
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
 import com.example.autohub.presentation.navigation.model.nav_type.CarAdNavType
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFilterNavType
+import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import com.example.autohub.presentation.navigation.model.nav_type.UserNavType
 import com.example.autohub.presentation.screens.ad.create.AdCreateScreen
@@ -43,13 +43,13 @@ fun NavGraphBuilder.adNavigationScreensGraph(
 
     composable<AdGraph.AdsMainScreen>(
         typeMap = mapOf(
-            typeOf<SearchFilter>() to SearchFilterNavType()
+            typeOf<SearchFiltersNav>() to SearchFilterNavType()
         )
     ) {
         val args = it.toRoute<AdGraph.AdsMainScreen>()
         AdsMainScreen(
             modifier = modifier,
-            filters = args.filters
+            filters = args.searchFilters
         )
     }
 }
