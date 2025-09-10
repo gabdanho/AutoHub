@@ -87,7 +87,11 @@ fun RowRadioButtons(
                     RadioButton(
                         selected = selectedType.value == type,
                         onClick = {
-                            /* Nothing */
+                            if (selectedType.value != type)
+                                selectedType.value = type
+                            else
+                                selectedType.value = null
+                            returnType(selectedType.value)
                         },
                         colors = radioButtonColors
                     )
