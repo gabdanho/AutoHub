@@ -14,7 +14,7 @@ enum class ConditionType(
     NOT_WORKING(textRes = StringResNamePresentation.LABEL_NOT_WORKING, tag = NOT_WORKING_TAG);
 
     companion object {
-        fun fromTag(value: String): ConditionType? {
+        fun fromTag(value: String?): ConditionType? {
             return when(value) {
                 NOT_BROKEN_TAG -> NOT_BROKEN
                 BROKEN_TAG -> BROKEN

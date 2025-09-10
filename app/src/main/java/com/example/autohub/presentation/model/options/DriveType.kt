@@ -11,7 +11,7 @@ enum class DriveType(override val textRes: StringResNamePresentation, override v
     FULL_WD(textRes = StringResNamePresentation.LABEL_FULL_WD, tag = FULL_WD_TAG);
 
     companion object {
-        fun fromTag(value: String): DriveType? {
+        fun fromTag(value: String?): DriveType? {
             return when(value) {
                 FWD_TAG -> FWD
                 RWD_TAG -> RWD

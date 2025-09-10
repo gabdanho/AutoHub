@@ -12,7 +12,7 @@ enum class SteeringWheelSideType(
     LEFT(textRes = StringResNamePresentation.LABEL_LEFT_WHEEL, tag = LEFT_STEERING_WHEEL_TAG);
 
     companion object {
-        fun fromTag(value: String): SteeringWheelSideType? {
+        fun fromTag(value: String?): SteeringWheelSideType? {
             return when(value) {
                 RIGHT_STEERING_WHEEL_TAG -> RIGHT
                 LEFT_STEERING_WHEEL_TAG -> LEFT

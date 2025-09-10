@@ -16,7 +16,7 @@ enum class TransmissionType(
     ROBOT(textRes = StringResNamePresentation.LABEL_ROBOT, tag = ROBOT_TAG);
 
     companion object {
-        fun fromTag(value: String): TransmissionType? {
+        fun fromTag(value: String?): TransmissionType? {
             return when(value) {
                 MANUAL_TAG -> MANUAL
                 AUTOMATIC_TAG -> AUTOMATIC

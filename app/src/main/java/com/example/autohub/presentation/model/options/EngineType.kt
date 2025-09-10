@@ -14,7 +14,7 @@ enum class EngineType(
     HYBRID(textRes = StringResNamePresentation.LABEL_HYBRID, tag = HYBRID_TAG);
 
     companion object {
-        fun fromTag(value: String): EngineType? {
+        fun fromTag(value: String?): EngineType? {
             return when(value) {
                 PETROL_TAG -> PETROL
                 DIESEL_TAG -> DIESEL

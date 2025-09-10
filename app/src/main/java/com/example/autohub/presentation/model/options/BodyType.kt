@@ -30,7 +30,7 @@ enum class BodyType(
     LIMOUSINE(textRes = StringResNamePresentation.LABEL_LIMOUSINE, tag = LIMOUSINE_TAG);
 
     companion object {
-        fun fromTag(value: String): BodyType? {
+        fun fromTag(value: String?): BodyType? {
             return when(value) {
                 SEDAN_TAG -> SEDAN
                 COUPE_TAG -> COUPE
