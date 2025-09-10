@@ -35,19 +35,20 @@ import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.model.SearchFilter
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.theme.containerColor
 
 @Composable
 fun AdsMainScreen(
     modifier: Modifier = Modifier,
-    filters: List<SearchFilter> = emptyList(),
+    filters: SearchFiltersNav = SearchFiltersNav(),
     viewModel: AdsMainScreenViewModel = hiltViewModel<AdsMainScreenViewModel>(),
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val context = LocalContext.current
 
     LaunchedEffect(filters) {
-        viewModel.getAds(filters = filters)
+        viewModel.getAds(filters = filters.filters)
     }
 
     LaunchedEffect(uiState.loadingState) {
@@ -65,9 +66,9 @@ fun AdsMainScreen(
             ) {
                 SearchAdsBar(
                     searchText = uiState.searchTextValue,
-                    onFiltersClick = { viewModel.onFiltersClick() },
+                    onFiltersClick = { viewModel.onFiltersClick(filters = filters) },
                     onSearchTextChange = { viewModel.updateSearchText(value = it) },
-                    getAds = { viewModel.getAds(filters = filters) }
+                    getAds = { viewModel.getAds(filters = filters.filters) }
                 )
             }
         },

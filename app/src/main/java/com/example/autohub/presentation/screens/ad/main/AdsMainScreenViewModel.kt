@@ -13,6 +13,7 @@ import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.MessengerGraph
+import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,10 +31,10 @@ class AdsMainScreenViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AdsMainScreenUiState())
     val uiState: StateFlow<AdsMainScreenUiState> = _uiState.asStateFlow()
 
-    fun onFiltersClick() {
+    fun onFiltersClick(filters: SearchFiltersNav) {
         viewModelScope.launch {
             navigator.navigate(
-                destination = AdGraph.FiltersScreen
+                destination = AdGraph.FiltersScreen(searchFilters = filters)
             )
         }
     }

@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -50,6 +51,7 @@ fun LoginScreen(
     val uiState = viewModel.uiState.collectAsState().value
 
     viewModel.updateIsShowSendEmailText(value = isShowSendEmailText)
+
     LaunchedEffect(uiState.loadingState) {
         if (uiState.loadingState is LoadingState.Error) {
             Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
@@ -58,8 +60,10 @@ fun LoginScreen(
     }
 
     LaunchedEffect(uiState.emailInfoMessage) {
-        Toast.makeText(context, uiState.emailInfoMessage, Toast.LENGTH_SHORT).show()
-        viewModel.clearEmailInfoMessage()
+        if (uiState.emailInfoMessage != null) {
+            Toast.makeText(context, uiState.emailInfoMessage, Toast.LENGTH_SHORT).show()
+            viewModel.clearEmailInfoMessage()
+        }
     }
 
     // Диалог со сменой пароля
@@ -104,7 +108,9 @@ fun LoginScreen(
     }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -129,6 +135,7 @@ fun LoginScreen(
             text = uiState.passwordValue,
             onValueChange = { viewModel.changePasswordValue(value = it) },
             label = stringResource(id = R.string.input_password),
+            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.border(
                 width = 1.dp,
                 color = borderColor,

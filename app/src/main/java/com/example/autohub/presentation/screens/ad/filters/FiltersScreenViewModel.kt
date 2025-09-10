@@ -12,6 +12,7 @@ import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
+import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.utils.isOnlyDigits
 import com.example.autohub.presentation.utils.isOnlyLetters
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,28 @@ class FiltersScreenViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(FiltersScreenUiState())
     val uiState: StateFlow<FiltersScreenUiState> = _uiState.asStateFlow()
+
+    fun initFilters(filters: List<SearchFilter>) {
+        _uiState.update { state ->
+            state.copy(
+                brandValue = findInFilters<String>(filterName = "brand", filters = filters) ?: state.brandValue,
+                modelValue = findInFilters<String>(filterName = "model", filters = filters) ?: state.modelValue,
+                colorValue = findInFilters<String>(filterName = "color", filters = filters) ?: state.colorValue,
+                realiseYearValue = findInFilters<String>(filterName = "realiseYear", filters = filters) ?: state.realiseYearValue,
+                engineCapacityValue = findInFilters<String>(filterName = "engineCapacity", filters = filters) ?: state.engineCapacityValue,
+                mileageValue = findInFilters<String>(filterName = "mileage", filters = filters) ?: state.mileageValue,
+                priceValue = findInFilters<String>(filterName = "price", filters = filters) ?: state.priceValue,
+                descriptionValue = findInFilters<String>(filterName = "description", filters = filters) ?: state.descriptionValue,
+                cityValue = findInFilters<String>(filterName = "city", filters = filters) ?: state.cityValue,
+                bodyTypeValue = BodyType.fromTag(value = findInFilters<String>(filterName = "bodyType", filters = filters)),
+                engineTypeValue = EngineType.fromTag(value = findInFilters<String>(filterName = "engineType", filters = filters)),
+                transmissionValue = TransmissionType.fromTag(value = findInFilters<String>(filterName = "transmission", filters = filters)),
+                driveTypeValue = DriveType.fromTag(value = findInFilters<String>(filterName = "driveType", filters = filters)),
+                steeringWheelSideValue = SteeringWheelSideType.fromTag(value = findInFilters<String>(filterName = "steeringWheelSide", filters = filters)),
+                conditionValue = ConditionType.fromTag(value = findInFilters<String>(filterName = "condition", filters = filters))
+            )
+        }
+    }
 
     fun onBackButtonClick() {
         viewModelScope.launch {
@@ -58,7 +81,7 @@ class FiltersScreenViewModel @Inject constructor(
             }
 
             navigator.navigate(
-                destination = AdGraph.AdsMainScreen
+                destination = AdGraph.AdsMainScreen(searchFilters = SearchFiltersNav(filters = createdFilters))
             )
         }
     }
@@ -107,10 +130,6 @@ class FiltersScreenViewModel @Inject constructor(
         }
     }
 
-    fun updateDescriptionValue(value: String) {
-        _uiState.update { state -> state.copy(descriptionValue = value) }
-    }
-
     fun updateBodyTypeValue(value: BodyType?) {
         _uiState.update { state -> state.copy(bodyTypeValue = value) }
     }
@@ -147,5 +166,12 @@ class FiltersScreenViewModel @Inject constructor(
 
     private fun MutableList<SearchFilter>.addIfNotNull(name: String, value: CarOption?) {
         value?.let { add(SearchFilter(name, it.tag)) }
+    }
+
+    private inline fun <reified T> findInFilters(
+        filterName: String,
+        filters: List<SearchFilter>,
+    ): T? {
+        return filters.find { it.name == filterName }?.value as T?
     }
 }

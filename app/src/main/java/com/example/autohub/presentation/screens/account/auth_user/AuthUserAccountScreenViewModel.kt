@@ -41,7 +41,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
 
     fun onAdListClick() {
         viewModelScope.launch {
-            navigator.navigate(destination = AdGraph.AdsMainScreen)
+            navigator.navigate(destination = AdGraph.AdsMainScreen())
         }
     }
 
@@ -66,7 +66,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
     fun onSignOutClick() {
         viewModelScope.launch {
             signOut()
-            navigator.navigate(destination = AdGraph.AdsMainScreen)
+            navigator.navigate(destination = AdGraph.AdsMainScreen())
         }
     }
 

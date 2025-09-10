@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,15 +34,21 @@ import com.example.autohub.presentation.model.options.DriveType
 import com.example.autohub.presentation.model.options.EngineType
 import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
+import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.theme.barColor
 
 @Composable
 fun FiltersScreen(
     modifier: Modifier = Modifier,
     viewModel: FiltersScreenViewModel = hiltViewModel<FiltersScreenViewModel>(),
+    searchFilters: SearchFiltersNav = SearchFiltersNav()
 ) {
     val scrollState = rememberScrollState()
     val uiState = viewModel.uiState.collectAsState().value
+
+    LaunchedEffect(searchFilters) {
+        viewModel.initFilters(filters = searchFilters.filters)
+    }
 
     Scaffold(
         topBar = {
@@ -91,7 +98,7 @@ fun FiltersScreen(
                     option = stringResource(id = R.string.radio_drive_type),
                     currentType = uiState.driveTypeValue,
                     typesName = DriveType.entries,
-                    returnType = { viewModel.updateDriveTypeValue(value = it as DriveType) },
+                    returnType = { viewModel.updateDriveTypeValue(value = it as DriveType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -109,7 +116,7 @@ fun FiltersScreen(
                     option = stringResource(id = R.string.radio_bodywork),
                     currentType = uiState.bodyTypeValue,
                     typesName = BodyType.entries,
-                    returnType = { viewModel.updateBodyTypeValue(value = it as BodyType) },
+                    returnType = { viewModel.updateBodyTypeValue(value = it as BodyType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -118,7 +125,7 @@ fun FiltersScreen(
                     option = stringResource(id = R.string.radio_engine_type),
                     currentType = uiState.engineTypeValue,
                     typesName = EngineType.entries,
-                    returnType = { viewModel.updateEngineTypeValue(value = it as EngineType) },
+                    returnType = { viewModel.updateEngineTypeValue(value = it as EngineType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -136,7 +143,7 @@ fun FiltersScreen(
                     option = stringResource(id = R.string.radio_transmission_type),
                     currentType = uiState.transmissionValue,
                     typesName = TransmissionType.entries,
-                    returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType) },
+                    returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -145,7 +152,7 @@ fun FiltersScreen(
                     option = stringResource(id = R.string.radio_steering_wheel),
                     currentType = uiState.steeringWheelSideValue,
                     typesName = SteeringWheelSideType.entries,
-                    returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType) },
+                    returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -163,7 +170,7 @@ fun FiltersScreen(
                     option = stringResource(id = R.string.radio_condition),
                     currentType = uiState.conditionValue,
                     typesName = ConditionType.entries,
-                    returnType = { viewModel.updateConditionValue(value = it as ConditionType) },
+                    returnType = { viewModel.updateConditionValue(value = it as ConditionType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -189,16 +196,15 @@ fun FiltersScreen(
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
             ) {
                 CustomButton(
                     text = stringResource(id = R.string.button_accept_changes),
                     onClick = {
                         viewModel.onConfirmClick()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
+                    }
                 )
                 Icon(
                     imageVector = Icons.Default.Delete,

@@ -20,6 +20,7 @@ import com.example.autohub.presentation.model.options.TransmissionType
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.utils.isOnlyDigits
 import com.example.autohub.presentation.utils.isOnlyLetters
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class AdCreateScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val createAd: CreateAdUseCase,

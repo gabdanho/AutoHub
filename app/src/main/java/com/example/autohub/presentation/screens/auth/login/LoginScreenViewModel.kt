@@ -71,7 +71,7 @@ class LoginScreenViewModel @Inject constructor(
             ) {
                 is FirebaseResult.Success -> {
                     navigator.navigate(
-                        destination = AdGraph.AdsMainScreen
+                        destination = AdGraph.AdsMainScreen()
                     )
                 }
 

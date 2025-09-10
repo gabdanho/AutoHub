@@ -71,7 +71,7 @@ class MessengerScreenViewModel @Inject constructor(
     fun onAdListClick() {
         viewModelScope.launch {
             navigator.navigate(
-                destination = AdGraph.AdsMainScreen
+                destination = AdGraph.AdsMainScreen()
             )
         }
     }

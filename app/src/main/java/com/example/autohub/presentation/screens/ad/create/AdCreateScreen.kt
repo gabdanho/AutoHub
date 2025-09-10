@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
@@ -102,6 +103,7 @@ fun AdCreateScreen(
             Column(
                 modifier = Modifier
                     .weight(3f)
+                    .padding(horizontal = 8.dp)
                     .verticalScroll(scrollState)
             ) {
                 InputField(
@@ -146,7 +148,7 @@ fun AdCreateScreen(
                     option = stringResource(id = R.string.radio_bodywork),
                     isError = uiState.isBodyTypeValueError,
                     typesName = BodyType.entries,
-                    returnType = { viewModel.updateBodyTypeValue(value = it as BodyType) },
+                    returnType = { viewModel.updateBodyTypeValue(value = it as BodyType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -155,7 +157,7 @@ fun AdCreateScreen(
                     option = stringResource(id = R.string.radio_engine_type),
                     isError = uiState.isEngineTypeValueError,
                     typesName = EngineType.entries,
-                    returnType = { viewModel.updateEngineTypeValue(value = it as EngineType) },
+                    returnType = { viewModel.updateEngineTypeValue(value = it as EngineType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -174,7 +176,7 @@ fun AdCreateScreen(
                     option = stringResource(id = R.string.radio_transmission_type),
                     isError = uiState.isTransmissionValueError,
                     typesName = TransmissionType.entries,
-                    returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType) },
+                    returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -183,7 +185,7 @@ fun AdCreateScreen(
                     option = stringResource(id = R.string.radio_drive_type),
                     isError = uiState.isDriveTypeValueError,
                     typesName = DriveType.entries,
-                    returnType = { viewModel.updateDriveTypeValue(value = it as DriveType) },
+                    returnType = { viewModel.updateDriveTypeValue(value = it as DriveType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -192,7 +194,7 @@ fun AdCreateScreen(
                     option = stringResource(id = R.string.radio_steering_wheel),
                     isError = uiState.isSteeringWheelSideValueError,
                     typesName = SteeringWheelSideType.entries,
-                    returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType) },
+                    returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)
@@ -211,7 +213,7 @@ fun AdCreateScreen(
                     option = stringResource(id = R.string.radio_condition),
                     isError = uiState.isConditionValueError,
                     typesName = ConditionType.entries,
-                    returnType = { viewModel.updateConditionValue(value = it as ConditionType) },
+                    returnType = { viewModel.updateConditionValue(value = it as ConditionType?) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp)

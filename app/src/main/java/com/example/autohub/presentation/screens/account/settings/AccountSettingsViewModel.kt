@@ -17,6 +17,7 @@ import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.utils.isOnlyLetters
 import com.example.autohub.presentation.utils.isPasswordValid
 import com.example.autohub.presentation.utils.isValidCity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class AccountSettingsViewModel @Inject constructor(
     private val navigator: Navigator,
     private val uploadProfileImage: UploadUserProfileImageToFirebaseUseCase,
