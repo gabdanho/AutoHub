@@ -18,5 +18,5 @@ sealed interface AdGraph : NavigationDestination {
     data object FiltersScreen: AdGraph
 
     @Serializable
-    data class AdsMainScreen(val filters: List<SearchFilter>): AdGraph
+    data class AdsMainScreen(val filters: List<SearchFilter> = emptyList()): AdGraph
 }
