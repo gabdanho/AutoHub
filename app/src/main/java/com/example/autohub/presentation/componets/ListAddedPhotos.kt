@@ -3,6 +3,7 @@ package com.example.autohub.presentation.componets
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -44,7 +45,7 @@ fun ListAddedPhotos(
                 contentDescription = stringResource(id = R.string.text_add_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(300.dp)
+                    .fillMaxSize()
                     .clickable { onAddImageClick() }
                     .padding(horizontal = 4.dp)
             )
