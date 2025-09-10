@@ -2,7 +2,6 @@ package com.example.autohub.presentation.componets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,7 +41,7 @@ fun RowRadioButtons(
         disabledSelectedColor = unfocusedTextFieldColor,
         unselectedColor = labelColor,
         disabledUnselectedColor = unfocusedTextFieldColor
-    )
+    ),
 ) {
     val selectedType = rememberSaveable { mutableStateOf(currentType) }
 
@@ -52,7 +51,7 @@ fun RowRadioButtons(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 4.dp)
+                .padding(vertical = 8.dp)
         ) {
             Text(option)
             if (isError) {
@@ -64,11 +63,13 @@ fun RowRadioButtons(
             }
         }
         LazyRow(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = modifier.padding(horizontal = 8.dp)
         ) {
             items(typesName) { type ->
-                Box(
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .clickable {
                             if (selectedType.value != type)
@@ -78,13 +79,17 @@ fun RowRadioButtons(
                             returnType(selectedType.value)
                         }
                 ) {
+                    Text(
+                        text = stringResource(
+                            id = StringToResourceIdMapperImpl().map(resId = type.textRes)
+                        )
+                    )
                     RadioButton(
                         selected = selectedType.value == type,
-                        onClick = { },
+                        onClick = {
+                            /* Nothing */
+                        },
                         colors = radioButtonColors
-                    )
-                    Text(
-                        text = stringResource(id = StringToResourceIdMapperImpl().map(resId = type.textRes))
                     )
                 }
             }
