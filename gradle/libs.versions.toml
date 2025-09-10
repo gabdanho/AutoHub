@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.2"
+agp = "8.13.0"
 kotlin = "2.1.10"
 coreKtx = "1.12.0"
 junit = "4.13.2"
@@ -9,7 +9,7 @@ lifecycleRuntimeKtx = "2.9.3"
 activityCompose = "1.10.1"
 composeBom = "2025.08.01"
 gmsVerison = "4.4.3"
-bomVersion = "33.3.0"
+bomVersion = "34.1.0"
 coilVersion = "2.6.0"
 navigation = "2.9.3"
 runtimeLivedata = "1.9.0"
@@ -22,10 +22,10 @@ serializationVersion = "1.8.0"
 
 [libraries]
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "bomVersion" }
-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
-firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx" }
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
-firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilVersion" }
 
