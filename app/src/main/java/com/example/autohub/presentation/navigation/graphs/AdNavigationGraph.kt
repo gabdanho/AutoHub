@@ -37,8 +37,17 @@ fun NavGraphBuilder.adNavigationScreensGraph(
         )
     }
 
-    composable<AdGraph.FiltersScreen> {
-        FiltersScreen(modifier = modifier)
+    composable<AdGraph.FiltersScreen>(
+        typeMap = mapOf(
+            typeOf<SearchFiltersNav>() to SearchFilterNavType()
+        )
+    )  {
+
+        val args = it.toRoute<AdGraph.FiltersScreen>()
+        FiltersScreen(
+            modifier = modifier,
+            searchFilters = args.searchFilters
+        )
     }
 
     composable<AdGraph.AdsMainScreen>(

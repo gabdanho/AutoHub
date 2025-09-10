@@ -14,7 +14,7 @@ sealed interface AdGraph : NavigationDestination {
     data class CurrentAdScreen(val carAd: CarAd = CarAd()): AdGraph
 
     @Serializable
-    data object FiltersScreen: AdGraph
+    data class FiltersScreen(val searchFilters: SearchFiltersNav = SearchFiltersNav()): AdGraph
 
     @Serializable
     data class AdsMainScreen(val searchFilters: SearchFiltersNav = SearchFiltersNav()): AdGraph
