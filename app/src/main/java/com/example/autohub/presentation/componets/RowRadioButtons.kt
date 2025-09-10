@@ -43,8 +43,6 @@ fun RowRadioButtons(
         disabledUnselectedColor = unfocusedTextFieldColor
     ),
 ) {
-    val selectedType = currentType
-
     Column {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -72,7 +70,7 @@ fun RowRadioButtons(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .clickable {
-                            val newValue = if (selectedType != type) type else null
+                            val newValue = if (currentType != type) type else null
                             returnType(newValue)
                         }
                 ) {
@@ -82,9 +80,9 @@ fun RowRadioButtons(
                         )
                     )
                     RadioButton(
-                        selected = selectedType == type,
+                        selected = currentType == type,
                         onClick = {
-                            val newValue = if (selectedType != type) type else null
+                            val newValue = if (currentType != type) type else null
                             returnType(newValue)
                         },
                         colors = radioButtonColors
