@@ -34,7 +34,7 @@ class AccountSettingsViewModel @Inject constructor(
     private val updateFirstNameName: UpdateFirstNameUseCase,
     private val updateLastNameName: UpdateLastNameUseCase,
     private val updateCity: UpdateCityUseCase,
-    private val changePassword: ChangePasswordUseCase
+    private val changePassword: ChangePasswordUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AccountSettingsUiState())
@@ -42,18 +42,6 @@ class AccountSettingsViewModel @Inject constructor(
 
     init {
         getUser()
-    }
-
-    fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData) {
-        viewModelScope.launch {
-            if (imageRef.bytes != null) {
-                uploadProfileImage(imageRef = imageRef)
-            } else _uiState.update { state ->
-                state.copy(
-                    loadingState = LoadingState.Error(message = "Can't upload image (image = null)")
-                )
-            }
-        }
     }
 
     fun updateIsShowChangePasswordDialog(value: Boolean) {
@@ -64,7 +52,7 @@ class AccountSettingsViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(
                 firstNameValue = value,
-                isFirstNameValueError = value.isOnlyLetters()
+                isFirstNameValueError = !value.isOnlyLetters()
             )
         }
         isNamesButtonAvailable()
@@ -74,7 +62,7 @@ class AccountSettingsViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(
                 lastNameValue = value,
-                isLastNameValueError = value.isOnlyLetters()
+                isLastNameValueError = !value.isOnlyLetters()
             )
         }
         isNamesButtonAvailable()
@@ -93,7 +81,7 @@ class AccountSettingsViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(
                 passwordValue = value,
-                isPasswordError = isPasswordValid(password = value)
+                isPasswordError = !isPasswordValid(password = value)
             )
         }
     }
@@ -104,6 +92,32 @@ class AccountSettingsViewModel @Inject constructor(
         }
     }
 
+    fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData, uriString: String) {
+        viewModelScope.launch {
+            if (imageRef.bytes != null) {
+                when (val result = uploadProfileImage(imageRef = imageRef)) {
+                    is FirebaseResult.Success -> {
+                        _uiState.update { state -> state.copy(user = state.user.copy(image = uriString)) }
+                    }
+
+                    is FirebaseResult.Error -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Error(
+                                    message = result.message
+                                )
+                            )
+                        }
+                    }
+                }
+            } else _uiState.update { state ->
+                state.copy(
+                    loadingState = LoadingState.Error(message = "Can't upload image (image = null)")
+                )
+            }
+        }
+    }
+
     fun acceptNamesChanges() {
         viewModelScope.launch {
             val firstName = _uiState.value.firstNameValue
@@ -111,14 +125,49 @@ class AccountSettingsViewModel @Inject constructor(
             val isFirstNameCorrect = !_uiState.value.isFirstNameValueError
             val isLastNameCorrect = !_uiState.value.isLastNameValueError
 
-            if (isFirstNameCorrect) updateFirstNameName(firstName = firstName)
-            if (isLastNameCorrect) updateLastNameName(lastName = lastName)
+            if (isFirstNameCorrect && firstName.isNotBlank()) {
+                when (val result = updateFirstNameName(firstName = firstName)) {
+                    is FirebaseResult.Success -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                user = state.user.copy(firstName = firstName),
+                                firstNameValue = ""
+                            )
+                        }
+                    }
 
-            _uiState.update { state ->
-                state.copy(
-                    firstNameValue = "",
-                    lastNameValue = ""
-                )
+                    is FirebaseResult.Error -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Error(
+                                    message = result.message
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+            if (isLastNameCorrect && lastName.isNotBlank()) {
+                when (val result = updateLastNameName(lastName = lastName)) {
+                    is FirebaseResult.Success -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                user = state.user.copy(lastName = lastName),
+                                lastNameValue = ""
+                            )
+                        }
+                    }
+
+                    is FirebaseResult.Error -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Error(
+                                    message = result.message
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -127,12 +176,25 @@ class AccountSettingsViewModel @Inject constructor(
         viewModelScope.launch {
             val city = _uiState.value.cityValue
 
-            updateCity(city = city)
+            when (val result = updateCity(city = city)) {
+                is FirebaseResult.Success -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            user = state.user.copy(city = city),
+                            cityValue = ""
+                        )
+                    }
+                }
 
-            _uiState.update { state ->
-                state.copy(
-                    cityValue = ""
-                )
+                is FirebaseResult.Error -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            loadingState = LoadingState.Error(
+                                message = result.message
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -148,6 +210,7 @@ class AccountSettingsViewModel @Inject constructor(
             } else {
                 when (val result = changePassword(newPassword = password)) {
                     is FirebaseResult.Success -> {
+                        _uiState.update { state -> state.copy(passwordValue = "") }
                         "Password is changed"
                     }
 
@@ -194,8 +257,7 @@ class AccountSettingsViewModel @Inject constructor(
                     is FirebaseResult.Success -> {
                         _uiState.update { state ->
                             state.copy(
-                                user = userResult.data.toUserPresentation()
-                                    .copy(uid = uid),
+                                user = userResult.data.toUserPresentation().copy(uid = uid),
                                 loadingState = LoadingState.Success
                             )
                         }

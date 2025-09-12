@@ -2,7 +2,7 @@ package com.example.autohub.presentation.screens.auth.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.autohub.domain.interfaces.usecase.RegisterAndSaveUserIdUseCase
+import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toUserDomain
 import com.example.autohub.presentation.model.LoadingState
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterScreenViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val registerAndSaveUserIdUseCase: RegisterAndSaveUserIdUseCase,
+    private val registerUserUseCase: RegisterUserUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterScreenUiState())
@@ -90,7 +90,7 @@ class RegisterScreenViewModel @Inject constructor(
             val newUser = formingNewAccount()
 
             when (
-                val result = registerAndSaveUserIdUseCase(
+                val result = registerUserUseCase(
                     user = newUser.toUserDomain(),
                     email = currentState.emailValue,
                     password = currentState.passwordValue
@@ -126,7 +126,7 @@ class RegisterScreenViewModel @Inject constructor(
         val state = _uiState.value
         return User(
             firstName = state.firstNameValue,
-            secondName = state.lastNameValue,
+            lastName = state.lastNameValue,
             email = state.emailValue,
             phoneNumber = state.phoneValue,
             city = state.cityValue
@@ -137,8 +137,8 @@ class RegisterScreenViewModel @Inject constructor(
         val isMatch = _uiState.value.passwordValue == _uiState.value.repeatPasswordValue
         _uiState.update { state ->
             state.copy(
-                isPasswordError = isMatch,
-                isRepeatPasswordError = isMatch
+                isPasswordError = !isMatch,
+                isRepeatPasswordError = !isMatch
             )
         }
         return isMatch

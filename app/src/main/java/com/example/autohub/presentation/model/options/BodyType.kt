@@ -12,7 +12,9 @@ import com.example.autohub.presentation.STATION_WAGON_TAG
 import com.example.autohub.presentation.SUV_TAG
 import com.example.autohub.presentation.VAN_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class BodyType(
     override val textRes: StringResNamePresentation,
     override val tag: String

@@ -6,15 +6,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetBuyerStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
+import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.interfaces.usecase.MarkMessagesAsReadUseCase
 import com.example.autohub.domain.interfaces.usecase.SendMessageUseCase
+import com.example.autohub.domain.model.result.FirebaseResult
+import com.example.autohub.presentation.mapper.toUserDomain
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.mapper.toUserStatusPresentation
+import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.Message
+import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
-import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +39,7 @@ class ChattingScreenViewModel @Inject constructor(
     private val getMessagesUseCase: GetMessagesUseCase,
     private val getBuyerStatus: GetBuyerStatusUseCase,
     private val getAuthUserIdUseCase: GetAuthUserIdUseCase,
+    private val getUserDataUseCase: GetUserDataUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChattingScreenUiState())
@@ -49,23 +54,28 @@ class ChattingScreenViewModel @Inject constructor(
     private var statusJob: Job? = null
     private var messagesJob: Job? = null
 
-    fun initChat(user: UserNav) {
+    fun initChat(participant: User) {
         viewModelScope.launch {
-            _uiState.update { state ->
-                state.copy(
-                    authUserId = getAuthUserIdUseCase(),
-                    participantId = user.uid
-                )
+            when (val authUserResult = getUserDataUseCase(userUID = getAuthUserIdUseCase())) {
+                is FirebaseResult.Success -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            authUserData = authUserResult.data.toUserPresentation(),
+                            participantData = participant
+                        )
+                    }
+
+                    startListeningStatus()
+                    startListeningMessages()
+                }
+                is FirebaseResult.Error -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            loadingState = LoadingState.Error(message = authUserResult.message)
+                        )
+                    }
+                }
             }
-
-            val state = _uiState.value
-
-            startListeningStatus(uid = _uiState.value.participantId)
-
-            startListeningMessages(
-                authUserId = state.authUserId,
-                participantId = state.participantId
-            )
         }
     }
 
@@ -85,11 +95,12 @@ class ChattingScreenViewModel @Inject constructor(
 
                 if (_uiState.value.messageTextValue.isNotBlank()) {
                     sendMessageUseCase(
-                        senderId = state.authUserId,
-                        receiverId = state.participantId,
+                        sender = state.authUserData.toUserDomain(),
+                        receiver = state.participantData.toUserDomain(),
                         text = state.messageTextValue
                     )
                 }
+                _uiState.update { state -> state.copy(messageTextValue = "") }
             } catch (e: Exception) {
                 Log.e("ChattingViewModel", "Error sending message", e)
                 _uiState.update { state -> state.copy(errorMessage = "Failed to send messages") }
@@ -101,7 +112,7 @@ class ChattingScreenViewModel @Inject constructor(
         _uiState.update { state -> state.copy(messageTextValue = value) }
     }
 
-    fun onParticipantClick(user: UserNav) {
+    fun onParticipantClick(user: User) {
         viewModelScope.launch {
             navigator.navigate(
                 destination = AccountGraph.AnotherAccountScreen(user = user)
@@ -115,8 +126,8 @@ class ChattingScreenViewModel @Inject constructor(
                 val state = _uiState.value
 
                 markMessagesAsReadUseCase(
-                    authUserUID = state.authUserId,
-                    buyerUID = state.participantId,
+                    authUserUID = state.authUserData.uid,
+                    buyerUID = state.participantData.uid,
                     messageID = messageId
                 )
             } catch (e: Exception) {
@@ -125,10 +136,10 @@ class ChattingScreenViewModel @Inject constructor(
         }
     }
 
-    private fun startListeningStatus(uid: String) {
+    private fun startListeningStatus() {
         statusJob?.cancel()
 
-        statusJob = getBuyerStatus(buyerUID = uid)
+        statusJob = getBuyerStatus(buyerUID = _uiState.value.participantData.uid)
             .onEach { status ->
                 _participantStatus.value = status.toUserStatusPresentation()
             }
@@ -138,12 +149,14 @@ class ChattingScreenViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun startListeningMessages(authUserId: String, participantId: String) {
+    private fun startListeningMessages() {
         messagesJob?.cancel()
 
+        val state = _uiState.value
+
         messagesJob = getMessagesUseCase(
-            authUserUID = authUserId,
-            buyerUID = participantId
+            authUserId = state.authUserData.uid,
+            participantId = state.participantData.uid
         )
             .onEach { messages ->
                 _messages.value = messages.map { it.toUserPresentation() }

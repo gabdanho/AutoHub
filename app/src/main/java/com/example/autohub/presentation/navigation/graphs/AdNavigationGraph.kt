@@ -9,8 +9,6 @@ import com.example.autohub.presentation.navigation.model.graphs.destinations.AdG
 import com.example.autohub.presentation.navigation.model.nav_type.CarAdNavType
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFilterNavType
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
-import com.example.autohub.presentation.navigation.model.nav_type.UserNav
-import com.example.autohub.presentation.navigation.model.nav_type.UserNavType
 import com.example.autohub.presentation.screens.ad.create.AdCreateScreen
 import com.example.autohub.presentation.screens.ad.current.AdScreen
 import com.example.autohub.presentation.screens.ad.filters.FiltersScreen
@@ -26,7 +24,6 @@ fun NavGraphBuilder.adNavigationScreensGraph(
 
     composable<AdGraph.CurrentAdScreen>(
         typeMap = mapOf(
-            typeOf<UserNav>() to UserNavType(),
             typeOf<CarAd>() to CarAdNavType()
         )
     ) {

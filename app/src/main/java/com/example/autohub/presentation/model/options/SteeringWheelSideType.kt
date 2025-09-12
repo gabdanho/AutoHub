@@ -3,7 +3,9 @@ package com.example.autohub.presentation.model.options
 import com.example.autohub.presentation.LEFT_STEERING_WHEEL_TAG
 import com.example.autohub.presentation.RIGHT_STEERING_WHEEL_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class SteeringWheelSideType(
     override val textRes: StringResNamePresentation,
     override val tag: String

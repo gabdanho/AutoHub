@@ -100,7 +100,7 @@ class AdDataRepositoryImpl @Inject constructor(
                 image.bytes?.let {
                     fbStorageUtils.uploadImageToFirebase(
                         bytes = it,
-                        path = "adsImages/$reference/${reference + "_" + image.id}.jpg"
+                        path = "adsImages_${reference}_${image.id}.jpg"
                     )
                 }
             }

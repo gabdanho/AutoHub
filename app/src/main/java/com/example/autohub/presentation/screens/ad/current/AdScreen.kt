@@ -58,6 +58,8 @@ fun AdScreen(
     val callEvent = viewModel.callEvent.collectAsState().value
     val context = LocalContext.current
 
+    println(carAd.imagesUrl.toString())
+
     LaunchedEffect(carAd) {
         viewModel.getUserData(uid = carAd.userUID)
     }
@@ -140,7 +142,7 @@ fun AdScreen(
                                 text = stringResource(
                                     id = R.string.text_seller_main_info,
                                     uiState.user.firstName,
-                                    uiState.user.secondName,
+                                    uiState.user.lastName,
                                     uiState.user.city
                                 ),
                                 maxLines = 1,
@@ -153,7 +155,7 @@ fun AdScreen(
                             ) {
                                 CustomButton(
                                     text = stringResource(id = R.string.button_write_message),
-                                    onClick = { viewModel.onMessageClick() },
+                                    onClick = { viewModel.onMessageClick(participantId = carAd.userUID) },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(end = 4.dp)

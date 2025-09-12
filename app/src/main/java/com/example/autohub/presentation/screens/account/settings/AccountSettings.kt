@@ -65,7 +65,7 @@ fun AccountSettings(
             if (uri != null) {
                 val imageBytes = context.convertUriToBytes(uri = uri)
                 val imageRef = ImageUploadData(bytes = imageBytes)
-                viewModel.uploadUserProfileImageToFirebase(imageRef = imageRef)
+                viewModel.uploadUserProfileImageToFirebase(imageRef = imageRef, uriString = uri.toString())
             } else {
                 Toast.makeText(
                     context,
@@ -145,7 +145,7 @@ fun AccountSettings(
                             value = uiState.lastNameValue,
                             onValueChange = { viewModel.updateLastNameValue(value = it) },
                             isError = uiState.isLastNameValueError,
-                            placeHolder = uiState.user.secondName,
+                            placeHolder = uiState.user.lastName,
                             modifier = modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)

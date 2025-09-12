@@ -1,9 +1,11 @@
 package com.example.autohub.domain.interfaces.usecase
 
+import com.example.autohub.domain.model.User
+
 interface SendMessageUseCase {
     suspend operator fun invoke(
-        senderId: String,
-        receiverId: String,
+        sender: User,
+        receiver: User,
         text: String
     )
 }

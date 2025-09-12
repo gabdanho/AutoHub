@@ -1,6 +1,7 @@
-package com.example.autohub.presentation.mapper
+package com.example.autohub.data.mapper
 
-import com.example.autohub.presentation.model.user.User
+import com.example.autohub.data.firebase.model.user.User
+import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.domain.model.User as UserDomain
 
 fun User.toUserDomain(): UserDomain {
@@ -11,13 +12,13 @@ fun User.toUserDomain(): UserDomain {
         phoneNumber = this.phoneNumber,
         city = this.city,
         image = this.image,
-        status = this.status.toUserStatusDomain(),
+        status = UserStatus.fromValue(this.status).toUserStatusDomain(),
         localToken = this.localToken,
         uid = this.uid
     )
 }
 
-fun UserDomain.toUserPresentation(): User {
+fun UserDomain.toUserData(): User {
     return User(
         firstName = this.firstName,
         lastName = this.lastName,
@@ -25,7 +26,7 @@ fun UserDomain.toUserPresentation(): User {
         phoneNumber = this.phoneNumber,
         city = this.city,
         image = this.image,
-        status = this.status.toUserStatusPresentation(),
+        status = this.status.toUserStatusData().value,
         localToken = this.localToken,
         uid = this.uid
     )

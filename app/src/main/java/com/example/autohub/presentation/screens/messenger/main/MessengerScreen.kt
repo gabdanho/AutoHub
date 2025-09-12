@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
-import com.example.autohub.presentation.model.messenger.ChatInfo
+import com.example.autohub.presentation.model.messenger.ChatConservation
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.model.messenger.ChatStatus
 import com.example.autohub.presentation.model.user.UserStatus
@@ -57,15 +57,11 @@ fun MessengerScreen(
 
     val context = LocalContext.current
 
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.stopListening()
-        }
-    }
-
     LaunchedEffect(uiState.errorMessage) {
-        Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT).show()
-        viewModel.clearErrorMessage()
+        if (uiState.errorMessage != null) {
+            Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT).show()
+            viewModel.clearErrorMessage()
+        }
     }
 
     Scaffold(
@@ -89,7 +85,7 @@ fun MessengerScreen(
             BottomNavBar(
                 onAdListClick = { viewModel.onAdListClick() },
                 onAccountClick = { viewModel.onAccountClick() },
-                onMessageClick = { /* Nothing */ }
+                onMessageClick = { viewModel.onMessageClick() }
             )
         }
     ) { innerPadding ->
@@ -102,7 +98,7 @@ fun MessengerScreen(
                 items(chats) { chat ->
                     participantsStatus[chat.uid]?.let {
                         ChatCard(
-                            chatInfo = chat,
+                            chatConservation = chat,
                             chatStatus = it,
                             onAnswerClick = { viewModel.onAnswerClick(uid = chat.uid) }
                         )
@@ -128,13 +124,13 @@ fun MessengerScreen(
 
 @Composable
 private fun ChatCard(
-    chatInfo: ChatInfo,
+    chatConservation: ChatConservation,
     chatStatus: ChatStatus,
     onAnswerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
-
+    println(chatStatus)
     Card(
         elevation = CardDefaults.cardElevation(2.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor),
@@ -149,12 +145,12 @@ private fun ChatCard(
                 .padding(8.dp)
                 .fillMaxWidth()
                 .clickable {
-                    onAnswerClick(chatInfo.uid)
+                    onAnswerClick(chatConservation.uid)
                 }
         ) {
             Box {
                 AsyncImage(
-                    model = chatInfo.image,
+                    model = chatConservation.imageUrl,
                     contentDescription = stringResource(id = R.string.content_user_image),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -176,14 +172,14 @@ private fun ChatCard(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = chatInfo.name,
+                    text = chatConservation.name,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = chatInfo.lastMessage,
+                    text = chatConservation.lastMessage,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )

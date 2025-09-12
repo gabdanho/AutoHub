@@ -1,10 +1,12 @@
 package com.example.autohub.data.repository.impl.firebase
 
 import com.example.autohub.data.firebase.model.safeFirebaseCall
+import com.example.autohub.data.firebase.model.user.User
 import com.example.autohub.data.firebase.utils.FirebaseStorageUtils
+import com.example.autohub.data.mapper.toUserDomain
 import com.example.autohub.domain.interfaces.repository.remote.UserDataRepository
 import com.example.autohub.domain.model.ImageUploadData
-import com.example.autohub.domain.model.User
+import com.example.autohub.domain.model.User as UserDomain
 import com.example.autohub.domain.model.result.FirebaseResult
 import kotlinx.coroutines.tasks.await
 import com.google.firebase.auth.FirebaseAuth
@@ -20,7 +22,11 @@ class UserDataRepositoryImpl @Inject constructor(
     private val user
         get() = fbAuth.currentUser ?: throw IllegalStateException("User not found")
 
-    override suspend fun getUserData(userUID: String): FirebaseResult<User> {
+    override suspend fun getUserData(userUID: String): FirebaseResult<UserDomain> {
+        if (userUID.isBlank()) {
+            return FirebaseResult.Error.UnknownError("User ID cannot be empty")
+        }
+
         return safeFirebaseCall {
             val snapshot = fbFirestore
                 .collection("users")
@@ -28,37 +34,39 @@ class UserDataRepositoryImpl @Inject constructor(
                 .get()
                 .await()
 
-            snapshot.toObject(User::class.java)
+            val data = snapshot.toObject(User::class.java)
                 ?: throw IllegalStateException("User $userUID not found")
+            val mappedData = data.toUserDomain()
+            mappedData
         }
     }
 
-    override suspend fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData) {
-        safeFirebaseCall {
+    override suspend fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData): FirebaseResult<Unit> {
+        return safeFirebaseCall {
             imageRef.bytes?.let {
                 val uri = fbStorageUtils.uploadImageToFirebase(
-                    bytes = imageRef.bytes,
-                    path = "users/${user.uid}/profileImage.jpg"
+                    bytes = it,
+                    path = "users_${user.uid}_profileImage.jpg"
                 )
                 updateProfileInfo("image", uri)
             }
         }
     }
 
-    override suspend fun updateFirstName(firstName: String) {
-        safeFirebaseCall {
+    override suspend fun updateFirstName(firstName: String): FirebaseResult<Unit> {
+        return safeFirebaseCall {
             updateProfileInfo(info = "firstName", value = firstName)
         }
     }
 
-    override suspend fun updateLastName(lastName: String) {
-        safeFirebaseCall {
+    override suspend fun updateLastName(lastName: String): FirebaseResult<Unit> {
+        return safeFirebaseCall {
             updateProfileInfo(info = "lastName", value = lastName)
         }
     }
 
-    override suspend fun updateCity(city: String) {
-        safeFirebaseCall {
+    override suspend fun updateCity(city: String): FirebaseResult<Unit> {
+        return safeFirebaseCall {
             updateProfileInfo(info = "city", value = city)
         }
     }

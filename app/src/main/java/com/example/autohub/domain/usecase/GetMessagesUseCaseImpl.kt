@@ -3,13 +3,14 @@ package com.example.autohub.domain.usecase
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
 import com.example.autohub.domain.model.Message
+import com.example.autohub.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 class GetMessagesUseCaseImpl(
     private val messengerRepository: MessengerRepository
 ) : GetMessagesUseCase {
 
-    override fun invoke(authUserUID: String, buyerUID: String): Flow<List<Message>> {
-        return messengerRepository.getMessages(authUserUID = authUserUID, buyerUID = buyerUID)
+    override fun invoke(authUserId: String, participantId: String): Flow<List<Message>> {
+        return messengerRepository.getMessages(authUserId = authUserId, participantId = participantId)
     }
 }

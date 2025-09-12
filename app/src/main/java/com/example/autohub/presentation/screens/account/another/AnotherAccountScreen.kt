@@ -36,14 +36,14 @@ import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.TopAdAppBar
 import com.example.autohub.presentation.model.LoadingState
-import com.example.autohub.presentation.navigation.model.nav_type.UserNav
+import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.theme.barColor
 import com.example.autohub.presentation.theme.containerColor
 import com.example.autohub.presentation.utils.launchDialIntent
 
 @Composable
 fun AnotherAccountScreen(
-    user: UserNav,
+    user: User,
     modifier: Modifier = Modifier,
     viewModel: AnotherAccountScreenViewModel = hiltViewModel<AnotherAccountScreenViewModel>()
 ) {
@@ -138,7 +138,7 @@ fun AnotherAccountScreen(
                 )
                 CustomButton(
                     text = stringResource(id = R.string.button_call),
-                    onClick = { viewModel.callToUser(number = user.phone) },
+                    onClick = { viewModel.callToUser(number = user.phoneNumber) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -159,7 +159,7 @@ fun AnotherAccountScreen(
                     items(uiState.sellerAds) { ad ->
                         CarAdCard(
                             ad = ad,
-                            onAdClick = { viewModel.onAdClick(ad = ad, user = user) },
+                            onAdClick = { viewModel.onAdClick(ad = ad) },
                             modifier = modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)

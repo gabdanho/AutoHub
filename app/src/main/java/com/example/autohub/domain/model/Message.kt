@@ -7,5 +7,5 @@ data class Message(
     val text: String = "",
     val timeMillis: Long = 0L,
     val formattedData: String = "",
-    val read: Boolean = false
+    val isRead: Boolean = false
 )

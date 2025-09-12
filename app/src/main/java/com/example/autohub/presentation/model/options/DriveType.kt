@@ -4,7 +4,9 @@ import com.example.autohub.presentation.FULL_WD_TAG
 import com.example.autohub.presentation.FWD_TAG
 import com.example.autohub.presentation.RWD_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class DriveType(override val textRes: StringResNamePresentation, override val tag: String) : CarOption  {
     FWD(textRes = StringResNamePresentation.LABEL_FWD, tag = FWD_TAG),
     RWD(textRes = StringResNamePresentation.LABEL_RWD, tag = RWD_TAG),

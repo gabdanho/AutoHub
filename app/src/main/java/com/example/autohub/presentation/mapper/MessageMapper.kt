@@ -10,7 +10,7 @@ fun Message.toUserDomain(): MessageDomain {
         receiverUID = receiverUID,
         text = text,
         timeMillis = timeMillis,
-        read = read,
+        isRead = isRead,
         formattedData = formattedData
     )
 }
@@ -22,7 +22,7 @@ fun MessageDomain.toUserPresentation(): Message {
         receiverUID = receiverUID,
         text = text,
         timeMillis = timeMillis,
-        read = read,
+        isRead = isRead,
         formattedData = formattedData
     )
 }

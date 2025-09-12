@@ -9,17 +9,16 @@ import com.example.autohub.domain.interfaces.usecase.GetBuyersChatsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCountUnreadMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.presentation.mapper.toChatInfoPresentation
-import com.example.autohub.presentation.mapper.toUserNav
+import com.example.autohub.presentation.mapper.toChatConservationPresentation
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.mapper.toUserStatusPresentation
-import com.example.autohub.presentation.model.messenger.ChatInfo
+import com.example.autohub.presentation.model.messenger.ChatConservation
 import com.example.autohub.presentation.model.messenger.ChatStatus
+import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.MessengerGraph
-import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,8 +48,8 @@ class MessengerScreenViewModel @Inject constructor(
     private val _chatsStatus = MutableStateFlow<Map<String, ChatStatus>>(emptyMap())
     val chatsStatus: StateFlow<Map<String, ChatStatus>> = _chatsStatus.asStateFlow()
 
-    private val _chats = MutableStateFlow<List<ChatInfo>>(emptyList())
-    val chats: StateFlow<List<ChatInfo>> = _chats.asStateFlow()
+    private val _chats = MutableStateFlow<List<ChatConservation>>(emptyList())
+    val chats: StateFlow<List<ChatConservation>> = _chats.asStateFlow()
 
     private var statusJobs = mutableMapOf<String, Job>()
     private var chatsJob: Job? = null
@@ -84,6 +83,14 @@ class MessengerScreenViewModel @Inject constructor(
         }
     }
 
+    fun onMessageClick() {
+        viewModelScope.launch {
+            navigator.navigate(
+                destination = MessengerGraph.MessengerScreen
+            )
+        }
+    }
+
     fun onAnswerClick(uid: String) {
         viewModelScope.launch {
             val user = getUserData(uid = uid).getOrNull()
@@ -104,11 +111,11 @@ class MessengerScreenViewModel @Inject constructor(
         _uiState.update { state -> state.copy(errorMessage = null) }
     }
 
-    private suspend fun getUserData(uid: String): Result<UserNav> {
+    private suspend fun getUserData(uid: String): Result<User> {
         return runCatching {
             when (val userResult = getUserDataUseCase(userUID = uid)) {
                 is FirebaseResult.Success -> {
-                    return Result.success(userResult.data.toUserPresentation().toUserNav())
+                    return Result.success(userResult.data.toUserPresentation())
                 }
 
                 is FirebaseResult.Error -> {
@@ -128,7 +135,7 @@ class MessengerScreenViewModel @Inject constructor(
 
         chatsJob = getBuyersChatsUseCase(authUserUID = getAuthUserIdUseCase())
             .onEach { chats ->
-                _chats.value = chats.map { it.toChatInfoPresentation() }
+                _chats.value = chats.map { it.toChatConservationPresentation() }
 
                 val authUserId = getAuthUserIdUseCase()
                 _chats.value.forEach { chat ->
@@ -177,10 +184,5 @@ class MessengerScreenViewModel @Inject constructor(
             newMap[uid] = chatStatus
             newMap
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        stopListening()
     }
 }

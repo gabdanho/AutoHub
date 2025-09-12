@@ -7,10 +7,10 @@ import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toCarAdPresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.ad.CarAd
+import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.MessengerGraph
-import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +32,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
     private val _callEvent = MutableStateFlow<String?>(null)
     val callEvent: StateFlow<String?> = _callEvent.asStateFlow()
 
-    fun getUserAds(user: UserNav) {
+    fun getUserAds(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = getCurrentUserAds(user.uid)) {
                 is FirebaseResult.Success -> {
@@ -53,8 +53,10 @@ class AnotherAccountScreenViewModel @Inject constructor(
         }
     }
 
-    fun writeToUser(user: UserNav) {
+    fun writeToUser(user: User) {
         viewModelScope.launch {
+
+
             navigator.navigate(
                 destination = MessengerGraph.ChattingScreen(
                     participant = user
@@ -71,7 +73,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
         }
     }
 
-    fun onAdClick(ad: CarAd, user: UserNav) {
+    fun onAdClick(ad: CarAd) {
         viewModelScope.launch {
             navigator.navigate(
                 destination = AdGraph.CurrentAdScreen(carAd = ad)

@@ -4,7 +4,9 @@ import com.example.autohub.presentation.BROKEN_TAG
 import com.example.autohub.presentation.NOT_BROKEN_TAG
 import com.example.autohub.presentation.NOT_WORKING_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class ConditionType(
     override val textRes: StringResNamePresentation,
     override val tag: String,

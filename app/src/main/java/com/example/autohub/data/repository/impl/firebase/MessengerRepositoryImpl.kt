@@ -3,16 +3,17 @@ package com.example.autohub.data.repository.impl.firebase
 import android.util.Log
 import com.example.autohub.data.mapper.toMessageDomain
 import com.example.autohub.data.mapper.toUserStatusDomain
-import com.example.autohub.data.firebase.model.chat.ChatInfo
+import com.example.autohub.data.firebase.model.chat.ChatConservation
 import com.example.autohub.data.firebase.model.chat.Message
 import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
-import com.example.autohub.data.mapper.toChatInfoDomain
+import com.example.autohub.data.mapper.toChatConservationDomain
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
+import com.example.autohub.domain.model.User
 import com.example.autohub.domain.model.Message as MessageDomain
 import com.example.autohub.domain.utils.TimeProvider
 import com.example.autohub.domain.model.UserStatus as UserStatusDomain
-import com.example.autohub.domain.model.ChatInfo as ChatInfoDomain
+import com.example.autohub.domain.model.ChatConservation as ChatInfoDomain
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
@@ -28,32 +29,37 @@ class MessengerRepositoryImpl @Inject constructor(
 ) : MessengerRepository {
 
     override suspend fun sendMessage(
-        senderId: String,
-        receiverId: String,
+        sender: User,
+        receiver: User,
         text: String
     ) {
         safeFirebaseCall {
             val timeSend = timeProvider.currentTimeMillis()
             val formattedData = timeProvider.millisToDate(millis = timeSend)
             val messageId = "message_${timeSend}"
-            val uniqueChatID = getUniqueId(senderId, receiverId)
-            val message = MessageDomain(
+            val uniqueChatID = getUniqueId(sender.uid, receiver.uid)
+            val textWithoutExtraSpaces = text.trim()
+            val message = Message(
                 id = messageId,
-                senderUID = senderId,
-                receiverUID = receiverId,
-                text = text,
+                senderUID = sender.uid,
+                receiverUID = receiver.uid,
+                text = textWithoutExtraSpaces,
                 timeMillis = timeSend,
                 formattedData = formattedData
             )
-            val senderConservation = ChatInfo(
+            val senderConservation = ChatConservation(
                 lastMessage = message.text,
-                time = timeSend.toString(),
-                uid = receiverId
+                time = timeSend,
+                uid = receiver.uid,
+                name = "${receiver.firstName} ${receiver.lastName[0]}.",
+                imageUrl = receiver.image
             )
-            val receiverConservation = ChatInfo(
+            val receiverConservation = ChatConservation(
                 lastMessage = message.text,
-                time = timeSend.toString(),
-                uid = senderId
+                time = timeSend,
+                uid = sender.uid,
+                name = "${sender.firstName} ${sender.lastName[0]}.",
+                imageUrl = sender.image
             )
 
             fbFirestore
@@ -67,23 +73,23 @@ class MessengerRepositoryImpl @Inject constructor(
             fbFirestore
                 .collection("conservations")
                 .document("users")
-                .collection(senderId)
-                .document(receiverId)
+                .collection(sender.uid)
+                .document(receiver.uid)
                 .set(senderConservation)
                 .await()
 
             fbFirestore
                 .collection("conservations")
                 .document("users")
-                .collection(receiverId)
-                .document(senderId)
+                .collection(receiver.uid)
+                .document(sender.uid)
                 .set(receiverConservation)
                 .await()
         }
     }
 
-    override fun getMessages(authUserUID: String, buyerUID: String): Flow<List<MessageDomain>> {
-        val uniqueId = getUniqueId(authUserUID, buyerUID)
+    override fun getMessages(authUserId: String, participantId: String): Flow<List<MessageDomain>> {
+        val uniqueId = getUniqueId(senderUID = authUserId, receiverUID = participantId)
 
         return callbackFlow {
             val listener = fbFirestore
@@ -95,7 +101,6 @@ class MessengerRepositoryImpl @Inject constructor(
                     if (error != null) {
                         close(cause = error)
                     }
-
                     if (snapshot != null && !snapshot.isEmpty) {
                         val messages = snapshot.documents.mapNotNull { document ->
                             document.toObject(Message::class.java)?.toMessageDomain()
@@ -109,13 +114,13 @@ class MessengerRepositoryImpl @Inject constructor(
         }
     }
 
-    override  fun getBuyersChats(authUserUID: String): Flow<List<ChatInfoDomain>> {
+    override fun getBuyersChats(authUserUID: String): Flow<List<ChatInfoDomain>> {
         return callbackFlow {
             val listener = fbFirestore
                 .collection("conservations")
                 .document("users")
                 .collection(authUserUID)
-                .orderBy("timeMillis", Query.Direction.DESCENDING)
+                .orderBy("time", Query.Direction.DESCENDING)
                 .addSnapshotListener { value, error ->
                     if (error != null) {
                         close(cause = error)
@@ -123,7 +128,7 @@ class MessengerRepositoryImpl @Inject constructor(
 
                     if (!value!!.isEmpty) {
                         val chats = value.documents.mapNotNull { document ->
-                            document.toObject(ChatInfo::class.java)?.toChatInfoDomain()
+                            document.toObject(ChatConservation::class.java)?.toChatConservationDomain()
                         }
                         trySend(element = chats).isSuccess
                     } else {
@@ -156,28 +161,30 @@ class MessengerRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getCountUnreadMessages(authUserUID: String, buyerUID: String): Flow<Int> =
-        flow {
+    override fun getCountUnreadMessages(authUserUID: String, buyerUID: String): Flow<Int> {
+        return callbackFlow {
             val uniqueId = getUniqueId(authUserUID, buyerUID)
 
-            val count = try {
-                val snapshot = fbFirestore
-                    .collection("chats")
-                    .document(uniqueId)
-                    .collection("messages")
-                    .whereEqualTo("read", false)
-                    .whereEqualTo("receiver", authUserUID)
-                    .orderBy("timeMillis", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
-                snapshot.size()
-            } catch (e: Exception) {
-                Log.e("MESSENGER", "Error: ${e.message}")
-                0
+            val listener = fbFirestore
+            .collection("chats")
+            .document(uniqueId)
+            .collection("messages")
+            .whereEqualTo("read", false)
+            .whereEqualTo("receiverUID", authUserUID)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(cause = error)
+                    return@addSnapshotListener
+                }
+
+                val count = snapshot?.size() ?: 0
+                trySend(count)
             }
 
-            emit(value = count)
+            awaitClose { listener.remove() }
         }
+    }
+
 
     override suspend fun markMessagesAsRead(
         authUserUID: String,
@@ -193,11 +200,7 @@ class MessengerRepositoryImpl @Inject constructor(
 
         val document = reference.get().await()
 
-        if (document.exists()) {
-            if (document.getBoolean("read") == false) {
-                reference.update("read", true).await()
-            }
-        }
+        if (document.exists()) reference.update("read", true).await()
     }
 
     private fun getUniqueId(senderUID: String, receiverUID: String): String {

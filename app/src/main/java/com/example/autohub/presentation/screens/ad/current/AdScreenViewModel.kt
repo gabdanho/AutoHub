@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.presentation.mapper.toUserNav
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.navigation.Navigator
@@ -34,7 +33,7 @@ class AdScreenViewModel @Inject constructor(
         viewModelScope.launch {
             navigator.navigate(
                 destination = AccountGraph.AnotherAccountScreen(
-                    user = _uiState.value.user.toUserNav()
+                    user = _uiState.value.user
                 )
             )
         }
@@ -60,11 +59,13 @@ class AdScreenViewModel @Inject constructor(
         }
     }
 
-    fun onMessageClick() {
+    fun onMessageClick(participantId: String) {
         viewModelScope.launch {
+            val userNav = _uiState.value.user.copy(uid = participantId)
+
             navigator.navigate(
                 destination = MessengerGraph.ChattingScreen(
-                    participant = _uiState.value.user.toUserNav()
+                    participant = userNav
                 )
             )
         }

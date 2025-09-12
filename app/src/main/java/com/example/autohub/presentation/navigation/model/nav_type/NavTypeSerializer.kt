@@ -1,28 +1,31 @@
 package com.example.autohub.presentation.navigation.model.nav_type
 
+import android.net.Uri
+import android.os.Bundle
 import androidx.navigation.NavType
-import androidx.savedstate.SavedState
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
-open class NavTypeSerializer<T>(private val serializer: KSerializer<T>) : NavType<T>(
-    isNullableAllowed = true
-) {
+open class NavTypeSerializer<T>(
+    private val serializer: KSerializer<T>
+) : NavType<T>(isNullableAllowed = true) {
 
-    override fun put(bundle: SavedState, key: String, value: T) {
+    override fun put(bundle: Bundle, key: String, value: T) {
         bundle.putString(key, serializeAsValue(value))
     }
 
-    override fun get(bundle: SavedState, key: String): T? {
+    override fun get(bundle: Bundle, key: String): T? {
         val data = bundle.getString(key) ?: return null
         return parseValue(data)
     }
 
     override fun parseValue(value: String): T {
-        return Json.decodeFromString(serializer, value)
+        val decoded = Uri.decode(value) // ✅ обратно в нормальный JSON
+        return Json.decodeFromString(serializer, decoded)
     }
 
     override fun serializeAsValue(value: T): String {
-        return Json.encodeToString(serializer, value)
+        val rawJson = Json.encodeToString(serializer, value)
+        return Uri.encode(rawJson) // ✅ делаем безопасным для route
     }
 }

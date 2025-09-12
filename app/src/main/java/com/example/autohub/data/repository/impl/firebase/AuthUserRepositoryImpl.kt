@@ -4,6 +4,7 @@ import com.example.autohub.data.mapper.toUserStatusDomain
 import com.example.autohub.data.mapper.toUserStatusData
 import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
+import com.example.autohub.data.mapper.toUserData
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.User as UserDataDomain
@@ -42,9 +43,11 @@ class AuthUserRepositoryImpl @Inject constructor(
     ): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.createUserWithEmailAndPassword(email, password).await()
-            val userUID = getAuthUserUID()
-            val docReference = fbStore.collection("users").document(userUID)
-            docReference.set(user).await()
+            val userId = getAuthUserUID()
+            val docReference = fbStore.collection("users").document(userId)
+            val updatedData = user.copy(uid = userId)
+            val mappedData = updatedData.toUserData()
+            docReference.set(mappedData).await()
 
             fbAuth.currentUser?.sendEmailVerification()?.await().also {
                 signOut()

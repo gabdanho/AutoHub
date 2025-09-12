@@ -146,6 +146,7 @@ fun AdCreateScreen(
 
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_bodywork),
+                    currentType = uiState.bodyTypeValue,
                     isError = uiState.isBodyTypeValueError,
                     typesName = BodyType.entries,
                     returnType = { viewModel.updateBodyTypeValue(value = it as BodyType?) },
@@ -155,6 +156,7 @@ fun AdCreateScreen(
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_engine_type),
+                    currentType = uiState.engineTypeValue,
                     isError = uiState.isEngineTypeValueError,
                     typesName = EngineType.entries,
                     returnType = { viewModel.updateEngineTypeValue(value = it as EngineType?) },
@@ -174,6 +176,7 @@ fun AdCreateScreen(
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_transmission_type),
+                    currentType = uiState.transmissionValue,
                     isError = uiState.isTransmissionValueError,
                     typesName = TransmissionType.entries,
                     returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType?) },
@@ -183,6 +186,7 @@ fun AdCreateScreen(
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_drive_type),
+                    currentType = uiState.driveTypeValue,
                     isError = uiState.isDriveTypeValueError,
                     typesName = DriveType.entries,
                     returnType = { viewModel.updateDriveTypeValue(value = it as DriveType?) },
@@ -192,6 +196,7 @@ fun AdCreateScreen(
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_steering_wheel),
+                    currentType = uiState.steeringWheelSideValue,
                     isError = uiState.isSteeringWheelSideValueError,
                     typesName = SteeringWheelSideType.entries,
                     returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType?) },
@@ -211,6 +216,7 @@ fun AdCreateScreen(
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_condition),
+                    currentType = uiState.conditionValue,
                     isError = uiState.isConditionValueError,
                     typesName = ConditionType.entries,
                     returnType = { viewModel.updateConditionValue(value = it as ConditionType?) },

@@ -24,7 +24,6 @@ import com.example.autohub.domain.interfaces.usecase.InsertLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginAndSaveUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginUserUseCase
 import com.example.autohub.domain.interfaces.usecase.MarkMessagesAsReadUseCase
-import com.example.autohub.domain.interfaces.usecase.RegisterAndSaveUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
 import com.example.autohub.domain.interfaces.usecase.ResendEmailVerificationUseCase
 import com.example.autohub.domain.interfaces.usecase.SendMessageUseCase
@@ -54,7 +53,6 @@ import com.example.autohub.domain.usecase.InsertLocalUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.LoginAndSaveUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.LoginUserUseCaseImpl
 import com.example.autohub.domain.usecase.MarkMessagesAsReadUseCaseImpl
-import com.example.autohub.domain.usecase.RegisterAndSaveUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.RegisterUserUseCaseImpl
 import com.example.autohub.domain.usecase.ResendEmailVerificationUseCaseImpl
 import com.example.autohub.domain.usecase.SendMessageUseCaseImpl
@@ -231,20 +229,6 @@ object DomainModule {
     ): LoginAndSaveUserIdUseCase {
         return LoginAndSaveUserIdUseCaseImpl(
             loginUserUseCase = loginUserUseCase,
-            getUserIdUseCase = getUserIdUseCase,
-            insertLocalUserIdUseCase = insertLocalUserIdUseCase
-        )
-    }
-
-    @Provides
-    @Singleton
-    fun provideRegisterAndSaveUserIdUseCase(
-        registerUserUseCase: RegisterUserUseCase,
-        getUserIdUseCase: GetAuthUserIdUseCase,
-        insertLocalUserIdUseCase: InsertLocalUserIdUseCase
-    ): RegisterAndSaveUserIdUseCase {
-        return RegisterAndSaveUserIdUseCaseImpl(
-            registerUserUseCase = registerUserUseCase,
             getUserIdUseCase = getUserIdUseCase,
             insertLocalUserIdUseCase = insertLocalUserIdUseCase
         )

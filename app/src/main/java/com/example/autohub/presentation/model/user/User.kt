@@ -1,8 +1,11 @@
 package com.example.autohub.presentation.model.user
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class User(
     val firstName: String = "",
-    val secondName: String = "",
+    val lastName: String = "",
     val email: String = "",
     val phoneNumber: String = "",
     val city: String = "",

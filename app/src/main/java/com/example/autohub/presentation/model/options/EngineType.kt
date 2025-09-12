@@ -4,7 +4,9 @@ import com.example.autohub.presentation.DIESEL_TAG
 import com.example.autohub.presentation.HYBRID_TAG
 import com.example.autohub.presentation.PETROL_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class EngineType(
     override val textRes: StringResNamePresentation,
     override val tag: String

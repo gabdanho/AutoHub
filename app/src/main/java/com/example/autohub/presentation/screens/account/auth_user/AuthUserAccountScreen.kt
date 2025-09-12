@@ -112,7 +112,7 @@ fun AuthUserAccountScreen(
                             text = stringResource(
                                 id = R.string.text_user_first_last_name,
                                 uiState.user.firstName,
-                                uiState.user.secondName
+                                uiState.user.lastName
                             ),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,

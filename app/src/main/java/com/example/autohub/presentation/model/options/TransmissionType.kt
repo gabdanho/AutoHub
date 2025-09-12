@@ -5,7 +5,9 @@ import com.example.autohub.presentation.MANUAL_TAG
 import com.example.autohub.presentation.ROBOT_TAG
 import com.example.autohub.presentation.VARIATOR_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class TransmissionType(
     override val textRes: StringResNamePresentation,
     override val tag: String

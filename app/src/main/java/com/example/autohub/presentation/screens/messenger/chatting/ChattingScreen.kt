@@ -52,14 +52,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
+import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
-import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
 
 @Composable
 fun ChattingScreen(
-    participant: UserNav,
+    participant: User,
     modifier: Modifier = Modifier,
     viewModel: ChattingScreenViewModel = hiltViewModel<ChattingScreenViewModel>()
 ) {
@@ -75,7 +75,7 @@ fun ChattingScreen(
     }
 
     LaunchedEffect(participant) {
-        viewModel.initChat(user = participant)
+        viewModel.initChat(participant = participant)
     }
 
     // programming scroll to last item
@@ -110,12 +110,12 @@ fun ChattingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(cardColor)
-                    .clickable { viewModel.onParticipantClick(user = participant) }
+                    .clickable { viewModel.onParticipantClick(user = uiState.participantData) }
             ) {
 
                 Box {
                     AsyncImage(
-                        model = participant.image,
+                        model = uiState.participantData.image,
                         contentDescription = stringResource(id = R.string.content_buyer_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -136,8 +136,8 @@ fun ChattingScreen(
                 Text(
                     text = stringResource(
                         id = R.string.send_message_buyer_name,
-                        participant.firstName,
-                        participant.lastName
+                        uiState.participantData.firstName,
+                        uiState.participantData.lastName
                     ),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.W300,
@@ -150,13 +150,14 @@ fun ChattingScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(messages) { message ->
-                    if (!message.read) viewModel.markMessageAsRead(messageId = message.id)
+                    if (message.receiverUID == uiState.authUserData.uid && !message.isRead)
+                        viewModel.markMessageAsRead(messageId = message.id)
                     UserMessage(
                         text = message.text,
                         time = message.formattedData,
-                        authUserId = uiState.authUserId,
+                        authUserId = uiState.authUserData.uid,
                         senderUid = message.senderUid,
-                        isRead = message.read
+                        isRead = message.isRead
                     )
                 }
             }
@@ -192,7 +193,7 @@ private fun UserMessage(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 4.dp)
             ) {
-                if (senderUid == authUserId && !isRead) {
+                if (!isRead && authUserId == senderUid) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier

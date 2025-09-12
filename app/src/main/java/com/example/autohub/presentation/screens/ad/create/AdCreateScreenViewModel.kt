@@ -165,6 +165,7 @@ class AdCreateScreenViewModel @Inject constructor(
                         ImageUploadData(id = index, bytes = image.byteArray)
                     }
                 )
+                navigator.navigatePopBackStack()
             } else {
                 _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = carAdResult.exceptionOrNull()?.message ?: "Unknown")) }
             }

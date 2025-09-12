@@ -4,8 +4,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
-import com.example.autohub.presentation.navigation.model.nav_type.UserNav
 import com.example.autohub.presentation.navigation.model.nav_type.UserNavType
 import com.example.autohub.presentation.screens.account.another.AnotherAccountScreen
 import com.example.autohub.presentation.screens.account.auth_user.AuthUserAccountScreen
@@ -17,7 +17,7 @@ fun NavGraphBuilder.accountNavigationScreensGraph(
 ) {
     composable<AccountGraph.AnotherAccountScreen>(
         typeMap = mapOf(
-            typeOf<UserNav>() to UserNavType()
+            typeOf<User>() to UserNavType()
         )
     ) {
         val args = it.toRoute<AccountGraph.AnotherAccountScreen>()
