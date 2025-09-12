@@ -82,6 +82,7 @@ class AdsMainScreenViewModel @Inject constructor(
                         )
                     }
                 }
+
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
                         state.copy(

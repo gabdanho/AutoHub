@@ -46,5 +46,5 @@ data class AdCreateScreenUiState(
     val isDescriptionValueError: Boolean = false,
 
     val message: String? = null,
-    val loadingState: LoadingState? = null
+    val loadingState: LoadingState? = null,
 )

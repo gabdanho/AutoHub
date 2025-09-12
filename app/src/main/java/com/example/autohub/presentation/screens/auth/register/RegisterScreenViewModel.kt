@@ -97,7 +97,12 @@ class RegisterScreenViewModel @Inject constructor(
                 )
             ) {
                 is FirebaseResult.Success -> {
-                    navigator.navigate(destination = AuthGraph.LoginScreen)
+                    navigator.navigate(
+                        destination = AuthGraph.LoginScreen,
+                        navOptions = {
+                            popUpTo(0) { inclusive }
+                        }
+                    )
                 }
 
                 is FirebaseResult.Error -> {

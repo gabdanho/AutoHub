@@ -33,7 +33,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.CarAdCard
-import com.example.autohub.presentation.model.SearchFilter
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.theme.containerColor
@@ -120,7 +119,7 @@ private fun SearchAdsBar(
     onSearchTextChange: (String) -> Unit,
     getAds: () -> Unit,
     onFiltersClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,

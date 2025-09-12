@@ -1,6 +1,7 @@
 package com.example.autohub.presentation.screens.account.settings
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -56,7 +57,7 @@ import com.example.autohub.presentation.utils.convertUriToBytes
 @Composable
 fun AccountSettings(
     modifier: Modifier = Modifier,
-    viewModel: AccountSettingsViewModel = hiltViewModel<AccountSettingsViewModel>()
+    viewModel: AccountSettingsViewModel = hiltViewModel<AccountSettingsViewModel>(),
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val context = LocalContext.current
@@ -65,7 +66,10 @@ fun AccountSettings(
             if (uri != null) {
                 val imageBytes = context.convertUriToBytes(uri = uri)
                 val imageRef = ImageUploadData(bytes = imageBytes)
-                viewModel.uploadUserProfileImageToFirebase(imageRef = imageRef, uriString = uri.toString())
+                viewModel.uploadUserProfileImageToFirebase(
+                    imageRef = imageRef,
+                    uriString = uri.toString()
+                )
             } else {
                 Toast.makeText(
                     context,
@@ -73,6 +77,10 @@ fun AccountSettings(
                 ).show()
             }
         }
+
+    BackHandler {
+        viewModel.onBackButtonClick()
+    }
 
     LaunchedEffect(uiState.loadingState) {
         if (uiState.loadingState is LoadingState.Error) {
@@ -250,18 +258,24 @@ fun AccountSettings(
                     )
                 }
             }
+
             is LoadingState.Loading -> {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize().padding(innerPadding)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
                 ) {
                     CircularProgressIndicator(color = containerColor)
                 }
             }
+
             else -> {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize().padding(innerPadding)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
                 ) {
                     Text(text = "Update the screen")
                 }
@@ -277,7 +291,7 @@ fun ChangePasswordDialog(
     onPasswordValueChange: (String) -> Unit,
     hideDialog: () -> Unit,
     changePassword: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Dialog(hideDialog) {
         Card(

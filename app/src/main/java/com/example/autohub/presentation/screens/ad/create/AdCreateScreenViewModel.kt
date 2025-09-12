@@ -18,6 +18,7 @@ import com.example.autohub.presentation.model.options.EngineType
 import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
 import com.example.autohub.presentation.navigation.Navigator
+import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.utils.isOnlyDigits
 import com.example.autohub.presentation.utils.isOnlyLetters
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -165,10 +166,18 @@ class AdCreateScreenViewModel @Inject constructor(
                         ImageUploadData(id = index, bytes = image.byteArray)
                     }
                 )
-                navigator.navigatePopBackStack()
+                navigateToAuthAccount()
             } else {
                 _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = carAdResult.exceptionOrNull()?.message ?: "Unknown")) }
             }
+        }
+    }
+
+    private fun navigateToAuthAccount() {
+        viewModelScope.launch {
+            navigator.navigate(
+                destination = AccountGraph.AuthUserAccountScreen
+            )
         }
     }
 

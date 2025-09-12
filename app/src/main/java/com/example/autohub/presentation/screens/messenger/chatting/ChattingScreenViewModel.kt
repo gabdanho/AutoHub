@@ -19,6 +19,7 @@ import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
+import com.example.autohub.presentation.model.messenger.ChatSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +40,7 @@ class ChattingScreenViewModel @Inject constructor(
     private val getMessagesUseCase: GetMessagesUseCase,
     private val getBuyerStatus: GetBuyerStatusUseCase,
     private val getAuthUserIdUseCase: GetAuthUserIdUseCase,
-    private val getUserDataUseCase: GetUserDataUseCase
+    private val getUserDataUseCase: GetUserDataUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChattingScreenUiState())
@@ -50,6 +51,9 @@ class ChattingScreenViewModel @Inject constructor(
 
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> = _messages.asStateFlow()
+
+    private val _chatSideEffect = MutableStateFlow<ChatSideEffect>(ChatSideEffect.ScrollToLastMessage)
+    val chatSideEffect: StateFlow<ChatSideEffect> = _chatSideEffect.asStateFlow()
 
     private var statusJob: Job? = null
     private var messagesJob: Job? = null
@@ -68,6 +72,7 @@ class ChattingScreenViewModel @Inject constructor(
                     startListeningStatus()
                     startListeningMessages()
                 }
+
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
                         state.copy(
@@ -100,6 +105,7 @@ class ChattingScreenViewModel @Inject constructor(
                         text = state.messageTextValue
                     )
                 }
+                _chatSideEffect.value = ChatSideEffect.ScrollToLastMessage
                 _uiState.update { state -> state.copy(messageTextValue = "") }
             } catch (e: Exception) {
                 Log.e("ChattingViewModel", "Error sending message", e)
@@ -134,6 +140,10 @@ class ChattingScreenViewModel @Inject constructor(
                 Log.e("ChattingViewModel", "Error marking message as read", e)
             }
         }
+    }
+
+    fun changeChatSideEffect(value: ChatSideEffect) {
+        _chatSideEffect.value = value
     }
 
     private fun startListeningStatus() {

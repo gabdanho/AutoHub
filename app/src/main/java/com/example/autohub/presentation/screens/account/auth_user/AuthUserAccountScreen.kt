@@ -46,7 +46,7 @@ import com.example.autohub.presentation.theme.containerColor
 @Composable
 fun AuthUserAccountScreen(
     modifier: Modifier = Modifier,
-    viewModel: AuthUserAccountScreenViewModel = hiltViewModel<AuthUserAccountScreenViewModel>()
+    viewModel: AuthUserAccountScreenViewModel = hiltViewModel<AuthUserAccountScreenViewModel>(),
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val context = LocalContext.current

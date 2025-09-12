@@ -7,5 +7,5 @@ data class AdScreenUiState(
     val authUserUid: String = "",
     val user: User = User(),
     val loadingState: LoadingState? = null,
-    val imageToShow: String? = null
+    val imageToShow: String? = null,
 )

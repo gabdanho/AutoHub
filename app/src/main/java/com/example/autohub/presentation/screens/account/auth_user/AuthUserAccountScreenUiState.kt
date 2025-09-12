@@ -8,5 +8,5 @@ data class AuthUserAccountScreenUiState(
     val loadingState: LoadingState? = LoadingState.Loading,
 
     val user: User = User(),
-    val ads: List<CarAd> = emptyList()
+    val ads: List<CarAd> = emptyList(),
 )

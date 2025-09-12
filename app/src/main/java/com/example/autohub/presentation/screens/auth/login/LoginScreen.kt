@@ -45,7 +45,7 @@ import com.example.autohub.presentation.theme.borderColor
 fun LoginScreen(
     modifier: Modifier = Modifier,
     isShowSendEmailText: Boolean = false,
-    viewModel: LoginScreenViewModel = hiltViewModel<LoginScreenViewModel>()
+    viewModel: LoginScreenViewModel = hiltViewModel<LoginScreenViewModel>(),
 ) {
     val context = LocalContext.current
     val uiState = viewModel.uiState.collectAsState().value
@@ -181,7 +181,7 @@ private fun ChangePasswordDialog(
     changeEmailToNewPassword: (String) -> Unit,
     onHideDialogClick: () -> Unit,
     forgotPassword: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Dialog(onHideDialogClick) {
         Card(

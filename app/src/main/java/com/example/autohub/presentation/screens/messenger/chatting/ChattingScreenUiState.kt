@@ -10,5 +10,5 @@ data class ChattingScreenUiState(
     val authUserData: User = User(),
     val participantData: User = User(),
     val loadingState: LoadingState? = null,
-    val errorMessage: String = ""
+    val errorMessage: String = "",
 )

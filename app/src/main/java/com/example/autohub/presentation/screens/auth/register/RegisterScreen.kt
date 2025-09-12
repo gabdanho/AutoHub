@@ -30,7 +30,7 @@ import com.example.autohub.presentation.model.LoadingState
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
-    viewModel: RegisterScreenViewModel = hiltViewModel<RegisterScreenViewModel>()
+    viewModel: RegisterScreenViewModel = hiltViewModel<RegisterScreenViewModel>(),
 ) {
     val context = LocalContext.current
     val uiState = viewModel.uiState.collectAsState().value

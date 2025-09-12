@@ -19,5 +19,5 @@ data class RegisterScreenUiState(
     val isPasswordError: Boolean = false,
     val isRepeatPasswordError: Boolean = false,
 
-    val loadingState: LoadingState? = null
+    val loadingState: LoadingState? = null,
 )

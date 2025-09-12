@@ -34,21 +34,66 @@ class FiltersScreenViewModel @Inject constructor(
     fun initFilters(filters: List<SearchFilter>) {
         _uiState.update { state ->
             state.copy(
-                brandValue = findInFilters<String>(filterName = "brand", filters = filters) ?: state.brandValue,
-                modelValue = findInFilters<String>(filterName = "model", filters = filters) ?: state.modelValue,
-                colorValue = findInFilters<String>(filterName = "color", filters = filters) ?: state.colorValue,
-                realiseYearValue = findInFilters<String>(filterName = "realiseYear", filters = filters) ?: state.realiseYearValue,
-                engineCapacityValue = findInFilters<String>(filterName = "engineCapacity", filters = filters) ?: state.engineCapacityValue,
-                mileageValue = findInFilters<String>(filterName = "mileage", filters = filters) ?: state.mileageValue,
-                priceValue = findInFilters<String>(filterName = "price", filters = filters) ?: state.priceValue,
-                descriptionValue = findInFilters<String>(filterName = "description", filters = filters) ?: state.descriptionValue,
-                cityValue = findInFilters<String>(filterName = "city", filters = filters) ?: state.cityValue,
-                bodyTypeValue = BodyType.fromTag(value = findInFilters<String>(filterName = "bodyType", filters = filters)),
-                engineTypeValue = EngineType.fromTag(value = findInFilters<String>(filterName = "engineType", filters = filters)),
-                transmissionValue = TransmissionType.fromTag(value = findInFilters<String>(filterName = "transmission", filters = filters)),
-                driveTypeValue = DriveType.fromTag(value = findInFilters<String>(filterName = "driveType", filters = filters)),
-                steeringWheelSideValue = SteeringWheelSideType.fromTag(value = findInFilters<String>(filterName = "steeringWheelSide", filters = filters)),
-                conditionValue = ConditionType.fromTag(value = findInFilters<String>(filterName = "condition", filters = filters))
+                brandValue = findInFilters<String>(filterName = "brand", filters = filters)
+                    ?: state.brandValue,
+                modelValue = findInFilters<String>(filterName = "model", filters = filters)
+                    ?: state.modelValue,
+                colorValue = findInFilters<String>(filterName = "color", filters = filters)
+                    ?: state.colorValue,
+                realiseYearValue = findInFilters<String>(
+                    filterName = "realiseYear",
+                    filters = filters
+                ) ?: state.realiseYearValue,
+                engineCapacityValue = findInFilters<String>(
+                    filterName = "engineCapacity",
+                    filters = filters
+                ) ?: state.engineCapacityValue,
+                mileageValue = findInFilters<String>(filterName = "mileage", filters = filters)
+                    ?: state.mileageValue,
+                priceValue = findInFilters<String>(filterName = "price", filters = filters)
+                    ?: state.priceValue,
+                descriptionValue = findInFilters<String>(
+                    filterName = "description",
+                    filters = filters
+                ) ?: state.descriptionValue,
+                cityValue = findInFilters<String>(filterName = "city", filters = filters)
+                    ?: state.cityValue,
+                bodyTypeValue = BodyType.fromTag(
+                    value = findInFilters<String>(
+                        filterName = "bodyType",
+                        filters = filters
+                    )
+                ),
+                engineTypeValue = EngineType.fromTag(
+                    value = findInFilters<String>(
+                        filterName = "engineType",
+                        filters = filters
+                    )
+                ),
+                transmissionValue = TransmissionType.fromTag(
+                    value = findInFilters<String>(
+                        filterName = "transmission",
+                        filters = filters
+                    )
+                ),
+                driveTypeValue = DriveType.fromTag(
+                    value = findInFilters<String>(
+                        filterName = "driveType",
+                        filters = filters
+                    )
+                ),
+                steeringWheelSideValue = SteeringWheelSideType.fromTag(
+                    value = findInFilters<String>(
+                        filterName = "steeringWheelSide",
+                        filters = filters
+                    )
+                ),
+                conditionValue = ConditionType.fromTag(
+                    value = findInFilters<String>(
+                        filterName = "condition",
+                        filters = filters
+                    )
+                )
             )
         }
     }

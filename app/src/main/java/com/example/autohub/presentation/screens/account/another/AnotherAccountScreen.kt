@@ -45,7 +45,7 @@ import com.example.autohub.presentation.utils.launchDialIntent
 fun AnotherAccountScreen(
     user: User,
     modifier: Modifier = Modifier,
-    viewModel: AnotherAccountScreenViewModel = hiltViewModel<AnotherAccountScreenViewModel>()
+    viewModel: AnotherAccountScreenViewModel = hiltViewModel<AnotherAccountScreenViewModel>(),
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val callEvent = viewModel.callEvent.collectAsState().value

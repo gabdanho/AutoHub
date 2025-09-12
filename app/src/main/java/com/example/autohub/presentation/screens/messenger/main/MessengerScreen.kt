@@ -1,6 +1,7 @@
 package com.example.autohub.presentation.screens.messenger.main
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -49,13 +49,17 @@ import com.example.autohub.presentation.theme.containerColor
 @Composable
 fun MessengerScreen(
     modifier: Modifier = Modifier,
-    viewModel: MessengerScreenViewModel = hiltViewModel<MessengerScreenViewModel>()
+    viewModel: MessengerScreenViewModel = hiltViewModel<MessengerScreenViewModel>(),
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val chats = viewModel.chats.collectAsState().value
     val participantsStatus = viewModel.chatsStatus.collectAsState().value
 
     val context = LocalContext.current
+
+    BackHandler {
+        viewModel.stopListening()
+    }
 
     LaunchedEffect(uiState.errorMessage) {
         if (uiState.errorMessage != null) {
@@ -127,7 +131,7 @@ private fun ChatCard(
     chatConservation: ChatConservation,
     chatStatus: ChatStatus,
     onAnswerClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
     println(chatStatus)

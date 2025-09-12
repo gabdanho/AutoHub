@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AnotherAccountScreenViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getCurrentUserAds: GetCurrentUserAdsUseCase
+    private val getCurrentUserAds: GetCurrentUserAdsUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AnotherAccountScreenUiState())

@@ -41,7 +41,7 @@ import com.example.autohub.presentation.theme.barColor
 fun FiltersScreen(
     modifier: Modifier = Modifier,
     viewModel: FiltersScreenViewModel = hiltViewModel<FiltersScreenViewModel>(),
-    searchFilters: SearchFiltersNav = SearchFiltersNav()
+    searchFilters: SearchFiltersNav = SearchFiltersNav(),
 ) {
     val scrollState = rememberScrollState()
     val uiState = viewModel.uiState.collectAsState().value

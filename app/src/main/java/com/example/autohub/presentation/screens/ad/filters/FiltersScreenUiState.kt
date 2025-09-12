@@ -23,5 +23,5 @@ data class FiltersScreenUiState(
     val transmissionValue: TransmissionType? = null,
     val driveTypeValue: DriveType? = null,
     val steeringWheelSideValue: SteeringWheelSideType? = null,
-    val conditionValue: ConditionType? = null
+    val conditionValue: ConditionType? = null,
 )

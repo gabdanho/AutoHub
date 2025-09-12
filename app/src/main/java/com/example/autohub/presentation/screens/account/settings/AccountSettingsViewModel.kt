@@ -14,6 +14,7 @@ import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.navigation.Navigator
+import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.utils.isOnlyLetters
 import com.example.autohub.presentation.utils.isPasswordValid
 import com.example.autohub.presentation.utils.isValidCity
@@ -88,7 +89,9 @@ class AccountSettingsViewModel @Inject constructor(
 
     fun onBackButtonClick() {
         viewModelScope.launch {
-            navigator.navigatePopBackStack()
+            navigator.navigate(
+                destination = AccountGraph.AuthUserAccountScreen
+            )
         }
     }
 
