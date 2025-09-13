@@ -60,6 +60,8 @@ class ChattingScreenViewModel @Inject constructor(
 
     fun initChat(participant: User) {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             when (val authUserResult = getUserDataUseCase(userUID = getAuthUserIdUseCase())) {
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
@@ -160,21 +162,29 @@ class ChattingScreenViewModel @Inject constructor(
     }
 
     private fun startListeningMessages() {
-        messagesJob?.cancel()
+        _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
-        val state = _uiState.value
+        try {
+            messagesJob?.cancel()
 
-        messagesJob = getMessagesUseCase(
-            authUserId = state.authUserData.uid,
-            participantId = state.participantData.uid
-        )
-            .onEach { messages ->
-                _messages.value = messages.map { it.toUserPresentation() }
-            }
-            .catch { error ->
-                Log.e("ParticipantStatus", "Error listening to user status", error)
-            }
-            .launchIn(viewModelScope)
+            val state = _uiState.value
+
+            messagesJob = getMessagesUseCase(
+                authUserId = state.authUserData.uid,
+                participantId = state.participantData.uid
+            )
+                .onEach { messages ->
+                    _messages.value = messages.map { it.toUserPresentation() }
+                }
+                .catch { error ->
+                    Log.e("ParticipantStatus", "Error listening to user status", error)
+                }
+                .launchIn(viewModelScope)
+
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Success) }
+        } catch (e: Exception) {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = e.message)) }
+        }
     }
 
     override fun onCleared() {

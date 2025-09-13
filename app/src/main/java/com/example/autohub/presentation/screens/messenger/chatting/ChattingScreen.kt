@@ -1,5 +1,6 @@
 package com.example.autohub.presentation.screens.messenger.chatting
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,12 +36,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -53,13 +54,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
+import com.example.autohub.presentation.componets.InfoPlaceholder
+import com.example.autohub.presentation.componets.LoadingCircularIndicator
+import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.Message
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.model.messenger.ChatSideEffect
 import com.example.autohub.presentation.theme.cardColor
 import com.example.autohub.presentation.theme.containerColor
-import kotlinx.coroutines.launch
 
 @Composable
 fun ChattingScreen(
@@ -72,11 +75,17 @@ fun ChattingScreen(
     val messages = viewModel.messages.collectAsState().value
     val chatSideEffect = viewModel.chatSideEffect.collectAsState().value
     val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     DisposableEffect(Unit) {
         onDispose {
             viewModel.stopListening()
+        }
+    }
+
+    LaunchedEffect(uiState.loadingState) {
+        if (uiState.loadingState is LoadingState.Error) {
+            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -98,80 +107,100 @@ fun ChattingScreen(
                 onValueChange = { viewModel.updateMessageTextValue(value = it) },
                 onSendMessageClick = {
                     viewModel.sendMessage()
-                    coroutineScope.launch {
-                        listState.scrollToItem(messages.size - 1)
-                    }
                 }
             )
         },
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
-        val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
-
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(innerPadding)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(cardColor)
-                    .clickable { viewModel.onParticipantClick(user = uiState.participantData) }
-            ) {
-
-                Box {
-                    AsyncImage(
-                        model = uiState.participantData.image,
-                        contentDescription = stringResource(id = R.string.content_buyer_image),
-                        contentScale = ContentScale.Crop,
+        when (uiState.loadingState) {
+            is LoadingState.Success -> {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(innerPadding)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(8.dp)
-                            .size(60.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, containerColor, CircleShape)
-                    )
-                    Canvas(
-                        modifier = Modifier
-                            .size(4.dp)
-                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .background(cardColor)
+                            .clickable { viewModel.onParticipantClick(user = uiState.participantData) }
                     ) {
-                        drawCircle(
-                            radius = circleSize,
-                            color = if (participantStatus == UserStatus.Online) Color.Green else Color.Gray
+
+                        Box {
+                            val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
+
+                            AsyncImage(
+                                model = uiState.participantData.image,
+                                contentDescription = stringResource(id = R.string.content_buyer_image),
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .size(60.dp)
+                                    .clip(CircleShape)
+                                    .border(2.dp, containerColor, CircleShape)
+                            )
+                            Canvas(
+                                modifier = Modifier
+                                    .size(4.dp)
+                                    .padding(8.dp)
+                            ) {
+                                drawCircle(
+                                    radius = circleSize,
+                                    color = if (participantStatus == UserStatus.Online) Color.Green else Color.Gray
+                                )
+                            }
+                        }
+                        Text(
+                            text = stringResource(
+                                id = R.string.send_message_buyer_name,
+                                uiState.participantData.firstName,
+                                uiState.participantData.lastName
+                            ),
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.W300,
+                            modifier = Modifier.padding(start = 8.dp)
                         )
                     }
+
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(messages) { message ->
+                            if (message.receiverUID == uiState.authUserData.uid && !message.isRead)
+                                viewModel.markMessageAsRead(messageId = message.id)
+                            UserMessage(
+                                text = message.text,
+                                time = message.formattedData,
+                                authUserId = uiState.authUserData.uid,
+                                senderUid = message.senderUid,
+                                isRead = message.isRead
+                            )
+                        }
+                    }
                 }
-                Text(
-                    text = stringResource(
-                        id = R.string.send_message_buyer_name,
-                        uiState.participantData.firstName,
-                        uiState.participantData.lastName
-                    ),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.W300,
-                    modifier = Modifier.padding(start = 8.dp)
+            }
+
+            is LoadingState.Error -> {
+                InfoPlaceholder(
+                    textRes = R.string.error_to_show_chat,
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
                 )
             }
 
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(messages) { message ->
-                    if (message.receiverUID == uiState.authUserData.uid && !message.isRead)
-                        viewModel.markMessageAsRead(messageId = message.id)
-                    UserMessage(
-                        text = message.text,
-                        time = message.formattedData,
-                        authUserId = uiState.authUserData.uid,
-                        senderUid = message.senderUid,
-                        isRead = message.isRead
-                    )
-                }
+            is LoadingState.Loading -> {
+                LoadingCircularIndicator(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                )
             }
+
+            null -> {}
         }
     }
 }

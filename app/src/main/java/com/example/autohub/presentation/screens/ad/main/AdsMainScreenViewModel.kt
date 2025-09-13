@@ -55,6 +55,14 @@ class AdsMainScreenViewModel @Inject constructor(
         }
     }
 
+    fun onAdListClick(filters: SearchFiltersNav) {
+        viewModelScope.launch {
+            navigator.navigate(
+                destination = AdGraph.AdsMainScreen(searchFilters = filters)
+            )
+        }
+    }
+
     fun onAdClick(carAd: CarAd) {
         viewModelScope.launch {
             navigator.navigate(
@@ -68,6 +76,7 @@ class AdsMainScreenViewModel @Inject constructor(
     fun getAds(filters: List<SearchFilter>) {
         viewModelScope.launch {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             when (
                 val result = getAdsWithParams(
                     searchText = _uiState.value.searchTextValue,
@@ -98,9 +107,5 @@ class AdsMainScreenViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(searchTextValue = value)
         }
-    }
-
-    fun clearLoadingState() {
-        _uiState.update { state -> state.copy(loadingState = null) }
     }
 }

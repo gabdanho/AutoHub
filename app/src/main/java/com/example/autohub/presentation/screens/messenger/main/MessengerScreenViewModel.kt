@@ -12,6 +12,7 @@ import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toChatConservationPresentation
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.mapper.toUserStatusPresentation
+import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.ChatConservation
 import com.example.autohub.presentation.model.messenger.ChatStatus
 import com.example.autohub.presentation.model.user.User
@@ -105,13 +106,9 @@ class MessengerScreenViewModel @Inject constructor(
                     )
                 )
             } else {
-                _uiState.update { state -> state.copy(errorMessage = "Can't navigate to chat. Cause: can't get user data.") }
+                _uiState.update { state -> state.copy(message = "Can't navigate to chat. Cause: can't get user data.") }
             }
         }
-    }
-
-    fun clearErrorMessage() {
-        _uiState.update { state -> state.copy(errorMessage = null) }
     }
 
     private suspend fun getUserData(uid: String): Result<User> {
@@ -123,9 +120,7 @@ class MessengerScreenViewModel @Inject constructor(
 
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
-                        state.copy(
-                            errorMessage = userResult.message
-                        )
+                        state.copy(message = userResult.message)
                     }
                     return Result.failure(exception = Exception(userResult.message))
                 }
@@ -134,24 +129,31 @@ class MessengerScreenViewModel @Inject constructor(
     }
 
     private fun startListeningChats() {
-        chatsJob?.cancel()
+        _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
-        chatsJob = getBuyersChatsUseCase(authUserUID = getAuthUserIdUseCase())
-            .onEach { chats ->
-                _chats.value = chats.map { it.toChatConservationPresentation() }
+        try {
+            chatsJob?.cancel()
 
-                val authUserId = getAuthUserIdUseCase()
-                _chats.value.forEach { chat ->
-                    if (!_chatsStatus.value.containsKey(chat.uid)) {
-                        startListeningChatStatus(authUserId = authUserId, participantId = chat.uid)
+            chatsJob = getBuyersChatsUseCase(authUserUID = getAuthUserIdUseCase())
+                .onEach { chats ->
+                    _chats.value = chats.map { it.toChatConservationPresentation() }
+
+                    val authUserId = getAuthUserIdUseCase()
+                    _chats.value.forEach { chat ->
+                        if (!_chatsStatus.value.containsKey(chat.uid)) {
+                            startListeningChatStatus(authUserId = authUserId, participantId = chat.uid)
+                        }
                     }
                 }
-            }
-            .catch { error ->
-                _uiState.update { state -> state.copy(errorMessage = "Error to listening chats") }
-                Log.e("ParticipantsChats", "Error to  listening chats", error)
-            }
-            .launchIn(viewModelScope)
+                .catch { error ->
+                    _uiState.update { state -> state.copy(message = "Error to listening chats") }
+                }
+                .launchIn(viewModelScope)
+
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Success) }
+        } catch (e: Exception) {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = e.message)) }
+        }
     }
 
     private fun startListeningChatStatus(authUserId: String, participantId: String) {

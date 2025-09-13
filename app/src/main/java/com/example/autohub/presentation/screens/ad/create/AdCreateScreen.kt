@@ -15,20 +15,22 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.ListAddedPhotos
+import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.RowRadioButtons
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.UiImage
 import com.example.autohub.presentation.model.options.BodyType
 import com.example.autohub.presentation.model.options.ConditionType
@@ -66,6 +68,12 @@ fun AdCreateScreen(
             }
         }
 
+    LaunchedEffect(uiState.loadingState) {
+        if (uiState.loadingState is LoadingState.Error) {
+            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAdAppBar(
@@ -83,177 +91,191 @@ fun AdCreateScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Column(modifier = Modifier.weight(1.4f)) {
-                Text(
-                    text = stringResource(id = R.string.text_car_images),
-                    modifier = Modifier.padding(16.dp)
-                )
-                ListAddedPhotos(
-                    images = uiState.images.map { it.uri },
-                    imageToShow = uiState.imageToShow?.uri,
-                    onAddImageClick = {
-                        galleryLauncher.launch("image/*")
-                    },
-                    changeImageToShow = { viewModel.updateImageToShow(value = it?.let { UiImage(uri = it) }) },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .background(cardColor)
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(3f)
-                    .padding(horizontal = 8.dp)
-                    .verticalScroll(scrollState)
-            ) {
-                InputField(
-                    text = stringResource(id = R.string.input_brand),
-                    value = uiState.brandValue,
-                    isError = uiState.isBrandValueError,
-                    onValueChange = { viewModel.updateBrandValue(value = it) },
+            if (uiState.loadingState == LoadingState.Loading) {
+                LoadingCircularIndicator(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(innerPadding)
+                        .fillMaxSize()
                 )
-                InputField(
-                    text = stringResource(id = R.string.input_model),
-                    value = uiState.modelValue,
-                    isError = uiState.isModelValueError,
-                    onValueChange = { viewModel.updateModelValue(value = it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-                InputField(
-                    text = stringResource(id = R.string.text_color),
-                    value = uiState.colorValue,
-                    isError = uiState.isColorValueError,
-                    onValueChange = { viewModel.updateColorValue(value = it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-                InputField(
-                    text = stringResource(id = R.string.input_year_created),
-                    value = uiState.realiseYearValue,
-                    isError = uiState.isRealiseYearValueError,
-                    keyboardType = KeyboardType.Number,
-                    onValueChange = { viewModel.updateRealiseYearValue(value = it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-
-                RowRadioButtons(
-                    option = stringResource(id = R.string.radio_bodywork),
-                    currentType = uiState.bodyTypeValue,
-                    isError = uiState.isBodyTypeValueError,
-                    typesName = BodyType.entries,
-                    returnType = { viewModel.updateBodyTypeValue(value = it as BodyType?) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 8.dp)
-                )
-                RowRadioButtons(
-                    option = stringResource(id = R.string.radio_engine_type),
-                    currentType = uiState.engineTypeValue,
-                    isError = uiState.isEngineTypeValueError,
-                    typesName = EngineType.entries,
-                    returnType = { viewModel.updateEngineTypeValue(value = it as EngineType?) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 8.dp)
-                )
-                InputField(
-                    text = stringResource(id = R.string.input_engine_capacity),
-                    value = uiState.engineCapacityValue,
-                    isError = uiState.isEngineCapacityValue,
-                    keyboardType = KeyboardType.Number,
-                    onValueChange = { viewModel.updateEngineCapacityValue(value = it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-                RowRadioButtons(
-                    option = stringResource(id = R.string.radio_transmission_type),
-                    currentType = uiState.transmissionValue,
-                    isError = uiState.isTransmissionValueError,
-                    typesName = TransmissionType.entries,
-                    returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType?) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 8.dp)
-                )
-                RowRadioButtons(
-                    option = stringResource(id = R.string.radio_drive_type),
-                    currentType = uiState.driveTypeValue,
-                    isError = uiState.isDriveTypeValueError,
-                    typesName = DriveType.entries,
-                    returnType = { viewModel.updateDriveTypeValue(value = it as DriveType?) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 8.dp)
-                )
-                RowRadioButtons(
-                    option = stringResource(id = R.string.radio_steering_wheel),
-                    currentType = uiState.steeringWheelSideValue,
-                    isError = uiState.isSteeringWheelSideValueError,
-                    typesName = SteeringWheelSideType.entries,
-                    returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType?) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 8.dp)
-                )
-                InputField(
-                    text = stringResource(id = R.string.input_mileage),
-                    value = uiState.mileageValue,
-                    isError = uiState.isMileageValueError,
-                    keyboardType = KeyboardType.Number,
-                    onValueChange = { viewModel.updateMileageValue(value = it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-                RowRadioButtons(
-                    option = stringResource(id = R.string.radio_condition),
-                    currentType = uiState.conditionValue,
-                    isError = uiState.isConditionValueError,
-                    typesName = ConditionType.entries,
-                    returnType = { viewModel.updateConditionValue(value = it as ConditionType?) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 8.dp)
-                )
-                InputField(
-                    text = stringResource(id = R.string.input_price),
-                    value = uiState.priceValue,
-                    isError = uiState.isPriceValueError,
-                    keyboardType = KeyboardType.Number,
-                    onValueChange = { viewModel.updatePriceValue(value = it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-                InputField(
-                    text = stringResource(id = R.string.input_description),
-                    value = uiState.descriptionValue,
-                    isSingleLine = false,
-                    onValueChange = { viewModel.updateDescriptionValue(value = it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                ) {
-                    CustomButton(
-                        text = stringResource(id = R.string.button_create),
-                        onClick = { viewModel.onCreateAdClick() },
-                        modifier = Modifier.fillMaxWidth(0.5f)
+            } else {
+                Column(modifier = Modifier.weight(1.4f)) {
+                    Text(
+                        text = stringResource(id = R.string.text_car_images),
+                        modifier = Modifier.padding(16.dp)
                     )
+                    ListAddedPhotos(
+                        images = uiState.images.map { it.uri },
+                        imageToShow = uiState.imageToShow?.uri,
+                        onAddImageClick = {
+                            galleryLauncher.launch("image/*")
+                        },
+                        changeImageToShow = {
+                            viewModel.updateImageToShow(value = it?.let {
+                                UiImage(
+                                    uri = it
+                                )
+                            })
+                        },
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .background(cardColor)
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(3f)
+                        .padding(horizontal = 8.dp)
+                        .verticalScroll(scrollState)
+                ) {
+                    InputField(
+                        text = stringResource(id = R.string.input_brand),
+                        value = uiState.brandValue,
+                        isError = uiState.isBrandValueError,
+                        onValueChange = { viewModel.updateBrandValue(value = it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                    InputField(
+                        text = stringResource(id = R.string.input_model),
+                        value = uiState.modelValue,
+                        isError = uiState.isModelValueError,
+                        onValueChange = { viewModel.updateModelValue(value = it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                    InputField(
+                        text = stringResource(id = R.string.text_color),
+                        value = uiState.colorValue,
+                        isError = uiState.isColorValueError,
+                        onValueChange = { viewModel.updateColorValue(value = it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                    InputField(
+                        text = stringResource(id = R.string.input_year_created),
+                        value = uiState.realiseYearValue,
+                        isError = uiState.isRealiseYearValueError,
+                        keyboardType = KeyboardType.Number,
+                        onValueChange = { viewModel.updateRealiseYearValue(value = it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+
+                    RowRadioButtons(
+                        option = stringResource(id = R.string.radio_bodywork),
+                        currentType = uiState.bodyTypeValue,
+                        isError = uiState.isBodyTypeValueError,
+                        typesName = BodyType.entries,
+                        returnType = { viewModel.updateBodyTypeValue(value = it as BodyType?) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
+                    )
+                    RowRadioButtons(
+                        option = stringResource(id = R.string.radio_engine_type),
+                        currentType = uiState.engineTypeValue,
+                        isError = uiState.isEngineTypeValueError,
+                        typesName = EngineType.entries,
+                        returnType = { viewModel.updateEngineTypeValue(value = it as EngineType?) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
+                    )
+                    InputField(
+                        text = stringResource(id = R.string.input_engine_capacity),
+                        value = uiState.engineCapacityValue,
+                        isError = uiState.isEngineCapacityValue,
+                        keyboardType = KeyboardType.Number,
+                        onValueChange = { viewModel.updateEngineCapacityValue(value = it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                    RowRadioButtons(
+                        option = stringResource(id = R.string.radio_transmission_type),
+                        currentType = uiState.transmissionValue,
+                        isError = uiState.isTransmissionValueError,
+                        typesName = TransmissionType.entries,
+                        returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType?) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
+                    )
+                    RowRadioButtons(
+                        option = stringResource(id = R.string.radio_drive_type),
+                        currentType = uiState.driveTypeValue,
+                        isError = uiState.isDriveTypeValueError,
+                        typesName = DriveType.entries,
+                        returnType = { viewModel.updateDriveTypeValue(value = it as DriveType?) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
+                    )
+                    RowRadioButtons(
+                        option = stringResource(id = R.string.radio_steering_wheel),
+                        currentType = uiState.steeringWheelSideValue,
+                        isError = uiState.isSteeringWheelSideValueError,
+                        typesName = SteeringWheelSideType.entries,
+                        returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType?) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
+                    )
+                    InputField(
+                        text = stringResource(id = R.string.input_mileage),
+                        value = uiState.mileageValue,
+                        isError = uiState.isMileageValueError,
+                        keyboardType = KeyboardType.Number,
+                        onValueChange = { viewModel.updateMileageValue(value = it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                    RowRadioButtons(
+                        option = stringResource(id = R.string.radio_condition),
+                        currentType = uiState.conditionValue,
+                        isError = uiState.isConditionValueError,
+                        typesName = ConditionType.entries,
+                        returnType = { viewModel.updateConditionValue(value = it as ConditionType?) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
+                    )
+                    InputField(
+                        text = stringResource(id = R.string.input_price),
+                        value = uiState.priceValue,
+                        isError = uiState.isPriceValueError,
+                        keyboardType = KeyboardType.Number,
+                        onValueChange = { viewModel.updatePriceValue(value = it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                    InputField(
+                        text = stringResource(id = R.string.input_description),
+                        value = uiState.descriptionValue,
+                        isSingleLine = false,
+                        onValueChange = { viewModel.updateDescriptionValue(value = it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        CustomButton(
+                            text = stringResource(id = R.string.button_create),
+                            onClick = { viewModel.onCreateAdClick() },
+                            modifier = Modifier.fillMaxWidth(0.5f)
+                        )
+                    }
                 }
             }
         }

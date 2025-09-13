@@ -126,6 +126,8 @@ class AdCreateScreenViewModel @Inject constructor(
 
     fun onCreateAdClick() {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             _uiState.update { state ->
                 state.copy(
                     isBrandValueError = state.brandValue.isBlank(),
@@ -146,12 +148,12 @@ class AdCreateScreenViewModel @Inject constructor(
 
             when {
                 _uiState.value.images.isEmpty() -> {
-                    _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = "Necessary add images!")) }
+                    _uiState.update { state -> state.copy(message = "Necessary add images!") }
                     return@launch
                 }
 
                 hasValidationErrors() -> {
-                    _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = "Necessary fill all fields and choose all options!")) }
+                    _uiState.update { state -> state.copy(message = "Necessary fill all fields and choose all options!") }
                     return@launch
                 }
             }
@@ -160,15 +162,26 @@ class AdCreateScreenViewModel @Inject constructor(
             val carAdResult = formingCarAd()
 
             if (carAdResult.isSuccess) {
-                createAd(
-                    carAdInfo = carAdResult.getOrNull()?.toCarAdDomain() ?: throw Exception("Error in creating the ad"),
-                    images = currentState.images.mapIndexed { index, image ->
-                        ImageUploadData(id = index, bytes = image.byteArray)
+                _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
+                when (
+                    val result = createAd(
+                        carAdInfo = carAdResult.getOrNull()?.toCarAdDomain() ?: throw Exception("Error in creating the ad"),
+                        images = currentState.images.mapIndexed { index, image ->
+                            ImageUploadData(id = index, bytes = image.byteArray)
+                        }
+                    )
+                ) {
+                    is FirebaseResult.Success -> {
+                        _uiState.update { state -> state.copy(loadingState = LoadingState.Success) }
+                        navigateToAuthAccount()
                     }
-                )
-                navigateToAuthAccount()
+                    is FirebaseResult.Error -> {
+                        _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = result.message)) }
+                    }
+                }
             } else {
-                _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = carAdResult.exceptionOrNull()?.message ?: "Unknown")) }
+                _uiState.update { state -> state.copy(message = carAdResult.exceptionOrNull()?.message ?: "Unknown error") }
             }
         }
     }
@@ -176,7 +189,10 @@ class AdCreateScreenViewModel @Inject constructor(
     private fun navigateToAuthAccount() {
         viewModelScope.launch {
             navigator.navigate(
-                destination = AccountGraph.AuthUserAccountScreen
+                destination = AccountGraph.AuthUserAccountScreen,
+                navOptions = {
+                    popUpTo(0) { inclusive }
+                }
             )
         }
     }

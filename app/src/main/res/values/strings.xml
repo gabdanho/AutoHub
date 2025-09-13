@@ -158,4 +158,8 @@
     <string name="text_messeger_is_empty">Не найдено активных чатов</string>
     <string name="text_add_image">Добавить изображение</string>
     <string name="text_no_data">Нет данных</string>
+    <string name="error_to_show_page">Не удаётся отобразить страницу</string>
+    <string name="error_to_show_user_data">Не удаётся отобразить данные пользователя</string>
+    <string name="error_to_show_ad_data">Не удаётся отобразить данные об объявлении</string>
+    <string name="error_to_show_chat">Не удаётся отобразить чат</string>
 </resources>

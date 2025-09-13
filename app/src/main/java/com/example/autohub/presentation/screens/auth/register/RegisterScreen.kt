@@ -25,6 +25,7 @@ import com.example.autohub.R
 import com.example.autohub.presentation.componets.BackButton
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
+import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.model.LoadingState
 
 @Composable
@@ -38,108 +39,123 @@ fun RegisterScreen(
     LaunchedEffect(uiState.loadingState) {
         if (uiState.loadingState is LoadingState.Error) {
             Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
-            viewModel.clearLoadingState()
+        }
+    }
+
+    LaunchedEffect(uiState.message) {
+        if (!uiState.message.isNullOrBlank()) {
+            Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
         }
     }
 
     Scaffold(
-        floatingActionButton = { BackButton(onBackClick = viewModel::onBackClick) },
+        floatingActionButton = {
+            if (uiState.loadingState != LoadingState.Loading) BackButton(onBackClick = viewModel::onBackClick)
+        },
         floatingActionButtonPosition = FabPosition.Start
     ) { innerPadding ->
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            Text(
-                text = stringResource(id = R.string.text_registration),
-                style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            InputField(
-                text = stringResource(id = R.string.input_first_name),
-                value = uiState.firstNameValue,
-                placeHolder = stringResource(id = R.string.placeholder_first_name),
-                isError = uiState.isFirstNameError,
-                onValueChange = { viewModel.updateFirstNameValue(value = it) },
+        if (uiState.loadingState == LoadingState.Loading) {
+            LoadingCircularIndicator(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(innerPadding)
+                    .fillMaxSize()
             )
-            InputField(
-                text = stringResource(id = R.string.input_last_name),
-                value = uiState.lastNameValue,
-                placeHolder = stringResource(id = R.string.placeholder_last_name),
-                isError = uiState.isLastNameError,
-                onValueChange = { viewModel.updateLastNameValue(value = it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            InputField(
-                text = stringResource(id = R.string.input_email),
-                value = uiState.emailValue,
-                placeHolder = stringResource(id = R.string.placeholder_email),
-                isError = uiState.isEmailError,
-                onValueChange = { viewModel.updateEmailValue(value = it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            InputField(
-                text = stringResource(id = R.string.input_phone),
-                value = uiState.phoneValue,
-                placeHolder = stringResource(id = R.string.placeholder_phone),
-                isError = uiState.isPhoneError,
-                keyboardType = KeyboardType.Number,
-                onValueChange = { viewModel.updatePhoneValue(value = it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            InputField(
-                text = stringResource(id = R.string.input_city),
-                value = uiState.cityValue,
-                placeHolder = stringResource(id = R.string.placeholder_city),
-                isError = uiState.isCityError,
-                onValueChange = { viewModel.updateCityValue(value = it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            InputField(
-                text = stringResource(id = R.string.input_password),
-                value = uiState.passwordValue,
-                placeHolder = stringResource(id = R.string.placeholder_password),
-                isError = uiState.isPasswordError,
-                onValueChange = { viewModel.updatePasswordValue(value = it) },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            InputField(
-                text = stringResource(id = R.string.input_repeat_password),
-                value = uiState.repeatPasswordValue,
-                placeHolder = stringResource(id = R.string.placeholder_password),
-                isError = uiState.isRepeatPasswordError,
-                onValueChange = { viewModel.updateRepeatPasswordValue(value = it) },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            CustomButton(
-                text = stringResource(id = R.string.button_registration),
-                onClick = {
-                    viewModel.registerAccount()
-                },
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .padding(top = 32.dp)
-            )
+        } else {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.text_registration),
+                    style = MaterialTheme.typography.displaySmall,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                InputField(
+                    text = stringResource(id = R.string.input_first_name),
+                    value = uiState.firstNameValue,
+                    placeHolder = stringResource(id = R.string.placeholder_first_name),
+                    isError = uiState.isFirstNameError,
+                    onValueChange = { viewModel.updateFirstNameValue(value = it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                InputField(
+                    text = stringResource(id = R.string.input_last_name),
+                    value = uiState.lastNameValue,
+                    placeHolder = stringResource(id = R.string.placeholder_last_name),
+                    isError = uiState.isLastNameError,
+                    onValueChange = { viewModel.updateLastNameValue(value = it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                InputField(
+                    text = stringResource(id = R.string.input_email),
+                    value = uiState.emailValue,
+                    placeHolder = stringResource(id = R.string.placeholder_email),
+                    isError = uiState.isEmailError,
+                    onValueChange = { viewModel.updateEmailValue(value = it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                InputField(
+                    text = stringResource(id = R.string.input_phone),
+                    value = uiState.phoneValue,
+                    placeHolder = stringResource(id = R.string.placeholder_phone),
+                    isError = uiState.isPhoneError,
+                    keyboardType = KeyboardType.Number,
+                    onValueChange = { viewModel.updatePhoneValue(value = it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                InputField(
+                    text = stringResource(id = R.string.input_city),
+                    value = uiState.cityValue,
+                    placeHolder = stringResource(id = R.string.placeholder_city),
+                    isError = uiState.isCityError,
+                    onValueChange = { viewModel.updateCityValue(value = it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                InputField(
+                    text = stringResource(id = R.string.input_password),
+                    value = uiState.passwordValue,
+                    placeHolder = stringResource(id = R.string.placeholder_password),
+                    isError = uiState.isPasswordError,
+                    onValueChange = { viewModel.updatePasswordValue(value = it) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                InputField(
+                    text = stringResource(id = R.string.input_repeat_password),
+                    value = uiState.repeatPasswordValue,
+                    placeHolder = stringResource(id = R.string.placeholder_password),
+                    isError = uiState.isRepeatPasswordError,
+                    onValueChange = { viewModel.updateRepeatPasswordValue(value = it) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                CustomButton(
+                    text = stringResource(id = R.string.button_registration),
+                    onClick = {
+                        viewModel.registerAccount()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(top = 32.dp)
+                )
+            }
         }
     }
 }

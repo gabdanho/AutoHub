@@ -34,6 +34,8 @@ class AnotherAccountScreenViewModel @Inject constructor(
 
     fun getUserAds(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             when (val result = getCurrentUserAds(user.uid)) {
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
@@ -55,8 +57,6 @@ class AnotherAccountScreenViewModel @Inject constructor(
 
     fun writeToUser(user: User) {
         viewModelScope.launch {
-
-
             navigator.navigate(
                 destination = MessengerGraph.ChattingScreen(
                     participant = user
@@ -69,7 +69,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
         if (number.isNotBlank()) {
             _callEvent.update { number }
         } else {
-            _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = "Call error")) }
+            _uiState.update { state -> state.copy(message = "Call error") }
         }
     }
 
@@ -84,12 +84,6 @@ class AnotherAccountScreenViewModel @Inject constructor(
     fun prevScreen() {
         viewModelScope.launch {
             navigator.navigatePopBackStack()
-        }
-    }
-
-    fun clearLoadingState() {
-        _uiState.update { state ->
-            state.copy(loadingState = null)
         }
     }
 

@@ -97,6 +97,8 @@ class AccountSettingsViewModel @Inject constructor(
 
     fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData, uriString: String) {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             if (imageRef.bytes != null) {
                 when (val result = uploadProfileImage(imageRef = imageRef)) {
                     is FirebaseResult.Success -> {
@@ -115,7 +117,7 @@ class AccountSettingsViewModel @Inject constructor(
                 }
             } else _uiState.update { state ->
                 state.copy(
-                    loadingState = LoadingState.Error(message = "Can't upload image (image = null)")
+                    loadingState = LoadingState.Error(message = "Can't upload image.")
                 )
             }
         }
@@ -123,6 +125,8 @@ class AccountSettingsViewModel @Inject constructor(
 
     fun acceptNamesChanges() {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             val firstName = _uiState.value.firstNameValue
             val lastName = _uiState.value.lastNameValue
             val isFirstNameCorrect = !_uiState.value.isFirstNameValueError
@@ -177,6 +181,8 @@ class AccountSettingsViewModel @Inject constructor(
 
     fun acceptCityChange() {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             val city = _uiState.value.cityValue
 
             when (val result = updateCity(city = city)) {
@@ -204,6 +210,8 @@ class AccountSettingsViewModel @Inject constructor(
 
     fun setNewPassword() {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             val password = _uiState.value.passwordValue
 
             val message: String = if (password.isEmpty()) {
@@ -223,19 +231,7 @@ class AccountSettingsViewModel @Inject constructor(
                 }
             }
 
-            _uiState.update { state -> state.copy(passwordStateMessage = message) }
-        }
-    }
-
-    fun clearLoadingState() {
-        _uiState.update { state ->
-            state.copy(loadingState = null)
-        }
-    }
-
-    fun clearPasswordMessage() {
-        _uiState.update { state ->
-            state.copy(passwordStateMessage = null)
+            _uiState.update { state -> state.copy(passwordMessage = message) }
         }
     }
 
@@ -253,6 +249,8 @@ class AccountSettingsViewModel @Inject constructor(
 
     private fun getUser() {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             val uid = getToken()
 
             uid?.let {

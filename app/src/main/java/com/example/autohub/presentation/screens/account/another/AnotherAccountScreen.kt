@@ -34,6 +34,8 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.CustomButton
+import com.example.autohub.presentation.componets.InfoPlaceholder
+import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.TopAdAppBar
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.user.User
@@ -58,7 +60,12 @@ fun AnotherAccountScreen(
     LaunchedEffect(uiState.loadingState) {
         if (uiState.loadingState is LoadingState.Error) {
             Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
-            viewModel.clearLoadingState()
+        }
+    }
+
+    LaunchedEffect(uiState.message) {
+        if (!uiState.message.isNullOrBlank()) {
+            Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -152,29 +159,52 @@ fun AnotherAccountScreen(
                     .padding(horizontal = 8.dp)
             )
             HorizontalDivider()
-            if (uiState.sellerAds.isNotEmpty()) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2)
-                ) {
-                    items(uiState.sellerAds) { ad ->
-                        CarAdCard(
-                            ad = ad,
-                            onAdClick = { viewModel.onAdClick(ad = ad) },
-                            modifier = modifier
+            when (uiState.loadingState) {
+                is LoadingState.Success -> {
+                    if (uiState.sellerAds.isNotEmpty()) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2)
+                        ) {
+                            items(uiState.sellerAds) { ad ->
+                                CarAdCard(
+                                    ad = ad,
+                                    onAdClick = { viewModel.onAdClick(ad = ad) },
+                                    modifier = modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                )
+                            }
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
-                        )
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = stringResource(id = R.string.text_nothing_was_found))
+                        }
                     }
                 }
-            } else {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = stringResource(id = R.string.text_nothing_was_found))
+
+                is LoadingState.Error -> {
+                    InfoPlaceholder(
+                        textRes = R.string.error_to_show_user_data,
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    )
                 }
+
+                is LoadingState.Loading -> {
+                    LoadingCircularIndicator(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    )
+                }
+
+                null -> {}
             }
         }
     }

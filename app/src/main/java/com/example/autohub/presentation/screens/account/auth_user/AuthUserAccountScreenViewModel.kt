@@ -84,16 +84,15 @@ class AuthUserAccountScreenViewModel @Inject constructor(
         }
     }
 
-    fun clearLoadingState() {
-        _uiState.update { state -> state.copy(loadingState = null) }
-    }
-
     private fun getUserDataAndAds() {
         viewModelScope.launch {
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             val uid = getToken()
 
             uid?.let {
                 when (val userResult = getUserData(userUID = uid)) {
+
                     is FirebaseResult.Success -> {
                         _uiState.update { state ->
                             state.copy(

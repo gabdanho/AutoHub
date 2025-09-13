@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
+import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.RoundedCornerTextField
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.borderColor
@@ -55,14 +56,12 @@ fun LoginScreen(
     LaunchedEffect(uiState.loadingState) {
         if (uiState.loadingState is LoadingState.Error) {
             Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
-            viewModel.clearLoadingState()
         }
     }
 
     LaunchedEffect(uiState.emailInfoMessage) {
         if (uiState.emailInfoMessage != null) {
             Toast.makeText(context, uiState.emailInfoMessage, Toast.LENGTH_SHORT).show()
-            viewModel.clearEmailInfoMessage()
         }
     }
 
@@ -76,101 +75,107 @@ fun LoginScreen(
         )
     }
 
-    // Забыли пароль
-    Box(
-        contentAlignment = Alignment.BottomCenter,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Text(
-            text = stringResource(id = R.string.text_forgot_password),
-            color = Color.Blue,
-            textDecoration = TextDecoration.Underline,
+    if (uiState.loadingState == LoadingState.Loading) {
+        LoadingCircularIndicator(
+            modifier = Modifier.fillMaxSize()
+        )
+    } else {
+        // Забыли пароль
+        Box(
+            contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
-                .padding(16.dp)
-                .clickable {
-                    viewModel.changeIsShowPasswordDialog(value = true)
-                }
-        )
-    }
-
-    // Логотип
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.4f)
-    ) {
-        Image(
-            painter = painterResource(R.drawable.logo),
-            contentDescription = stringResource(id = R.string.context_autohub_logo)
-        )
-    }
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(id = R.string.text_autohub),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.W300,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        RoundedCornerTextField(
-            text = uiState.emailValue,
-            onValueChange = { viewModel.changeEmailValue(value = it) },
-            label = stringResource(id = R.string.input_login),
-            modifier = Modifier.border(
-                width = 1.dp,
-                color = borderColor,
-                shape = RoundedCornerShape(20.dp)
-            )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        RoundedCornerTextField(
-            text = uiState.passwordValue,
-            onValueChange = { viewModel.changePasswordValue(value = it) },
-            label = stringResource(id = R.string.input_password),
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.border(
-                width = 1.dp,
-                color = borderColor,
-                shape = RoundedCornerShape(20.dp)
-            )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        CustomButton(
-            text = stringResource(id = R.string.button_enter),
-            onClick = {
-                viewModel.login()
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp)
-        )
-        CustomButton(
-            text = stringResource(id = R.string.button_registration),
-            onClick = { viewModel.onRegisterButtonClick() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 32.dp)
-        )
-        // Повторно отправить письмо
-        if (uiState.isShowSendEmailText) {
+                .fillMaxSize()
+        ) {
             Text(
-                text = stringResource(id = R.string.text_send_email_message_again),
+                text = stringResource(id = R.string.text_forgot_password),
                 color = Color.Blue,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier
                     .padding(16.dp)
                     .clickable {
-                        viewModel.resendEmailVerification()
+                        viewModel.changeIsShowPasswordDialog(value = true)
                     }
             )
+        }
+
+        // Логотип
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.4f)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.logo),
+                contentDescription = stringResource(id = R.string.context_autohub_logo)
+            )
+        }
+
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(id = R.string.text_autohub),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.W300,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            RoundedCornerTextField(
+                text = uiState.emailValue,
+                onValueChange = { viewModel.changeEmailValue(value = it) },
+                label = stringResource(id = R.string.input_login),
+                modifier = Modifier.border(
+                    width = 1.dp,
+                    color = borderColor,
+                    shape = RoundedCornerShape(20.dp)
+                )
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            RoundedCornerTextField(
+                text = uiState.passwordValue,
+                onValueChange = { viewModel.changePasswordValue(value = it) },
+                label = stringResource(id = R.string.input_password),
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.border(
+                    width = 1.dp,
+                    color = borderColor,
+                    shape = RoundedCornerShape(20.dp)
+                )
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            CustomButton(
+                text = stringResource(id = R.string.button_enter),
+                onClick = {
+                    viewModel.login()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp)
+            )
+            CustomButton(
+                text = stringResource(id = R.string.button_registration),
+                onClick = { viewModel.onRegisterButtonClick() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
+            )
+            // Повторно отправить письмо
+            if (uiState.isShowSendEmailText) {
+                Text(
+                    text = stringResource(id = R.string.text_send_email_message_again),
+                    color = Color.Blue,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .clickable {
+                            viewModel.resendEmailVerification()
+                        }
+                )
+            }
         }
     }
 }

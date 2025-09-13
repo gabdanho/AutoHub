@@ -76,18 +76,20 @@ class RegisterScreenViewModel @Inject constructor(
 
             when {
                 hasValidationErrors() -> {
-                    _uiState.update { it.copy(loadingState = LoadingState.Error("Fill all fields")) }
+                    _uiState.update { it.copy(message = "Fill all fields") }
                     return@launch
                 }
 
                 !isPasswordsMatch() -> {
-                    _uiState.update { it.copy(loadingState = LoadingState.Error("Passwords don't match")) }
+                    _uiState.update { it.copy(message = "Passwords don't match") }
                     return@launch
                 }
             }
 
             val currentState = _uiState.value
             val newUser = formingNewAccount()
+
+            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
             when (
                 val result = registerUserUseCase(
@@ -109,12 +111,6 @@ class RegisterScreenViewModel @Inject constructor(
                     _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = result.message)) }
                 }
             }
-        }
-    }
-
-    fun clearLoadingState() {
-        _uiState.update { state ->
-            state.copy(loadingState = null)
         }
     }
 

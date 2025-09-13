@@ -20,4 +20,5 @@ data class RegisterScreenUiState(
     val isRepeatPasswordError: Boolean = false,
 
     val loadingState: LoadingState? = null,
+    val message: String? = null,
 )

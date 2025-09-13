@@ -42,6 +42,7 @@ class AdScreenViewModel @Inject constructor(
     fun getUserData(uid: String) {
         viewModelScope.launch {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
             when (val result = getUserDataUseCase(userUID = uid)) {
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
@@ -76,7 +77,7 @@ class AdScreenViewModel @Inject constructor(
             if (this.isNotBlank()) {
                 _callEvent.update { this }
             } else {
-                _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = "Call error")) }
+                _uiState.update { state -> state.copy(message = "Call error") }
             }
         }
     }
@@ -93,11 +94,5 @@ class AdScreenViewModel @Inject constructor(
 
     fun clearCallEvent() {
         _callEvent.update { null }
-    }
-
-    fun clearLoadingState() {
-        _uiState.update { state ->
-            state.copy(loadingState = null)
-        }
     }
 }

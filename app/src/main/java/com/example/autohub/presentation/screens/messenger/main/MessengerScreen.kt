@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,6 +41,9 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.model.messenger.ChatConservation
 import com.example.autohub.presentation.componets.BottomNavBar
+import com.example.autohub.presentation.componets.InfoPlaceholder
+import com.example.autohub.presentation.componets.LoadingCircularIndicator
+import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.ChatStatus
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.theme.barColor
@@ -61,10 +65,15 @@ fun MessengerScreen(
         viewModel.stopListening()
     }
 
-    LaunchedEffect(uiState.errorMessage) {
-        if (uiState.errorMessage != null) {
-            Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT).show()
-            viewModel.clearErrorMessage()
+    LaunchedEffect(uiState.message) {
+        if (!uiState.message.isNullOrBlank()) {
+            Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(uiState.loadingState) {
+        if (uiState.loadingState is LoadingState.Error) {
+            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -93,35 +102,58 @@ fun MessengerScreen(
             )
         }
     ) { innerPadding ->
-        if (chats.isNotEmpty()) {
-            LazyColumn(
-                modifier = modifier
-                    .padding(innerPadding)
-                    .padding(8.dp)
-            ) {
-                items(chats) { chat ->
-                    participantsStatus[chat.uid]?.let {
-                        ChatCard(
-                            chatConservation = chat,
-                            chatStatus = it,
-                            onAnswerClick = { viewModel.onAnswerClick(uid = chat.uid) }
+        when (uiState.loadingState) {
+            is LoadingState.Success -> {
+                if (chats.isNotEmpty()) {
+                    LazyColumn(
+                        modifier = modifier
+                            .padding(innerPadding)
+                            .padding(8.dp)
+                    ) {
+                        items(chats) { chat ->
+                            participantsStatus[chat.uid]?.let {
+                                ChatCard(
+                                    chatConservation = chat,
+                                    chatStatus = it,
+                                    onAnswerClick = { viewModel.onAnswerClick(uid = chat.uid) }
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(innerPadding)
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.text_messeger_is_empty),
+                            color = Color.LightGray
                         )
                     }
                 }
             }
-        } else {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding)
-                    .padding(8.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.text_messeger_is_empty),
-                    color = Color.LightGray
+
+            is LoadingState.Error -> {
+                InfoPlaceholder(
+                    textRes = R.string.error_to_show_chat,
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
                 )
             }
+
+            is LoadingState.Loading -> {
+                LoadingCircularIndicator(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                )
+            }
+
+            null -> {}
         }
     }
 }

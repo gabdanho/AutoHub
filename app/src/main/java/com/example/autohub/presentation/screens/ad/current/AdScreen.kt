@@ -37,7 +37,9 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.componets.CustomButton
+import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.ListPhotos
+import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.TopAdAppBar
 import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
@@ -74,7 +76,12 @@ fun AdScreen(
     LaunchedEffect(uiState.loadingState) {
         if (uiState.loadingState is LoadingState.Error) {
             Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
-            viewModel.clearLoadingState()
+        }
+    }
+
+    LaunchedEffect(uiState.message) {
+        if (!uiState.message.isNullOrBlank()) {
+            Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -95,333 +102,356 @@ fun AdScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(scrollState)
-        ) {
-            ListPhotos(
-                imagesUrl = carAd.imagesUrl,
-                imageToShow = uiState.imageToShow,
-                changeImageToShow = { viewModel.changeImageToShow(value = it) },
-                modifier = Modifier
-                    .weight(1.4f)
-                    .fillMaxWidth()
-                    .background(cardColor)
-            )
-            Column(modifier = Modifier.weight(3f)) {
-                Text(
-                    text = stringResource(id = R.string.text_car_price, carAd.price),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp)
-                )
-
-                if (uiState.authUserUid != carAd.userUID) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+        when (uiState.loadingState) {
+            is LoadingState.Success -> {
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .verticalScroll(scrollState)
+                ) {
+                    ListPhotos(
+                        imagesUrl = carAd.imagesUrl,
+                        imageToShow = uiState.imageToShow,
+                        changeImageToShow = { viewModel.changeImageToShow(value = it) },
                         modifier = Modifier
+                            .weight(1.4f)
                             .fillMaxWidth()
-                            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    ) {
-                        AsyncImage(
-                            model = uiState.user.image,
-                            contentDescription = stringResource(id = R.string.content_user_image),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(70.dp)
-                                .clip(CircleShape)
-                                .border(2.dp, containerColor, CircleShape)
-                                .clickable { viewModel.onUserClick() }
+                            .background(cardColor)
+                    )
+                    Column(modifier = Modifier.weight(3f)) {
+                        Text(
+                            text = stringResource(id = R.string.text_car_price, carAd.price),
+                            style = MaterialTheme.typography.displaySmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(8.dp)
                         )
-                        Column(
-                            modifier = Modifier.padding(start = 16.dp)
-                        ) {
-                            Text(
-                                text = stringResource(
-                                    id = R.string.text_seller_main_info,
-                                    uiState.user.firstName,
-                                    uiState.user.lastName,
-                                    uiState.user.city
-                                ),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.clickable { viewModel.onUserClick() }
-                            )
+
+                        if (uiState.authUserUid != carAd.userUID) {
                             Row(
-                                modifier = Modifier.fillMaxWidth()
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                             ) {
-                                CustomButton(
-                                    text = stringResource(id = R.string.button_write_message),
-                                    onClick = { viewModel.onMessageClick(participantId = carAd.userUID) },
+                                AsyncImage(
+                                    model = uiState.user.image,
+                                    contentDescription = stringResource(id = R.string.content_user_image),
+                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(end = 4.dp)
-                                        .weight(1f)
+                                        .size(70.dp)
+                                        .clip(CircleShape)
+                                        .border(2.dp, containerColor, CircleShape)
+                                        .clickable { viewModel.onUserClick() }
                                 )
-                                CustomButton(
-                                    text = stringResource(id = R.string.button_call),
-                                    onClick = { viewModel.callToUser() },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                )
+                                Column(
+                                    modifier = Modifier.padding(start = 16.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(
+                                            id = R.string.text_seller_main_info,
+                                            uiState.user.firstName,
+                                            uiState.user.lastName,
+                                            uiState.user.city
+                                        ),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.clickable { viewModel.onUserClick() }
+                                    )
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        CustomButton(
+                                            text = stringResource(id = R.string.button_write_message),
+                                            onClick = { viewModel.onMessageClick(participantId = carAd.userUID) },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(end = 4.dp)
+                                                .weight(1f)
+                                        )
+                                        CustomButton(
+                                            text = stringResource(id = R.string.button_call),
+                                            onClick = { viewModel.callToUser() },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .weight(1f)
+                                        )
+                                    }
+                                }
                             }
                         }
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier
+                                .background(cardColor)
+                                .shadow(elevation = 0.5.dp)
+                        ) {
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_brand),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = carAd.brand
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_model),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = carAd.model
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_year_created),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = carAd.realiseYear
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_body),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = stringResource(
+                                            id = StringToResourceIdMapperImpl().map(
+                                                resId = carAd.body?.textRes
+                                                    ?: StringResNamePresentation.NO_DATA
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_engine_type),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = stringResource(
+                                            id = StringToResourceIdMapperImpl().map(
+                                                resId = carAd.typeEngine?.textRes
+                                                    ?: StringResNamePresentation.NO_DATA
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_transmission),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = stringResource(
+                                            id = StringToResourceIdMapperImpl().map(
+                                                resId = carAd.transmission?.textRes
+                                                    ?: StringResNamePresentation.NO_DATA
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_drive),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = stringResource(
+                                            id = StringToResourceIdMapperImpl().map(
+                                                resId = carAd.drive?.textRes
+                                                    ?: StringResNamePresentation.NO_DATA
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_condition),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = stringResource(
+                                            id = StringToResourceIdMapperImpl().map(
+                                                resId = carAd.condition?.textRes
+                                                    ?: StringResNamePresentation.NO_DATA
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_engine_capacity),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = carAd.engineCapacity
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_steering_wheel),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = stringResource(
+                                            id = StringToResourceIdMapperImpl().map(
+                                                resId = carAd.steeringWheelSide?.textRes
+                                                    ?: StringResNamePresentation.NO_DATA
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_mileage),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = carAd.mileage
+                                    )
+                                }
+                            }
+                            item {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.text_color),
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = carAd.color
+                                    )
+                                }
+                            }
+                        }
+                        Text(
+                            text = stringResource(id = R.string.text_description),
+                            modifier = Modifier.padding(8.dp)
+                        )
+                        Text(
+                            text = carAd.description,
+                            modifier = Modifier.padding(8.dp)
+                        )
                     }
                 }
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+            }
+
+            is LoadingState.Error -> {
+                InfoPlaceholder(
+                    textRes = R.string.error_to_show_ad_data,
                     modifier = Modifier
-                        .background(cardColor)
-                        .shadow(elevation = 0.5.dp)
-                ) {
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_brand),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = carAd.brand
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_model),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = carAd.model
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_year_created),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = carAd.realiseYear
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_body),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = stringResource(
-                                    id = StringToResourceIdMapperImpl().map(
-                                        resId = carAd.body?.textRes
-                                            ?: StringResNamePresentation.NO_DATA
-                                    )
-                                )
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_engine_type),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = stringResource(
-                                    id = StringToResourceIdMapperImpl().map(
-                                        resId = carAd.typeEngine?.textRes
-                                            ?: StringResNamePresentation.NO_DATA
-                                    )
-                                )
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_transmission),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = stringResource(
-                                    id = StringToResourceIdMapperImpl().map(
-                                        resId = carAd.transmission?.textRes
-                                            ?: StringResNamePresentation.NO_DATA
-                                    )
-                                )
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_drive),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = stringResource(
-                                    id = StringToResourceIdMapperImpl().map(
-                                        resId = carAd.drive?.textRes
-                                            ?: StringResNamePresentation.NO_DATA
-                                    )
-                                )
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_condition),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = stringResource(
-                                    id = StringToResourceIdMapperImpl().map(
-                                        resId = carAd.condition?.textRes
-                                            ?: StringResNamePresentation.NO_DATA
-                                    )
-                                )
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_engine_capacity),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = carAd.engineCapacity
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_steering_wheel),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = stringResource(
-                                    id = StringToResourceIdMapperImpl().map(
-                                        resId = carAd.steeringWheelSide?.textRes
-                                            ?: StringResNamePresentation.NO_DATA
-                                    )
-                                )
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_mileage),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = carAd.mileage
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.text_color),
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = carAd.color
-                            )
-                        }
-                    }
-                }
-                Text(
-                    text = stringResource(id = R.string.text_description),
-                    modifier = Modifier.padding(8.dp)
-                )
-                Text(
-                    text = carAd.description,
-                    modifier = Modifier.padding(8.dp)
+                        .padding(innerPadding)
+                        .fillMaxSize()
                 )
             }
+
+            is LoadingState.Loading -> {
+                LoadingCircularIndicator(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                )
+            }
+
+            null -> {}
         }
     }
 }

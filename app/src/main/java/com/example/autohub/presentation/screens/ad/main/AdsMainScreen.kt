@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +34,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.CarAdCard
+import com.example.autohub.presentation.componets.InfoPlaceholder
+import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.theme.containerColor
@@ -53,7 +56,6 @@ fun AdsMainScreen(
     LaunchedEffect(uiState.loadingState) {
         if (uiState.loadingState is LoadingState.Error) {
             Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
-            viewModel.clearLoadingState()
         }
     }
 
@@ -73,42 +75,65 @@ fun AdsMainScreen(
         },
         bottomBar = {
             BottomNavBar(
-                onAdListClick = { /* Nothing */ },
+                onAdListClick = { viewModel.onAdListClick(filters = filters) },
                 onAccountClick = { viewModel.onAccountClick() },
                 onMessageClick = { viewModel.onMessageClick() }
             )
         }
     ) { innerPadding ->
-        if (uiState.adsList.isNotEmpty()) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = modifier
-                    .padding(8.dp)
-                    .padding(innerPadding)
-            ) {
-                items(uiState.adsList) { carAd ->
-                    CarAdCard(
-                        ad = carAd,
-                        onAdClick = { viewModel.onAdClick(carAd = carAd) },
+        when (uiState.loadingState) {
+            is LoadingState.Success -> {
+                if (uiState.adsList.isNotEmpty()) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = modifier
+                            .padding(8.dp)
+                            .padding(innerPadding)
+                    ) {
+                        items(uiState.adsList) { carAd ->
+                            CarAdCard(
+                                ad = carAd,
+                                onAdClick = { viewModel.onAdClick(carAd = carAd) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            )
+                        }
+                    }
+                } else {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(innerPadding)
                             .padding(8.dp)
-                    )
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.text_ads_not_found),
+                            color = Color.LightGray
+                        )
+                    }
                 }
             }
-        } else {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding)
-                    .padding(8.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.text_ads_not_found),
-                    color = Color.LightGray
+
+            is LoadingState.Error -> {
+                InfoPlaceholder(
+                    textRes = R.string.error_to_show_page,
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
                 )
             }
+
+            is LoadingState.Loading -> {
+                LoadingCircularIndicator(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                )
+            }
+
+            null -> {}
         }
     }
 }

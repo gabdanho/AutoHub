@@ -49,19 +49,9 @@ class LoginScreenViewModel @Inject constructor(
         _uiState.update { state -> state.copy(isShowSendEmailText = value) }
     }
 
-    fun clearLoadingState() {
-        _uiState.update { state ->
-            state.copy(loadingState = null)
-        }
-    }
-
-    fun clearEmailInfoMessage() {
-        _uiState.update { state ->
-            state.copy(emailInfoMessage = null)
-        }
-    }
-
     fun login() {
+        _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
         viewModelScope.launch {
             when (
                 val result = loginAndSaveUserIdUseCase(

@@ -5,7 +5,7 @@ import com.example.autohub.presentation.model.user.User
 
 data class AccountSettingsUiState(
     val loadingState: LoadingState? = null,
-    val passwordStateMessage: String? = null,
+    val passwordMessage: String? = null,
 
     val firstNameValue: String = "",
     val lastNameValue: String = "",
