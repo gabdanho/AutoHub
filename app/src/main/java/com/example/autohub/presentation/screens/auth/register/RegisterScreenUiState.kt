@@ -1,6 +1,7 @@
 package com.example.autohub.presentation.screens.auth.register
 
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 
 data class RegisterScreenUiState(
     val firstNameValue: String = "",
@@ -20,5 +21,6 @@ data class RegisterScreenUiState(
     val isRepeatPasswordError: Boolean = false,
 
     val loadingState: LoadingState? = null,
-    val message: String? = null,
+    val message: StringResNamePresentation? = null,
+    val messageDetails: String? = null,
 )

@@ -16,11 +16,11 @@ interface MessengerRepository {
 
     fun getMessages(authUserId: String, participantId: String): Flow<List<Message>>
 
-    fun getBuyersChats(authUserUID: String): Flow<List<ChatConservation>>
+    fun getParticipantsChats(authUserId: String): Flow<List<ChatConservation>>
 
-    fun getBuyerStatus(buyerUID: String): Flow<UserStatus>
+    fun getParticipantStatus(participantId: String): Flow<UserStatus>
 
-    fun getCountUnreadMessages(authUserUID: String, buyerUID: String): Flow<Int>
+    fun getCountUnreadMessages(authUserId: String, participantId: String): Flow<Int>
 
-    suspend fun markMessagesAsRead(authUserUID: String, buyerUID: String, messageID: String)
+    suspend fun markMessagesAsRead(authUserId: String, participantId: String, messageID: String)
 }

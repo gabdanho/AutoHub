@@ -39,6 +39,7 @@ import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.RoundedCornerTextField
+import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.borderColor
 
@@ -53,15 +54,18 @@ fun LoginScreen(
 
     viewModel.updateIsShowSendEmailText(value = isShowSendEmailText)
 
-    LaunchedEffect(uiState.loadingState) {
-        if (uiState.loadingState is LoadingState.Error) {
-            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(uiState.message) {
+        uiState.message?.let {
+            val resId = StringToResourceIdMapperImpl().map(uiState.message)
+            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+            viewModel.clearMessage()
         }
     }
 
-    LaunchedEffect(uiState.emailInfoMessage) {
-        if (uiState.emailInfoMessage != null) {
-            Toast.makeText(context, uiState.emailInfoMessage, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(uiState.messageDetails) {
+        if (!uiState.messageDetails.isNullOrBlank()) {
+            Toast.makeText(context, uiState.messageDetails, Toast.LENGTH_LONG).show()
+            viewModel.clearMessageDetails()
         }
     }
 

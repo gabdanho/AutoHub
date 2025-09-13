@@ -1,11 +1,16 @@
 package com.example.autohub.data.repository.impl.firebase
 
+import com.example.autohub.data.firebase.constants.FirestoreCollections.USERS
+import com.example.autohub.data.firebase.constants.FirestoreFields.LOCAL_TOKEN_FIELD
+import com.example.autohub.data.firebase.constants.FirestoreFields.STATUS_FIELD
+import com.example.autohub.domain.HandledException
 import com.example.autohub.data.mapper.toUserStatusDomain
 import com.example.autohub.data.mapper.toUserStatusData
 import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.mapper.toUserData
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
+import com.example.autohub.domain.model.HandleErrorTag
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.User as UserDataDomain
 import com.example.autohub.domain.model.UserStatus as UserStatusDomain
@@ -24,12 +29,6 @@ class AuthUserRepositoryImpl @Inject constructor(
     override suspend fun loginUser(email: String, password: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.signInWithEmailAndPassword(email, password).await()
-            val user = fbAuth.currentUser ?: throw IllegalStateException("User is null after login")
-
-            if (!user.isEmailVerified) {
-                fbAuth.signOut()
-                throw IllegalStateException("Email is not verified")
-            }
 
             getUserToken()
             changeUserStatus(UserStatus.ONLINE.toUserStatusDomain())
@@ -43,8 +42,8 @@ class AuthUserRepositoryImpl @Inject constructor(
     ): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.createUserWithEmailAndPassword(email, password).await()
-            val userId = getAuthUserUID()
-            val docReference = fbStore.collection("users").document(userId)
+            val userId = getAuthUserId()
+            val docReference = fbStore.collection(USERS).document(userId)
             val updatedData = user.copy(uid = userId)
             val mappedData = updatedData.toUserData()
             docReference.set(mappedData).await()
@@ -58,7 +57,7 @@ class AuthUserRepositoryImpl @Inject constructor(
     override suspend fun resendEmailVerification(email: String, password: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.signInWithEmailAndPassword(email, password).await()
-            val authUser = fbAuth.currentUser ?: throw IllegalStateException("User not found after login")
+            val authUser = fbAuth.currentUser ?: throw HandledException(tag = HandleErrorTag.USER_NULL)
             authUser.sendEmailVerification().await().also {
                 signOut()
             }
@@ -67,10 +66,10 @@ class AuthUserRepositoryImpl @Inject constructor(
 
     override suspend fun getUserToken() {
         safeFirebaseCall {
-            val fbStoreRef = fbStore.collection("users").document(getAuthUserUID())
+            val fbStoreRef = fbStore.collection(USERS).document(getAuthUserId())
             val token = fbMessaging.token.await()
 
-            fbStoreRef.update("localToken", token).await()
+            fbStoreRef.update(LOCAL_TOKEN_FIELD, token).await()
         }
     }
 
@@ -83,9 +82,9 @@ class AuthUserRepositoryImpl @Inject constructor(
     override suspend fun changeUserStatus(status: UserStatusDomain) {
         fbAuth.currentUser?.let {
             fbStore
-                .collection("users")
-                .document(getAuthUserUID())
-                .update("status", status.toUserStatusData().value)
+                .collection(USERS)
+                .document(getAuthUserId())
+                .update(STATUS_FIELD, status.toUserStatusData().value)
                 .await()
         }
     }
@@ -102,6 +101,6 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAuthUserUID(): String =
-        fbAuth.currentUser?.uid ?: throw IllegalStateException("Can't get user UID")
+    override fun getAuthUserId(): String =
+        fbAuth.currentUser?.uid ?: throw HandledException(tag = HandleErrorTag.USER_NULL)
 }

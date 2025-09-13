@@ -8,8 +8,10 @@ import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.interfaces.usecase.SignOutAndClearUserIdUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toCarAdPresentation
+import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
@@ -26,10 +28,10 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthUserAccountScreenViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getUserData: GetUserDataUseCase,
-    private val getCurrentUserAds: GetCurrentUserAdsUseCase,
-    private val getToken: GetLocalUserIdUseCase,
-    private val signOut: SignOutAndClearUserIdUseCase,
+    private val getUserDataUseCase: GetUserDataUseCase,
+    private val getCurrentUserAdsUseCase: GetCurrentUserAdsUseCase,
+    private val getLocalUserIdUseCase: GetLocalUserIdUseCase,
+    private val signOutAndClearUserIdUseCase: SignOutAndClearUserIdUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUserAccountScreenUiState())
@@ -65,7 +67,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
 
     fun onSignOutClick() {
         viewModelScope.launch {
-            signOut()
+            signOutAndClearUserIdUseCase()
             navigator.navigate(destination = AdGraph.AdsMainScreen())
         }
     }
@@ -88,10 +90,10 @@ class AuthUserAccountScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
-            val uid = getToken()
+            val uid = getLocalUserIdUseCase()
 
             uid?.let {
-                when (val userResult = getUserData(userUID = uid)) {
+                when (val userResult = getUserDataUseCase(userUID = uid)) {
 
                     is FirebaseResult.Success -> {
                         _uiState.update { state ->
@@ -101,7 +103,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                             )
                         }
 
-                        when (val adsResult = getCurrentUserAds(uid = uid)) {
+                        when (val adsResult = getCurrentUserAdsUseCase(uid = uid)) {
                             is FirebaseResult.Success -> {
                                 _uiState.update { state ->
                                     state.copy(
@@ -111,25 +113,67 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                                 }
                             }
 
+                            is FirebaseResult.Error.TimeoutError -> {
+                                _uiState.update { state ->
+                                    state.copy(
+                                        message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                                        loadingState = LoadingState.Error(message = adsResult.message)
+                                    )
+                                }
+                            }
+
+                            is FirebaseResult.Error.HandledError -> {
+                                _uiState.update { state ->
+                                    state.copy(
+                                        message = adsResult.tag.toStringResNamePresentation(),
+                                        loadingState = LoadingState.Error(message = adsResult.message)
+                                    )
+                                }
+                            }
+
                             is FirebaseResult.Error -> {
                                 _uiState.update { state ->
                                     state.copy(
-                                        loadingState = LoadingState.Error(message = adsResult.message)
+                                        loadingState = LoadingState.Error(message = adsResult.message),
+                                        message = StringResNamePresentation.ERROR_SHOW_USER_DATA
                                     )
                                 }
                             }
                         }
                     }
 
+                    is FirebaseResult.Error.TimeoutError -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                                loadingState = LoadingState.Error(message = userResult.message)
+                            )
+                        }
+                    }
+
+                    is FirebaseResult.Error.HandledError -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                message = userResult.tag.toStringResNamePresentation(),
+                                loadingState = LoadingState.Error(message = userResult.message)
+                            )
+                        }
+                    }
+
                     is FirebaseResult.Error -> {
                         _uiState.update { state ->
                             state.copy(
-                                loadingState = LoadingState.Error(message = userResult.message)
+                                loadingState = LoadingState.Error(message = userResult.message),
+                                message = StringResNamePresentation.ERROR_SHOW_USER_DATA
                             )
                         }
                     }
                 }
             }
         }
+    }
+
+    fun clearMessage() {
+        _uiState.update { state -> state.copy(message = null) }
     }
 }

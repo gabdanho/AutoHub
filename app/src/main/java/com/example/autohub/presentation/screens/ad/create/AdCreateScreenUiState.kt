@@ -1,6 +1,7 @@
 package com.example.autohub.presentation.screens.ad.create
 
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.UiImage
 import com.example.autohub.presentation.model.options.BodyType
 import com.example.autohub.presentation.model.options.ConditionType
@@ -45,6 +46,6 @@ data class AdCreateScreenUiState(
     val isConditionValueError: Boolean = false,
     val isDescriptionValueError: Boolean = false,
 
-    val message: String? = null,
+    val message: StringResNamePresentation? = null,
     val loadingState: LoadingState? = null,
 )

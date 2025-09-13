@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 sealed interface AuthGraph : NavigationDestination {
 
     @Serializable
-    data object LoginScreen : AuthGraph
+    data class LoginScreen(val isShowSendEmailText: Boolean = false) : AuthGraph
 
     @Serializable
     data object RegistrationScreen : AuthGraph

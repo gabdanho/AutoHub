@@ -48,6 +48,7 @@ import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.containerColor
 import com.example.autohub.presentation.theme.labelColor
@@ -64,15 +65,16 @@ fun AccountSettings(
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
                 val imageBytes = context.convertUriToBytes(uri = uri)
-                val imageRef = ImageUploadData(bytes = imageBytes)
-                viewModel.uploadUserProfileImageToFirebase(
-                    imageRef = imageRef,
-                    uriString = uri.toString()
-                )
+                imageBytes?.let {
+                    val imageRef = ImageUploadData(bytes = imageBytes)
+                    viewModel.uploadUserProfileImageToFirebase(
+                        imageRef = imageRef,
+                        uriString = uri.toString()
+                    )
+                }
             } else {
                 Toast.makeText(
-                    context,
-                    context.getString(R.string.text_image_not_selected), Toast.LENGTH_SHORT
+                    context, context.getString(R.string.text_image_not_selected), Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -81,15 +83,18 @@ fun AccountSettings(
         viewModel.onBackButtonClick()
     }
 
-    LaunchedEffect(uiState.loadingState) {
-        if (uiState.loadingState is LoadingState.Error) {
-            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(uiState.message) {
+        uiState.message?.let {
+            val resId = StringToResourceIdMapperImpl().map(uiState.message)
+            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+            viewModel.clearMessage()
         }
     }
 
-    LaunchedEffect(uiState.passwordMessage) {
-        if (!uiState.passwordMessage.isNullOrBlank()) {
-            Toast.makeText(context, uiState.passwordMessage, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(uiState.messageDetails) {
+        if (!uiState.messageDetails.isNullOrBlank()) {
+            Toast.makeText(context, uiState.messageDetails, Toast.LENGTH_LONG).show()
+            viewModel.clearMessageDetails()
         }
     }
 
@@ -196,7 +201,7 @@ fun AccountSettings(
                     )
                     CustomButton(
                         text = stringResource(id = R.string.button_accept_changes),
-                        isEnabled = uiState.isCityValueError,
+                        isEnabled = !uiState.isCityValueError,
                         onClick = {
                             viewModel.acceptCityChange()
                         },

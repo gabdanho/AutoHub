@@ -7,10 +7,10 @@ class MarkMessagesAsReadUseCaseImpl(
     private val messengerRepository: MessengerRepository
 ) : MarkMessagesAsReadUseCase {
 
-    override suspend fun invoke(authUserUID: String, buyerUID: String, messageID: String) {
+    override suspend fun invoke(authUserId: String, participantId: String, messageID: String) {
         messengerRepository.markMessagesAsRead(
-            authUserUID = authUserUID,
-            buyerUID = buyerUID,
+            authUserId = authUserId,
+            participantId = participantId,
             messageID = messageID
         )
     }

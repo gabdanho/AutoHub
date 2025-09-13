@@ -56,6 +56,7 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
+import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.Message
 import com.example.autohub.presentation.model.user.User
@@ -83,9 +84,11 @@ fun ChattingScreen(
         }
     }
 
-    LaunchedEffect(uiState.loadingState) {
-        if (uiState.loadingState is LoadingState.Error) {
-            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(uiState.message) {
+        uiState.message?.let {
+            val resId = StringToResourceIdMapperImpl().map(uiState.message)
+            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+            viewModel.clearMessage()
         }
     }
 
@@ -133,7 +136,7 @@ fun ChattingScreen(
 
                             AsyncImage(
                                 model = uiState.participantData.image,
-                                contentDescription = stringResource(id = R.string.content_buyer_image),
+                                contentDescription = stringResource(id = R.string.content_participant_image),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .padding(8.dp)
@@ -154,7 +157,7 @@ fun ChattingScreen(
                         }
                         Text(
                             text = stringResource(
-                                id = R.string.send_message_buyer_name,
+                                id = R.string.text_participant_name,
                                 uiState.participantData.firstName,
                                 uiState.participantData.lastName
                             ),
@@ -310,7 +313,6 @@ private fun HandleSideEffects(
     LaunchedEffect(messages) {
         when (chatSideEffect) {
             ChatSideEffect.ScrollToLastMessage -> {
-                println("ScrollToLastMessage")
                 if (messages.isNotEmpty()) {
                     listState.scrollToItem(messages.size - 1)
                     changeSideEffect(ChatSideEffect.StayInLastMessages)
@@ -318,7 +320,6 @@ private fun HandleSideEffects(
             }
 
             ChatSideEffect.StayInLastMessages -> {
-                println("StayInLastMessages")
                 if (messages.isNotEmpty() && listState.isScrolledToTheEnd()) {
                     listState.scrollToItem(messages.size - 1)
                 }

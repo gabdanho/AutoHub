@@ -1,8 +1,8 @@
 package com.example.autohub.presentation.model.options
 
-import com.example.autohub.presentation.BROKEN_TAG
-import com.example.autohub.presentation.NOT_BROKEN_TAG
-import com.example.autohub.presentation.NOT_WORKING_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.BROKEN_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.NOT_BROKEN_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.NOT_WORKING_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 

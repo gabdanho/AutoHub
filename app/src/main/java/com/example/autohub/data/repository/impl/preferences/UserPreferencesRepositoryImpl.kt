@@ -4,9 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.autohub.domain.interfaces.repository.local.UserPreferencesRepository
 import javax.inject.Inject
+import androidx.core.content.edit
 
 class UserPreferencesRepositoryImpl @Inject constructor(
-    private val context: Context
+    private val context: Context,
 ) : UserPreferencesRepository {
 
     private val prefs: SharedPreferences by lazy {
@@ -14,9 +15,9 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     }
 
     override fun insertUserId(uid: String) {
-        prefs.edit()
-            .putString(KEY_USER_ID, uid)
-            .apply()
+        prefs.edit {
+            putString(KEY_USER_ID, uid)
+        }
     }
 
     override fun getUserId(): String? {
@@ -25,7 +26,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun clearUserId() {
-        prefs.edit().remove(KEY_USER_ID).apply()
+        prefs.edit { remove(KEY_USER_ID) }
     }
 
     private companion object {

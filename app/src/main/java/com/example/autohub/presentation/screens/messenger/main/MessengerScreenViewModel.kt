@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
-import com.example.autohub.domain.interfaces.usecase.GetBuyerStatusUseCase
-import com.example.autohub.domain.interfaces.usecase.GetBuyersChatsUseCase
+import com.example.autohub.domain.interfaces.usecase.GetParticipantStatusUseCase
+import com.example.autohub.domain.interfaces.usecase.GetParticipantsChatsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCountUnreadMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
@@ -13,7 +13,9 @@ import com.example.autohub.presentation.mapper.toChatConservationPresentation
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.mapper.toUserStatusPresentation
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.messenger.ChatConservation
+import com.example.autohub.presentation.model.messenger.ChatLog
 import com.example.autohub.presentation.model.messenger.ChatStatus
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.Navigator
@@ -36,8 +38,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MessengerScreenViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getBuyerStatusUseCase: GetBuyerStatusUseCase,
-    private val getBuyersChatsUseCase: GetBuyersChatsUseCase,
+    private val getParticipantStatusUseCase: GetParticipantStatusUseCase,
+    private val getParticipantsChatsUseCase: GetParticipantsChatsUseCase,
     private val getAuthUserIdUseCase: GetAuthUserIdUseCase,
     private val getCountUnreadMessagesUseCase: GetCountUnreadMessagesUseCase,
     private val getUserDataUseCase: GetUserDataUseCase,
@@ -106,9 +108,20 @@ class MessengerScreenViewModel @Inject constructor(
                     )
                 )
             } else {
-                _uiState.update { state -> state.copy(message = "Can't navigate to chat. Cause: can't get user data.") }
+                _uiState.update { state -> state.copy(message = StringResNamePresentation.ERROR_OPEN_CHAT) }
             }
         }
+    }
+
+    fun onBackButtonClick() {
+        viewModelScope.launch {
+            stopListening()
+            navigator.navigatePopBackStack()
+        }
+    }
+
+    fun clearMessage() {
+        _uiState.update { state -> state.copy(message = null) }
     }
 
     private suspend fun getUserData(uid: String): Result<User> {
@@ -120,7 +133,7 @@ class MessengerScreenViewModel @Inject constructor(
 
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
-                        state.copy(message = userResult.message)
+                        state.copy(message = StringResNamePresentation.ERROR_SHOW_USER_DATA)
                     }
                     return Result.failure(exception = Exception(userResult.message))
                 }
@@ -134,19 +147,22 @@ class MessengerScreenViewModel @Inject constructor(
         try {
             chatsJob?.cancel()
 
-            chatsJob = getBuyersChatsUseCase(authUserUID = getAuthUserIdUseCase())
+            chatsJob = getParticipantsChatsUseCase(authUserId = getAuthUserIdUseCase())
                 .onEach { chats ->
                     _chats.value = chats.map { it.toChatConservationPresentation() }
 
                     val authUserId = getAuthUserIdUseCase()
                     _chats.value.forEach { chat ->
                         if (!_chatsStatus.value.containsKey(chat.uid)) {
-                            startListeningChatStatus(authUserId = authUserId, participantId = chat.uid)
+                            startListeningChatStatus(
+                                authUserId = authUserId,
+                                participantId = chat.uid
+                            )
                         }
                     }
                 }
                 .catch { error ->
-                    _uiState.update { state -> state.copy(message = "Error to listening chats") }
+                    _uiState.update { state -> state.copy(message = StringResNamePresentation.ERROR_LISTEN_CHATS) }
                 }
                 .launchIn(viewModelScope)
 
@@ -158,8 +174,8 @@ class MessengerScreenViewModel @Inject constructor(
 
     private fun startListeningChatStatus(authUserId: String, participantId: String) {
         val job = combine(
-            getBuyerStatusUseCase(buyerUID = participantId),
-            getCountUnreadMessagesUseCase(authUserUID = authUserId, buyerUID = participantId)
+            getParticipantStatusUseCase(participantId = participantId),
+            getCountUnreadMessagesUseCase(authUserId = authUserId, participantId = participantId)
         ) { status, countUnreadMessages ->
             ChatStatus(
                 status = status.toUserStatusPresentation(),
@@ -170,7 +186,7 @@ class MessengerScreenViewModel @Inject constructor(
                 updateChatInfo(uid = participantId, chatStatus = chatStatus)
             }
             .catch { error ->
-                Log.e("ParticipantStatus", "Error listening to user status", error)
+                Log.e(ChatLog.TAG, ChatLog.ERROR_CHATS, error)
             }
             .launchIn(viewModelScope)
 

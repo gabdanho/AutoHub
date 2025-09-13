@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetCurrentUserAdsUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toCarAdPresentation
+import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.Navigator
@@ -23,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AnotherAccountScreenViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getCurrentUserAds: GetCurrentUserAdsUseCase,
+    private val getCurrentUserAdsUseCase: GetCurrentUserAdsUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AnotherAccountScreenUiState())
@@ -36,7 +38,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
-            when (val result = getCurrentUserAds(user.uid)) {
+            when (val result = getCurrentUserAdsUseCase(user.uid)) {
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
                         state.copy(
@@ -46,9 +48,30 @@ class AnotherAccountScreenViewModel @Inject constructor(
                     }
                 }
 
+                is FirebaseResult.Error.TimeoutError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.HandledError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = result.tag.toStringResNamePresentation(),
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
-                        state.copy(loadingState = LoadingState.Error(message = result.message))
+                        state.copy(
+                            loadingState = LoadingState.Error(message = result.message),
+                            message = StringResNamePresentation.ERROR_SHOW_USER_DATA
+                        )
                     }
                 }
             }
@@ -69,7 +92,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
         if (number.isNotBlank()) {
             _callEvent.update { number }
         } else {
-            _uiState.update { state -> state.copy(message = "Call error") }
+            _uiState.update { state -> state.copy(message = StringResNamePresentation.ERROR_CALL) }
         }
     }
 
@@ -89,5 +112,9 @@ class AnotherAccountScreenViewModel @Inject constructor(
 
     fun clearCallEvent() {
         _callEvent.update { null }
+    }
+
+    fun clearMessage() {
+        _uiState.update { state -> state.copy(message = null) }
     }
 }

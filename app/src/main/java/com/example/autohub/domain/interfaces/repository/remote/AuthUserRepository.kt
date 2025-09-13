@@ -22,5 +22,5 @@ interface AuthUserRepository {
 
     suspend fun forgotPassword(email: String): FirebaseResult<Unit>
 
-    fun getAuthUserUID(): String
+    fun getAuthUserId(): String
 }

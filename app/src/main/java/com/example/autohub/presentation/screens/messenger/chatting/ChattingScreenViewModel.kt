@@ -4,16 +4,19 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
-import com.example.autohub.domain.interfaces.usecase.GetBuyerStatusUseCase
+import com.example.autohub.domain.interfaces.usecase.GetParticipantStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.interfaces.usecase.MarkMessagesAsReadUseCase
 import com.example.autohub.domain.interfaces.usecase.SendMessageUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
+import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.mapper.toUserDomain
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.mapper.toUserStatusPresentation
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.messenger.ChatLog
 import com.example.autohub.presentation.model.messenger.Message
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
@@ -38,7 +41,7 @@ class ChattingScreenViewModel @Inject constructor(
     private val markMessagesAsReadUseCase: MarkMessagesAsReadUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val getMessagesUseCase: GetMessagesUseCase,
-    private val getBuyerStatus: GetBuyerStatusUseCase,
+    private val getParticipantStatusUseCase: GetParticipantStatusUseCase,
     private val getAuthUserIdUseCase: GetAuthUserIdUseCase,
     private val getUserDataUseCase: GetUserDataUseCase,
 ) : ViewModel() {
@@ -67,12 +70,31 @@ class ChattingScreenViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             authUserData = authUserResult.data.toUserPresentation(),
-                            participantData = participant
+                            participantData = participant,
+                            loadingState = LoadingState.Success
                         )
                     }
 
                     startListeningStatus()
                     startListeningMessages()
+                }
+
+                is FirebaseResult.Error.TimeoutError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            loadingState = LoadingState.Error(message = authUserResult.message)
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.HandledError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = authUserResult.tag.toStringResNamePresentation(),
+                            loadingState = LoadingState.Error(message = authUserResult.message)
+                        )
+                    }
                 }
 
                 is FirebaseResult.Error -> {
@@ -110,8 +132,9 @@ class ChattingScreenViewModel @Inject constructor(
                 _chatSideEffect.value = ChatSideEffect.ScrollToLastMessage
                 _uiState.update { state -> state.copy(messageTextValue = "") }
             } catch (e: Exception) {
-                Log.e("ChattingViewModel", "Error sending message", e)
-                _uiState.update { state -> state.copy(errorMessage = "Failed to send messages") }
+                _uiState.update {
+                    state -> state.copy(message = StringResNamePresentation.ERROR_SEND_MESSAGE)
+                }
             }
         }
     }
@@ -134,12 +157,12 @@ class ChattingScreenViewModel @Inject constructor(
                 val state = _uiState.value
 
                 markMessagesAsReadUseCase(
-                    authUserUID = state.authUserData.uid,
-                    buyerUID = state.participantData.uid,
+                    authUserId = state.authUserData.uid,
+                    participantId = state.participantData.uid,
                     messageID = messageId
                 )
             } catch (e: Exception) {
-                Log.e("ChattingViewModel", "Error marking message as read", e)
+                Log.e(ChatLog.TAG, ChatLog.ERROR_MARK_MESSAGE, e)
             }
         }
     }
@@ -148,15 +171,19 @@ class ChattingScreenViewModel @Inject constructor(
         _chatSideEffect.value = value
     }
 
+    fun clearMessage() {
+        _uiState.update { state -> state.copy(message = null) }
+    }
+
     private fun startListeningStatus() {
         statusJob?.cancel()
 
-        statusJob = getBuyerStatus(buyerUID = _uiState.value.participantData.uid)
+        statusJob = getParticipantStatusUseCase(participantId = _uiState.value.participantData.uid)
             .onEach { status ->
                 _participantStatus.value = status.toUserStatusPresentation()
             }
             .catch { error ->
-                Log.e("ParticipantStatus", "Error listening to user status", error)
+                Log.e(ChatLog.TAG, ChatLog.ERROR_USER_STATUS, error)
             }
             .launchIn(viewModelScope)
     }
@@ -177,7 +204,7 @@ class ChattingScreenViewModel @Inject constructor(
                     _messages.value = messages.map { it.toUserPresentation() }
                 }
                 .catch { error ->
-                    Log.e("ParticipantStatus", "Error listening to user status", error)
+                    Log.e(ChatLog.TAG, ChatLog.ERROR_MESSAGES, error)
                 }
                 .launchIn(viewModelScope)
 

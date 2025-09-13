@@ -6,7 +6,9 @@ import com.example.autohub.domain.interfaces.usecase.ForgotPasswordUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginAndSaveUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.ResendEmailVerificationUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
+import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AuthGraph
@@ -68,8 +70,32 @@ class LoginScreenViewModel @Inject constructor(
                     )
                 }
 
+                is FirebaseResult.Error.TimeoutError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.HandledError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = result.tag.toStringResNamePresentation(),
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
                 is FirebaseResult.Error -> {
-                    _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = result.message)) }
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_LOGIN,
+                            messageDetails = result.message,
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
                 }
             }
         }
@@ -94,13 +120,34 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
                         state.copy(
-                            emailInfoMessage = "The code has been sent to the mail: ${_uiState.value.emailValue}"
+                            message = StringResNamePresentation.INFO_VERIF_CODE_SENT
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.TimeoutError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.HandledError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = result.tag.toStringResNamePresentation()
                         )
                     }
                 }
 
                 is FirebaseResult.Error -> {
-                    _uiState.update { state -> state.copy(emailInfoMessage = result.message) }
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TO_SEND_VERIF_CODE,
+                            messageDetails = result.message
+                        )
+                    }
                 }
             }
         }
@@ -114,15 +161,48 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
                         state.copy(
-                            emailInfoMessage = "Link to reset password has been sent to the mail: ${_uiState.value.emailForNewPassword}"
+                            message = StringResNamePresentation.INFO_LINK_TO_RESET_PASSWORD_SENT,
+                            loadingState = LoadingState.Success
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.TimeoutError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.HandledError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = result.tag.toStringResNamePresentation(),
+                            loadingState = LoadingState.Error(message = result.message)
                         )
                     }
                 }
 
                 is FirebaseResult.Error -> {
-                    _uiState.update { state -> state.copy(emailInfoMessage = result.message) }
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TO_SEND_LINK_TO_RESET_PASSWORD,
+                            messageDetails = result.message,
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
                 }
             }
         }
+    }
+
+    fun clearMessage() {
+        _uiState.update { state -> state.copy(message = null) }
+    }
+
+    fun clearMessageDetails() {
+        _uiState.update { state -> state.copy(messageDetails = null) }
     }
 }

@@ -2,6 +2,21 @@ package com.example.autohub.presentation.screens.ad.filters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_BODY_TYPE
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_BRAND
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_CITY
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_COLOR
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_CONDITION
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_DESCRIPTION
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_DRIVE_TYPE
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_ENGINE_CAPACITY
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_ENGINE_TYPE
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_MILEAGE
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_MODEL
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_PRICE
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_REALISE_YEAR
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_STEERING_WHEEL_SIDE
+import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_TRANSMISSION
 import com.example.autohub.presentation.model.SearchFilter
 import com.example.autohub.presentation.model.options.BodyType
 import com.example.autohub.presentation.model.options.CarOption
@@ -34,63 +49,63 @@ class FiltersScreenViewModel @Inject constructor(
     fun initFilters(filters: List<SearchFilter>) {
         _uiState.update { state ->
             state.copy(
-                brandValue = findInFilters<String>(filterName = "brand", filters = filters)
+                brandValue = findInFilters<String>(filterName = FIELD_BRAND, filters = filters)
                     ?: state.brandValue,
-                modelValue = findInFilters<String>(filterName = "model", filters = filters)
+                modelValue = findInFilters<String>(filterName = FIELD_MODEL, filters = filters)
                     ?: state.modelValue,
-                colorValue = findInFilters<String>(filterName = "color", filters = filters)
+                colorValue = findInFilters<String>(filterName = FIELD_COLOR, filters = filters)
                     ?: state.colorValue,
                 realiseYearValue = findInFilters<String>(
-                    filterName = "realiseYear",
+                    filterName = FIELD_REALISE_YEAR,
                     filters = filters
                 ) ?: state.realiseYearValue,
                 engineCapacityValue = findInFilters<String>(
-                    filterName = "engineCapacity",
+                    filterName = FIELD_ENGINE_CAPACITY,
                     filters = filters
                 ) ?: state.engineCapacityValue,
-                mileageValue = findInFilters<String>(filterName = "mileage", filters = filters)
+                mileageValue = findInFilters<String>(filterName = FIELD_MILEAGE, filters = filters)
                     ?: state.mileageValue,
-                priceValue = findInFilters<String>(filterName = "price", filters = filters)
+                priceValue = findInFilters<String>(filterName = FIELD_PRICE, filters = filters)
                     ?: state.priceValue,
                 descriptionValue = findInFilters<String>(
-                    filterName = "description",
+                    filterName = FIELD_DESCRIPTION,
                     filters = filters
                 ) ?: state.descriptionValue,
-                cityValue = findInFilters<String>(filterName = "city", filters = filters)
+                cityValue = findInFilters<String>(filterName = FIELD_CITY, filters = filters)
                     ?: state.cityValue,
                 bodyTypeValue = BodyType.fromTag(
                     value = findInFilters<String>(
-                        filterName = "bodyType",
+                        filterName = FIELD_BODY_TYPE,
                         filters = filters
                     )
                 ),
                 engineTypeValue = EngineType.fromTag(
                     value = findInFilters<String>(
-                        filterName = "engineType",
+                        filterName = FIELD_ENGINE_TYPE,
                         filters = filters
                     )
                 ),
                 transmissionValue = TransmissionType.fromTag(
                     value = findInFilters<String>(
-                        filterName = "transmission",
+                        filterName = FIELD_TRANSMISSION,
                         filters = filters
                     )
                 ),
                 driveTypeValue = DriveType.fromTag(
                     value = findInFilters<String>(
-                        filterName = "driveType",
+                        filterName = FIELD_DRIVE_TYPE,
                         filters = filters
                     )
                 ),
                 steeringWheelSideValue = SteeringWheelSideType.fromTag(
                     value = findInFilters<String>(
-                        filterName = "steeringWheelSide",
+                        filterName = FIELD_STEERING_WHEEL_SIDE,
                         filters = filters
                     )
                 ),
                 conditionValue = ConditionType.fromTag(
                     value = findInFilters<String>(
-                        filterName = "condition",
+                        filterName = FIELD_CONDITION,
                         filters = filters
                     )
                 )
@@ -108,21 +123,21 @@ class FiltersScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val state = _uiState.value
             val createdFilters = buildList {
-                addIfNotBlank(name = "brand", value = state.brandValue)
-                addIfNotBlank(name = "model", value = state.modelValue)
-                addIfNotBlank(name = "color", value = state.colorValue)
-                addIfNotBlank(name = "realiseYear", value = state.realiseYearValue)
-                addIfNotBlank(name = "engineCapacity", value = state.engineCapacityValue)
-                addIfNotBlank(name = "mileage", value = state.mileageValue)
-                addIfNotBlank(name = "price", value = state.priceValue)
-                addIfNotBlank(name = "description", value = state.descriptionValue)
-                addIfNotBlank(name = "city", value = state.cityValue)
-                addIfNotNull(name = "bodyType", value = state.bodyTypeValue)
-                addIfNotNull(name = "engineType", value = state.engineTypeValue)
-                addIfNotNull(name = "transmission", value = state.transmissionValue)
-                addIfNotNull(name = "driveType", value = state.driveTypeValue)
-                addIfNotNull(name = "steeringWheelSide", value = state.steeringWheelSideValue)
-                addIfNotNull(name = "condition", value = state.conditionValue)
+                addIfNotBlank(name = FIELD_BRAND, value = state.brandValue)
+                addIfNotBlank(name = FIELD_MODEL, value = state.modelValue)
+                addIfNotBlank(name = FIELD_COLOR, value = state.colorValue)
+                addIfNotBlank(name = FIELD_REALISE_YEAR, value = state.realiseYearValue)
+                addIfNotBlank(name = FIELD_ENGINE_CAPACITY, value = state.engineCapacityValue)
+                addIfNotBlank(name = FIELD_MILEAGE, value = state.mileageValue)
+                addIfNotBlank(name = FIELD_PRICE, value = state.priceValue)
+                addIfNotBlank(name = FIELD_DESCRIPTION, value = state.descriptionValue)
+                addIfNotBlank(name = FIELD_CITY, value = state.cityValue)
+                addIfNotNull(name = FIELD_BODY_TYPE, value = state.bodyTypeValue)
+                addIfNotNull(name = FIELD_ENGINE_TYPE, value = state.engineTypeValue)
+                addIfNotNull(name = FIELD_TRANSMISSION, value = state.transmissionValue)
+                addIfNotNull(name = FIELD_DRIVE_TYPE, value = state.driveTypeValue)
+                addIfNotNull(name = FIELD_STEERING_WHEEL_SIDE, value = state.steeringWheelSideValue)
+                addIfNotNull(name = FIELD_CONDITION, value = state.conditionValue)
             }
 
             navigator.navigate(

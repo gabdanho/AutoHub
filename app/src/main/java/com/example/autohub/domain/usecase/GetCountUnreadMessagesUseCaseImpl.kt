@@ -8,10 +8,10 @@ class GetCountUnreadMessagesUseCaseImpl(
     private val messengerRepository: MessengerRepository
 ) : GetCountUnreadMessagesUseCase {
 
-    override fun invoke(authUserUID: String, buyerUID: String): Flow<Int> {
+    override fun invoke(authUserId: String, participantId: String): Flow<Int> {
         return messengerRepository.getCountUnreadMessages(
-            authUserUID = authUserUID,
-            buyerUID = buyerUID
+            authUserId = authUserId,
+            participantId = participantId
         )
     }
 }

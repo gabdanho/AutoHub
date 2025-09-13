@@ -30,6 +30,7 @@ import com.example.autohub.presentation.componets.ListAddedPhotos
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.RowRadioButtons
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.UiImage
 import com.example.autohub.presentation.model.options.BodyType
@@ -68,9 +69,11 @@ fun AdCreateScreen(
             }
         }
 
-    LaunchedEffect(uiState.loadingState) {
-        if (uiState.loadingState is LoadingState.Error) {
-            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(uiState.message) {
+        uiState.message?.let {
+            val resId = StringToResourceIdMapperImpl().map(uiState.message)
+            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+            viewModel.clearMessage()
         }
     }
 
@@ -111,9 +114,7 @@ fun AdCreateScreen(
                         },
                         changeImageToShow = {
                             viewModel.updateImageToShow(value = it?.let {
-                                UiImage(
-                                    uri = it
-                                )
+                                UiImage(uri = it)
                             })
                         },
                         modifier = modifier

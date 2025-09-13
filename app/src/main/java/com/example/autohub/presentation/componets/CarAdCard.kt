@@ -39,14 +39,16 @@ fun CarAdCard(
         modifier = modifier
     ) {
         Column {
-            AsyncImage(
-                model = if (ad.imagesUrl.isNotEmpty()) ad.imagesUrl.first() else "",
-                contentDescription = stringResource(id = R.string.content_image),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-            )
+            if (ad.imagesUrl.isNotEmpty()) {
+                AsyncImage(
+                    model = ad.imagesUrl.first(),
+                    contentDescription = stringResource(id = R.string.content_image),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                )
+            }
             Text(
                 text = stringResource(id = R.string.text_ad_price, ad.price),
                 fontWeight = FontWeight.Bold,

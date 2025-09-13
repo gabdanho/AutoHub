@@ -1,5 +1,7 @@
 package com.example.autohub.domain.model.result
 
+import com.example.autohub.domain.model.HandleErrorTag
+
 /**
  * Обобщённый класс-обёртка, представляющий результат выполнения операции.
  *
@@ -53,5 +55,7 @@ sealed class FirebaseResult<out T> {
          * @property unknownMessage сообщение об ошибке.
          */
         data class UnknownError(val unknownMessage: String) : Error(message = unknownMessage)
+
+        data class HandledError(val tag: HandleErrorTag) : Error(message = tag.name)
     }
 }

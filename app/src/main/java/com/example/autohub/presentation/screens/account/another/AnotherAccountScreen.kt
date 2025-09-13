@@ -37,6 +37,7 @@ import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.theme.barColor
@@ -57,15 +58,11 @@ fun AnotherAccountScreen(
         viewModel.getUserAds(user = user)
     }
 
-    LaunchedEffect(uiState.loadingState) {
-        if (uiState.loadingState is LoadingState.Error) {
-            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
-        }
-    }
-
     LaunchedEffect(uiState.message) {
-        if (!uiState.message.isNullOrBlank()) {
-            Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+        uiState.message?.let {
+            val resId = StringToResourceIdMapperImpl().map(uiState.message)
+            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+            viewModel.clearMessage()
         }
     }
 

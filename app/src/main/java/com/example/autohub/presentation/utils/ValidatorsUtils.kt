@@ -14,7 +14,11 @@ fun isValidEmail(email: String): Boolean {
     return !('@' !in email || email.count { it == '@' } > 1 || '.' !in email || email.contains(regex))
 }
 
-fun isValidCity(value: String): Boolean = value.replace("-", "").isOnlyLetters()
+fun isValidCity(value: String): Boolean {
+    return if (value.isNotBlank()) {
+        value.replace("-", "").isOnlyLetters()
+    } else false
+}
 
 fun isPasswordValid(password: String): Boolean {
     val regex = Regex("[!#\$%&~=',.@?+_]")

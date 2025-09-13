@@ -1,5 +1,6 @@
 package com.example.autohub.data.firebase.model
 
+import com.example.autohub.domain.HandledException
 import com.example.autohub.domain.model.result.FirebaseResult
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
@@ -9,7 +10,7 @@ import java.net.SocketTimeoutException
 
 suspend fun <T> safeFirebaseCall(
     timeoutMillis: Long = 10000,
-    apiCall: suspend () -> T
+    apiCall: suspend () -> T,
 ): FirebaseResult<T> {
     return try {
         val result = withTimeout(timeoutMillis) {
@@ -28,6 +29,8 @@ suspend fun <T> safeFirebaseCall(
     } catch (e: Exception) {
         FirebaseResult.Error.UnknownError(unknownMessage = e.toString())
     } catch (e: TimeoutCancellationException) {
-        FirebaseResult.Error.TimeoutError(timeoutMessage = "The server response time has been exceeded")
+        FirebaseResult.Error.TimeoutError(timeoutMessage = e.toString())
+    } catch (e: HandledException) {
+        FirebaseResult.Error.HandledError(tag = e.tag)
     }
 }

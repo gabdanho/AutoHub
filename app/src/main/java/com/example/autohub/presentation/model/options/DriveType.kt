@@ -1,8 +1,8 @@
 package com.example.autohub.presentation.model.options
 
-import com.example.autohub.presentation.FULL_WD_TAG
-import com.example.autohub.presentation.FWD_TAG
-import com.example.autohub.presentation.RWD_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.FULL_WD_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.FWD_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.RWD_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 

@@ -1,16 +1,16 @@
 package com.example.autohub.presentation.model.options
 
-import com.example.autohub.presentation.CONVERTIBLE_TAG
-import com.example.autohub.presentation.COUPE_TAG
-import com.example.autohub.presentation.CROSSOVER_TAG
-import com.example.autohub.presentation.HATCHBACK_TAG
-import com.example.autohub.presentation.LIMOUSINE_TAG
-import com.example.autohub.presentation.MINIVAN_TAG
-import com.example.autohub.presentation.PICKUP_TRUCK_TAG
-import com.example.autohub.presentation.SEDAN_TAG
-import com.example.autohub.presentation.STATION_WAGON_TAG
-import com.example.autohub.presentation.SUV_TAG
-import com.example.autohub.presentation.VAN_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.CONVERTIBLE_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.COUPE_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.CROSSOVER_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.HATCHBACK_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.LIMOUSINE_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.MINIVAN_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.PICKUP_TRUCK_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.SEDAN_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.STATION_WAGON_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.SUV_TAG
+import com.example.autohub.presentation.constants.CarOptionsTagsConstants.VAN_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 

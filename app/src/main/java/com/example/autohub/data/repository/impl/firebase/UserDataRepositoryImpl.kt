@@ -1,10 +1,18 @@
 package com.example.autohub.data.repository.impl.firebase
 
+import com.example.autohub.data.firebase.constants.FirebasePaths.createProfileImagePath
+import com.example.autohub.data.firebase.constants.FirestoreCollections.USERS
+import com.example.autohub.data.firebase.constants.FirestoreFields.CITY_FIELD
+import com.example.autohub.data.firebase.constants.FirestoreFields.FIRST_NAME_FIELD
+import com.example.autohub.data.firebase.constants.FirestoreFields.IMAGE_FIELD
+import com.example.autohub.data.firebase.constants.FirestoreFields.LAST_NAME_FIELD
+import com.example.autohub.domain.HandledException
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.firebase.model.user.User
 import com.example.autohub.data.firebase.utils.FirebaseStorageUtils
 import com.example.autohub.data.mapper.toUserDomain
 import com.example.autohub.domain.interfaces.repository.remote.UserDataRepository
+import com.example.autohub.domain.model.HandleErrorTag
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.User as UserDomain
 import com.example.autohub.domain.model.result.FirebaseResult
@@ -20,22 +28,22 @@ class UserDataRepositoryImpl @Inject constructor(
 ) : UserDataRepository {
 
     private val user
-        get() = fbAuth.currentUser ?: throw IllegalStateException("User not found")
+        get() = fbAuth.currentUser ?: throw HandledException(tag = HandleErrorTag.USER_NULL)
 
     override suspend fun getUserData(userUID: String): FirebaseResult<UserDomain> {
         if (userUID.isBlank()) {
-            return FirebaseResult.Error.UnknownError("User ID cannot be empty")
+            throw HandledException(tag = HandleErrorTag.USER_NULL)
         }
 
         return safeFirebaseCall {
             val snapshot = fbFirestore
-                .collection("users")
+                .collection(USERS)
                 .document(userUID)
                 .get()
                 .await()
 
             val data = snapshot.toObject(User::class.java)
-                ?: throw IllegalStateException("User $userUID not found")
+                ?: throw HandledException(tag = HandleErrorTag.USER_NULL)
             val mappedData = data.toUserDomain()
             mappedData
         }
@@ -43,37 +51,37 @@ class UserDataRepositoryImpl @Inject constructor(
 
     override suspend fun uploadUserProfileImageToFirebase(imageRef: ImageUploadData): FirebaseResult<Unit> {
         return safeFirebaseCall {
-            imageRef.bytes?.let {
+            imageRef.bytes.let {
                 val uri = fbStorageUtils.uploadImageToFirebase(
                     bytes = it,
-                    path = "users_${user.uid}_profileImage.jpg"
+                    path = createProfileImagePath(userId = user.uid)
                 )
-                updateProfileInfo("image", uri)
+                updateProfileInfo(IMAGE_FIELD, uri)
             }
         }
     }
 
     override suspend fun updateFirstName(firstName: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
-            updateProfileInfo(info = "firstName", value = firstName)
+            updateProfileInfo(info = FIRST_NAME_FIELD, value = firstName)
         }
     }
 
     override suspend fun updateLastName(lastName: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
-            updateProfileInfo(info = "lastName", value = lastName)
+            updateProfileInfo(info = LAST_NAME_FIELD, value = lastName)
         }
     }
 
     override suspend fun updateCity(city: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
-            updateProfileInfo(info = "city", value = city)
+            updateProfileInfo(info = CITY_FIELD, value = city)
         }
     }
 
     private suspend fun updateProfileInfo(info: String, value: String) {
         if (value.isNotBlank()) {
-            fbFirestore.collection("users").document(user.uid).update(info, value).await()
+            fbFirestore.collection(USERS).document(user.uid).update(info, value).await()
         }
     }
 }

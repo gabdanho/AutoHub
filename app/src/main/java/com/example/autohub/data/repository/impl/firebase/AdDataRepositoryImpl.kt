@@ -1,5 +1,9 @@
 package com.example.autohub.data.repository.impl.firebase
 
+import com.example.autohub.data.firebase.constants.FirebasePaths.createAdImagePath
+import com.example.autohub.data.firebase.constants.FirebasePaths.createAdReference
+import com.example.autohub.data.firebase.constants.FirestoreCollections.ADS
+import com.example.autohub.data.firebase.constants.FirestoreFields.IMAGES_URL_FIELD
 import com.example.autohub.data.mapper.toCarAdDomain
 import com.example.autohub.data.firebase.model.ad.CarAd
 import com.example.autohub.data.firebase.model.safeFirebaseCall
@@ -26,7 +30,7 @@ class AdDataRepositoryImpl @Inject constructor(
         filters: List<SearchFilter>
     ): FirebaseResult<List<CarAdDomain>> {
         return safeFirebaseCall {
-            var fbStoreRef: Query = fbFirestore.collection("ads")
+            var fbStoreRef: Query = fbFirestore.collection(ADS)
 
             filters.forEach { (filterName, value) ->
                 if (value.isNotEmpty()) {
@@ -41,7 +45,7 @@ class AdDataRepositoryImpl @Inject constructor(
 
                 snapshot.documents.mapNotNull { doc ->
                     val adDto = doc.toObject(CarAd::class.java) ?: return@mapNotNull null
-                    val adInfo = "${adDto.brand} ${adDto.model} ${adDto.realiseYear}".lowercase()
+                    val adInfo = adDto.toSearchableString()
 
                     if (words.any { word -> word in adInfo }) {
                         adDto.toCarAdDomain()
@@ -57,7 +61,7 @@ class AdDataRepositoryImpl @Inject constructor(
 
     override suspend fun getCurrentUserAds(uid: String): FirebaseResult<List<CarAdDomain>> {
         return safeFirebaseCall {
-            val fbStoreRef = fbFirestore.collection("ads")
+            val fbStoreRef = fbFirestore.collection(ADS)
 
             val snapshot = fbStoreRef.get().await()
             snapshot.documents
@@ -74,9 +78,9 @@ class AdDataRepositoryImpl @Inject constructor(
         return safeFirebaseCall {
             val timeStamp = timeProvider.currentTimeMillis()
             val currentDate = timeProvider.millisToDate(timeStamp)
-            val adReference = "${carAdInfo.userUID}_${timeStamp}"
+            val adReference = createAdReference(userId = carAdInfo.userUID, timeStamp = timeStamp)
             val docReference = fbFirestore
-                .collection("ads")
+                .collection(ADS)
                 .document(adReference)
             val updatedCarAd = carAdInfo.copy(
                 adID = adReference,
@@ -94,18 +98,20 @@ class AdDataRepositoryImpl @Inject constructor(
         reference: String
     ): FirebaseResult<Unit> {
         return safeFirebaseCall {
-            val fbStoreRef = fbFirestore.collection("ads").document(reference)
+            val fbStoreRef = fbFirestore.collection(ADS).document(reference)
 
             val imagesLinks = images.map { image ->
-                image.bytes?.let {
+                image.id?.let { id ->
                     fbStorageUtils.uploadImageToFirebase(
-                        bytes = it,
-                        path = "adsImages_${reference}_${image.id}.jpg"
+                        bytes = image.bytes,
+                        path = createAdImagePath(reference = reference, imageId = id)
                     )
                 }
             }
 
-            fbStoreRef.update("imagesUrl", imagesLinks).await()
+            fbStoreRef.update(IMAGES_URL_FIELD, imagesLinks).await()
         }
     }
 }
+
+private fun CarAd.toSearchableString() = "$brand $model $realiseYear".lowercase()

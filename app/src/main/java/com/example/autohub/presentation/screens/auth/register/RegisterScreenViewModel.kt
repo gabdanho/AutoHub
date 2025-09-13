@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
+import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.mapper.toUserDomain
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AuthGraph
@@ -28,7 +30,12 @@ class RegisterScreenViewModel @Inject constructor(
 
     fun onBackClick() {
         viewModelScope.launch {
-            navigator.navigatePopBackStack()
+            navigator.navigate(
+                destination = AuthGraph.LoginScreen(),
+                navOptions = {
+                    popUpTo(0) { inclusive }
+                }
+            )
         }
     }
 
@@ -76,12 +83,12 @@ class RegisterScreenViewModel @Inject constructor(
 
             when {
                 hasValidationErrors() -> {
-                    _uiState.update { it.copy(message = "Fill all fields") }
+                    _uiState.update { it.copy(message = StringResNamePresentation.ERROR_FIELD_AND_OPTIONS_NOT_FILLED_IN) }
                     return@launch
                 }
 
                 !isPasswordsMatch() -> {
-                    _uiState.update { it.copy(message = "Passwords don't match") }
+                    _uiState.update { it.copy(message = StringResNamePresentation.ERROR_PASSWORDS_DONT_MATCH) }
                     return@launch
                 }
             }
@@ -99,19 +106,52 @@ class RegisterScreenViewModel @Inject constructor(
                 )
             ) {
                 is FirebaseResult.Success -> {
+                    _uiState.update { state -> state.copy(message = StringResNamePresentation.INFO_REGISTRATION_SUCCESS) }
                     navigator.navigate(
-                        destination = AuthGraph.LoginScreen,
+                        destination = AuthGraph.LoginScreen(isShowSendEmailText = true),
                         navOptions = {
                             popUpTo(0) { inclusive }
                         }
                     )
                 }
 
+                is FirebaseResult.Error.TimeoutError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.HandledError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = result.tag.toStringResNamePresentation(),
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
                 is FirebaseResult.Error -> {
-                    _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = result.message)) }
+                    _uiState.update { state ->
+                        state.copy(
+                            messageDetails = result.message,
+                            message = StringResNamePresentation.ERROR_REGISTRATION_FAILED,
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
                 }
             }
         }
+    }
+
+    fun clearMessage() {
+        _uiState.update { state -> state.copy(message = null) }
+    }
+
+    fun clearMessageDetails() {
+        _uiState.update { state -> state.copy(messageDetails = null) }
     }
 
     private fun hasValidationErrors(): Boolean {

@@ -6,8 +6,10 @@ import com.example.autohub.domain.interfaces.usecase.GetAdsUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toCarAdPresentation
 import com.example.autohub.presentation.mapper.toSearchFilterDomain
+import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.SearchFilter
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
@@ -25,7 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AdsMainScreenViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getAdsWithParams: GetAdsUseCase,
+    private val getAdsUseCase: GetAdsUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdsMainScreenUiState())
@@ -78,7 +80,7 @@ class AdsMainScreenViewModel @Inject constructor(
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
             when (
-                val result = getAdsWithParams(
+                val result = getAdsUseCase(
                     searchText = _uiState.value.searchTextValue,
                     filters = filters.map { it.toSearchFilterDomain() }
                 )
@@ -92,10 +94,28 @@ class AdsMainScreenViewModel @Inject constructor(
                     }
                 }
 
+                is FirebaseResult.Error.TimeoutError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.HandledError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = result.tag.toStringResNamePresentation(),
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
                         state.copy(
-                            loadingState = LoadingState.Error(message = result.message)
+                            loadingState = LoadingState.Error(message = result.message),
                         )
                     }
                 }
@@ -107,5 +127,9 @@ class AdsMainScreenViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(searchTextValue = value)
         }
+    }
+
+    fun clearMessage() {
+        _uiState.update { state -> state.copy(message = null) }
     }
 }

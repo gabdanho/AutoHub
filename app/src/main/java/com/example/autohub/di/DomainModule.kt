@@ -12,8 +12,8 @@ import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
 import com.example.autohub.domain.interfaces.usecase.ForgotPasswordUseCase
 import com.example.autohub.domain.interfaces.usecase.GetAdsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
-import com.example.autohub.domain.interfaces.usecase.GetBuyerStatusUseCase
-import com.example.autohub.domain.interfaces.usecase.GetBuyersChatsUseCase
+import com.example.autohub.domain.interfaces.usecase.GetParticipantStatusUseCase
+import com.example.autohub.domain.interfaces.usecase.GetParticipantsChatsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCountUnreadMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCurrentUserAdsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
@@ -41,8 +41,8 @@ import com.example.autohub.domain.usecase.CreateAdUseCaseImpl
 import com.example.autohub.domain.usecase.ForgotPasswordUseCaseImpl
 import com.example.autohub.domain.usecase.GetAdsUseCaseImpl
 import com.example.autohub.domain.usecase.GetAuthUserIdUseCaseImpl
-import com.example.autohub.domain.usecase.GetBuyerStatusUseCaseImpl
-import com.example.autohub.domain.usecase.GetBuyersChatsUseCaseImpl
+import com.example.autohub.domain.usecase.GetParticipantStatusUseCaseImpl
+import com.example.autohub.domain.usecase.GetParticipantsChatsUseCaseImpl
 import com.example.autohub.domain.usecase.GetCountUnreadMessagesUseCaseImpl
 import com.example.autohub.domain.usecase.GetCurrentUserAdsUseCaseImpl
 import com.example.autohub.domain.usecase.GetMessagesUseCaseImpl
@@ -68,7 +68,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import kotlin.math.log
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -136,14 +135,14 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideGetBuyersChatsUseCase(messengerRepository: MessengerRepository): GetBuyersChatsUseCase {
-        return GetBuyersChatsUseCaseImpl(messengerRepository = messengerRepository)
+    fun provideGetParticipantsChatsUseCase(messengerRepository: MessengerRepository): GetParticipantsChatsUseCase {
+        return GetParticipantsChatsUseCaseImpl(messengerRepository = messengerRepository)
     }
 
     @Provides
     @Singleton
-    fun provideGetBuyerStatusUseCase(messengerRepository: MessengerRepository): GetBuyerStatusUseCase {
-        return GetBuyerStatusUseCaseImpl(messengerRepository = messengerRepository)
+    fun provideGetParticipantStatusUseCase(messengerRepository: MessengerRepository): GetParticipantStatusUseCase {
+        return GetParticipantStatusUseCaseImpl(messengerRepository = messengerRepository)
     }
 
     @Provides

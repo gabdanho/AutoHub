@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
+import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.MessengerGraph
@@ -53,8 +55,31 @@ class AdScreenViewModel @Inject constructor(
                     }
                 }
 
+                is FirebaseResult.Error.TimeoutError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
+                is FirebaseResult.Error.HandledError -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            message = result.tag.toStringResNamePresentation(),
+                            loadingState = LoadingState.Error(message = result.message)
+                        )
+                    }
+                }
+
                 is FirebaseResult.Error -> {
-                    _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = result.message)) }
+                    _uiState.update { state ->
+                        state.copy(
+                            loadingState = LoadingState.Error(message = result.message),
+                            message = StringResNamePresentation.ERROR_SHOW_USER_DATA
+                        )
+                    }
                 }
             }
         }
@@ -77,7 +102,7 @@ class AdScreenViewModel @Inject constructor(
             if (this.isNotBlank()) {
                 _callEvent.update { this }
             } else {
-                _uiState.update { state -> state.copy(message = "Call error") }
+                _uiState.update { state -> state.copy(message = StringResNamePresentation.ERROR_CALL) }
             }
         }
     }
@@ -94,5 +119,9 @@ class AdScreenViewModel @Inject constructor(
 
     fun clearCallEvent() {
         _callEvent.update { null }
+    }
+
+    fun clearMessage() {
+        _uiState.update { state -> state.copy(message = null) }
     }
 }

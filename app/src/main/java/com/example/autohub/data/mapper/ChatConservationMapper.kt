@@ -6,7 +6,7 @@ import com.example.autohub.domain.model.ChatConservation as ChatConservationDoma
 fun ChatConservationDomain.toChatConservationData(): ChatConservation {
     return ChatConservation(
         lastMessage = lastMessage,
-        time = time,
+        timeMillis = time,
         uid = uid,
         name = name,
         imageUrl = imageUrl
@@ -16,7 +16,7 @@ fun ChatConservationDomain.toChatConservationData(): ChatConservation {
 fun ChatConservation.toChatConservationDomain(): ChatConservationDomain {
     return ChatConservationDomain(
         lastMessage = lastMessage,
-        time = time,
+        time = timeMillis,
         uid = uid,
         name = name,
         imageUrl = imageUrl

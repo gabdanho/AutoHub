@@ -1,11 +1,13 @@
 package com.example.autohub.presentation.screens.account.settings
 
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.user.User
 
 data class AccountSettingsUiState(
     val loadingState: LoadingState? = null,
-    val passwordMessage: String? = null,
+    val message: StringResNamePresentation? = null,
+    val messageDetails: String? = null,
 
     val firstNameValue: String = "",
     val lastNameValue: String = "",
@@ -19,5 +21,5 @@ data class AccountSettingsUiState(
     val isPasswordError: Boolean = false,
     val isFirstNameValueError: Boolean = false,
     val isLastNameValueError: Boolean = false,
-    val isCityValueError: Boolean = false,
+    val isCityValueError: Boolean = true,
 )

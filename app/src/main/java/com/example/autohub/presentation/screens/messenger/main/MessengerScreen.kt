@@ -43,6 +43,7 @@ import com.example.autohub.presentation.model.messenger.ChatConservation
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
+import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.ChatStatus
 import com.example.autohub.presentation.model.user.UserStatus
@@ -62,18 +63,14 @@ fun MessengerScreen(
     val context = LocalContext.current
 
     BackHandler {
-        viewModel.stopListening()
+        viewModel.onBackButtonClick()
     }
 
     LaunchedEffect(uiState.message) {
-        if (!uiState.message.isNullOrBlank()) {
-            Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    LaunchedEffect(uiState.loadingState) {
-        if (uiState.loadingState is LoadingState.Error) {
-            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
+        uiState.message?.let {
+            val resId = StringToResourceIdMapperImpl().map(uiState.message)
+            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+            viewModel.clearMessage()
         }
     }
 

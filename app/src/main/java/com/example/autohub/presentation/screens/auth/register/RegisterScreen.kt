@@ -1,6 +1,7 @@
 package com.example.autohub.presentation.screens.auth.register
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,7 @@ import com.example.autohub.presentation.componets.BackButton
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
+import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 
 @Composable
@@ -36,15 +38,22 @@ fun RegisterScreen(
     val context = LocalContext.current
     val uiState = viewModel.uiState.collectAsState().value
 
-    LaunchedEffect(uiState.loadingState) {
-        if (uiState.loadingState is LoadingState.Error) {
-            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
-        }
+    BackHandler {
+        viewModel.onBackClick()
     }
 
     LaunchedEffect(uiState.message) {
-        if (!uiState.message.isNullOrBlank()) {
-            Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+        uiState.message?.let {
+            val resId = StringToResourceIdMapperImpl().map(uiState.message)
+            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+            viewModel.clearMessage()
+        }
+    }
+
+    LaunchedEffect(uiState.messageDetails) {
+        if (!uiState.messageDetails.isNullOrBlank()) {
+            Toast.makeText(context, uiState.messageDetails, Toast.LENGTH_LONG).show()
+            viewModel.clearMessageDetails()
         }
     }
 

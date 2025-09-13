@@ -11,11 +11,11 @@ class FirebaseStorageUtils @Inject constructor(
         bytes: ByteArray,
         path: String,
     ): String {
-        require(bytes.isNotEmpty()) { "Cannot upload empty byte array to Firebase Storage" }
+        require(bytes.isNotEmpty()) { throw IllegalArgumentException("EMPTY_BYTE_ARRAY") }
 
         val ref = fbStorage.reference.child(path)
         val uri = ref.putBytes(bytes).continueWithTask { task ->
-            if (!task.isSuccessful) throw task.exception ?: RuntimeException("Unknown upload error")
+            if (!task.isSuccessful) throw task.exception ?: RuntimeException(task.exception?.message)
             ref.downloadUrl
         }.await()
 

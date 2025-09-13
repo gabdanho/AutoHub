@@ -8,7 +8,9 @@ import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toCarAdDomain
+import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.UiImage
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.options.BodyType
@@ -32,9 +34,9 @@ import javax.inject.Inject
 @HiltViewModel
 class AdCreateScreenViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val createAd: CreateAdUseCase,
-    private val getUserUid: GetLocalUserIdUseCase,
-    private val getUserData: GetUserDataUseCase,
+    private val createAdUseCase: CreateAdUseCase,
+    private val getLocalUserIdUseCase: GetLocalUserIdUseCase,
+    private val getUserDataUseCase: GetUserDataUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdCreateScreenUiState())
@@ -126,8 +128,6 @@ class AdCreateScreenViewModel @Inject constructor(
 
     fun onCreateAdClick() {
         viewModelScope.launch {
-            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
-
             _uiState.update { state ->
                 state.copy(
                     isBrandValueError = state.brandValue.isBlank(),
@@ -148,12 +148,12 @@ class AdCreateScreenViewModel @Inject constructor(
 
             when {
                 _uiState.value.images.isEmpty() -> {
-                    _uiState.update { state -> state.copy(message = "Necessary add images!") }
+                    _uiState.update { state -> state.copy(message = StringResNamePresentation.ERROR_NO_IMAGES) }
                     return@launch
                 }
 
                 hasValidationErrors() -> {
-                    _uiState.update { state -> state.copy(message = "Necessary fill all fields and choose all options!") }
+                    _uiState.update { state -> state.copy(message = StringResNamePresentation.ERROR_FIELD_AND_OPTIONS_NOT_FILLED_IN) }
                     return@launch
                 }
             }
@@ -165,23 +165,62 @@ class AdCreateScreenViewModel @Inject constructor(
                 _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
                 when (
-                    val result = createAd(
-                        carAdInfo = carAdResult.getOrNull()?.toCarAdDomain() ?: throw Exception("Error in creating the ad"),
-                        images = currentState.images.mapIndexed { index, image ->
-                            ImageUploadData(id = index, bytes = image.byteArray)
+                    val result = createAdUseCase(
+                        carAdInfo = carAdResult.getOrNull()?.toCarAdDomain()
+                            ?: throw Exception("CREATE_AD_ERROR"),
+                        images = currentState.images.mapIndexedNotNull { index, image ->
+                            image.byteArray?.let {
+                                ImageUploadData(
+                                    id = index,
+                                    bytes = image.byteArray
+                                )
+                            }
                         }
                     )
                 ) {
                     is FirebaseResult.Success -> {
-                        _uiState.update { state -> state.copy(loadingState = LoadingState.Success) }
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Success,
+                                message = StringResNamePresentation.INFO_AD_CREATED
+                            )
+                        }
                         navigateToAuthAccount()
                     }
+
+                    is FirebaseResult.Error.TimeoutError -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                                loadingState = LoadingState.Error(message = result.message)
+                            )
+                        }
+                    }
+
+                    is FirebaseResult.Error.HandledError -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                message = result.tag.toStringResNamePresentation(),
+                                loadingState = LoadingState.Error(message = result.message)
+                            )
+                        }
+                    }
+
                     is FirebaseResult.Error -> {
-                        _uiState.update { state -> state.copy(loadingState = LoadingState.Error(message = result.message)) }
+                        _uiState.update { state ->
+                            state.copy(
+                                message = StringResNamePresentation.ERROR_TO_CREATE_AD,
+                                loadingState = LoadingState.Error(message = result.message)
+                            )
+                        }
                     }
                 }
             } else {
-                _uiState.update { state -> state.copy(message = carAdResult.exceptionOrNull()?.message ?: "Unknown error") }
+                _uiState.update { state ->
+                    state.copy(
+                        message = StringResNamePresentation.ERROR_TO_CREATE_AD
+                    )
+                }
             }
         }
     }
@@ -199,10 +238,10 @@ class AdCreateScreenViewModel @Inject constructor(
 
     private suspend fun formingCarAd(): Result<CarAd> {
         return runCatching {
-            val uid = getUserUid()
-                ?: return Result.failure(exception = Exception("Can't get UID"))
+            val uid = getLocalUserIdUseCase()
+                ?: return Result.failure(exception = Exception("USER_NULL"))
 
-            when (val userResult = getUserData(userUID = uid)) {
+            when (val userResult = getUserDataUseCase(userUID = uid)) {
                 is FirebaseResult.Success -> {
                     return Result.success(
                         CarAd(
@@ -243,5 +282,9 @@ class AdCreateScreenViewModel @Inject constructor(
                 state.isEngineCapacityValue || state.isEngineTypeValueError ||
                 state.isTransmissionValueError || state.isSteeringWheelSideValueError ||
                 state.isConditionValueError
+    }
+
+    fun clearMessage() {
+        _uiState.update { state -> state.copy(message = null) }
     }
 }

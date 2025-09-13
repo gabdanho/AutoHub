@@ -73,15 +73,11 @@ fun AdScreen(
         viewModel.clearCallEvent()
     }
 
-    LaunchedEffect(uiState.loadingState) {
-        if (uiState.loadingState is LoadingState.Error) {
-            Toast.makeText(context, uiState.loadingState.message, Toast.LENGTH_SHORT).show()
-        }
-    }
-
     LaunchedEffect(uiState.message) {
-        if (!uiState.message.isNullOrBlank()) {
-            Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+        uiState.message?.let {
+            val resId = StringToResourceIdMapperImpl().map(uiState.message)
+            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+            viewModel.clearMessage()
         }
     }
 
@@ -127,7 +123,7 @@ fun AdScreen(
                             modifier = Modifier.padding(8.dp)
                         )
 
-                        if (uiState.authUserUid != carAd.userUID) {
+                        if (uiState.authUserId != carAd.userUID) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
