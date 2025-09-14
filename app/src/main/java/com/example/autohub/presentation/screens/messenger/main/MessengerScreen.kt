@@ -28,14 +28,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
@@ -47,9 +45,9 @@ import com.example.autohub.presentation.mapper.resources.StringToResourceIdMappe
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.ChatStatus
 import com.example.autohub.presentation.model.user.UserStatus
-import com.example.autohub.presentation.theme.barColor
-import com.example.autohub.presentation.theme.cardColor
-import com.example.autohub.presentation.theme.containerColor
+import com.example.autohub.presentation.theme.AppTheme
+
+private const val CHAT_MAX_LINES = 1
 
 @Composable
 fun MessengerScreen(
@@ -81,8 +79,8 @@ fun MessengerScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
                     .fillMaxWidth()
-                    .background(color = barColor)
-                    .padding(8.dp)
+                    .background(color = AppTheme.colors.barColor)
+                    .padding(AppTheme.dimens.extraSmall)
             ) {
                 Text(
                     text = stringResource(id = R.string.text_messenger),
@@ -105,7 +103,7 @@ fun MessengerScreen(
                     LazyColumn(
                         modifier = modifier
                             .padding(innerPadding)
-                            .padding(8.dp)
+                            .padding(AppTheme.dimens.extraSmall)
                     ) {
                         items(chats) { chat ->
                             participantsStatus[chat.uid]?.let {
@@ -123,11 +121,11 @@ fun MessengerScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(innerPadding)
-                            .padding(8.dp)
+                            .padding(AppTheme.dimens.extraSmall)
                     ) {
                         Text(
                             text = stringResource(id = R.string.text_messeger_is_empty),
-                            color = Color.LightGray
+                            color = AppTheme.colors.placeholderColor
                         )
                     }
                 }
@@ -162,20 +160,22 @@ private fun ChatCard(
     onAnswerClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
-    println(chatStatus)
+    val circleSize = with(LocalDensity.current) { AppTheme.dimens.circleStatusSize.toPx() }
+    val onlineColor = AppTheme.colors.userOnlineColor
+    val offlineColor = AppTheme.colors.userOfflineColor
+
     Card(
-        elevation = CardDefaults.cardElevation(2.dp),
-        colors = CardDefaults.cardColors(containerColor = cardColor),
+        elevation = CardDefaults.cardElevation(AppTheme.dimens.smallBorderSize),
+        colors = CardDefaults.cardColors(containerColor = AppTheme.colors.cardColor),
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(vertical = AppTheme.dimens.extraSmall)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
-                .padding(8.dp)
+                .padding(AppTheme.dimens.extraSmall)
                 .fillMaxWidth()
                 .clickable {
                     onAnswerClick(chatConservation.uid)
@@ -187,33 +187,33 @@ private fun ChatCard(
                     contentDescription = stringResource(id = R.string.content_user_image),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(AppTheme.dimens.chatUserImage)
                         .clip(CircleShape)
-                        .border(2.dp, containerColor, CircleShape)
+                        .border(AppTheme.dimens.smallBorderSize, AppTheme.colors.containerColor, CircleShape)
                 )
-                Canvas(modifier = Modifier.size(4.dp)) {
+                Canvas(modifier = Modifier.size(AppTheme.dimens.circleStatusSize)) {
                     drawCircle(
                         radius = circleSize,
-                        color = if (chatStatus.status == UserStatus.Online) Color.Green else Color.Gray
+                        color = if (chatStatus.status == UserStatus.Online) onlineColor else offlineColor
                     )
                 }
             }
             Column(
                 modifier = Modifier
-                    .padding(start = 8.dp)
-                    .weight(4f)
+                    .padding(start = AppTheme.dimens.extraSmall)
+                    .weight(AppTheme.dimens.chatInfoWidth)
                     .fillMaxWidth()
             ) {
                 Text(
                     text = chatConservation.name,
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
+                    maxLines = CHAT_MAX_LINES,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = chatConservation.lastMessage,
-                    maxLines = 1,
+                    maxLines = CHAT_MAX_LINES,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -221,12 +221,12 @@ private fun ChatCard(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(30.dp)
-                        .background(color = containerColor, shape = CircleShape)
+                        .size(AppTheme.dimens.unreadMessagesCircle)
+                        .background(color = AppTheme.colors.containerColor, shape = CircleShape)
                 ) {
                     Text(
                         text = chatStatus.countUnreadMessages.toString(),
-                        color = Color.White,
+                        color = AppTheme.colors.white,
                         modifier = Modifier
                     )
                 }

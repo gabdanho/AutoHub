@@ -2,9 +2,11 @@ package com.example.autohub.presentation.screens.ad.create
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.autohub.domain.model.result.HandledException
 import com.example.autohub.domain.interfaces.usecase.CreateAdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
+import com.example.autohub.domain.model.result.HandleErrorTag
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toCarAdDomain
@@ -160,19 +162,19 @@ class AdCreateScreenViewModel @Inject constructor(
 
             val currentState = _uiState.value
             val carAdResult = formingCarAd()
+            val carAdDomain = carAdResult.getOrNull()?.toCarAdDomain()
 
-            if (carAdResult.isSuccess) {
+            if (carAdResult.isSuccess && carAdDomain != null) {
                 _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
                 when (
                     val result = createAdUseCase(
-                        carAdInfo = carAdResult.getOrNull()?.toCarAdDomain()
-                            ?: throw Exception("CREATE_AD_ERROR"),
+                        carAdInfo = carAdDomain,
                         images = currentState.images.mapIndexedNotNull { index, image ->
                             image.byteArray?.let {
                                 ImageUploadData(
                                     id = index,
-                                    bytes = image.byteArray
+                                    bytes = it
                                 )
                             }
                         }
@@ -215,6 +217,7 @@ class AdCreateScreenViewModel @Inject constructor(
                         }
                     }
                 }
+
             } else {
                 _uiState.update { state ->
                     state.copy(
@@ -239,36 +242,37 @@ class AdCreateScreenViewModel @Inject constructor(
     private suspend fun formingCarAd(): Result<CarAd> {
         return runCatching {
             val uid = getLocalUserIdUseCase()
-                ?: return Result.failure(exception = Exception("USER_NULL"))
 
-            when (val userResult = getUserDataUseCase(userUID = uid)) {
-                is FirebaseResult.Success -> {
-                    return Result.success(
-                        CarAd(
-                            brand = _uiState.value.brandValue,
-                            model = _uiState.value.modelValue,
-                            color = _uiState.value.colorValue,
-                            realiseYear = _uiState.value.realiseYearValue,
-                            body = _uiState.value.bodyTypeValue,
-                            typeEngine = _uiState.value.engineTypeValue,
-                            engineCapacity = _uiState.value.engineCapacityValue,
-                            transmission = _uiState.value.transmissionValue,
-                            drive = _uiState.value.driveTypeValue,
-                            steeringWheelSide = _uiState.value.steeringWheelSideValue,
-                            mileage = _uiState.value.mileageValue,
-                            condition = _uiState.value.conditionValue,
-                            price = _uiState.value.priceValue,
-                            description = _uiState.value.descriptionValue,
-                            userUID = uid,
-                            city = userResult.data.city
+            if (uid != null) {
+                when (val userResult = getUserDataUseCase(userId = uid)) {
+                    is FirebaseResult.Success -> {
+                        return Result.success(
+                            CarAd(
+                                brand = _uiState.value.brandValue,
+                                model = _uiState.value.modelValue,
+                                color = _uiState.value.colorValue,
+                                realiseYear = _uiState.value.realiseYearValue,
+                                body = _uiState.value.bodyTypeValue,
+                                typeEngine = _uiState.value.engineTypeValue,
+                                engineCapacity = _uiState.value.engineCapacityValue,
+                                transmission = _uiState.value.transmissionValue,
+                                drive = _uiState.value.driveTypeValue,
+                                steeringWheelSide = _uiState.value.steeringWheelSideValue,
+                                mileage = _uiState.value.mileageValue,
+                                condition = _uiState.value.conditionValue,
+                                price = _uiState.value.priceValue,
+                                description = _uiState.value.descriptionValue,
+                                userId = uid,
+                                city = userResult.data.city
+                            )
                         )
-                    )
-                }
+                    }
 
-                is FirebaseResult.Error -> {
-                    return Result.failure(Exception(userResult.message))
+                    is FirebaseResult.Error -> {
+                        return Result.failure(Exception(userResult.message))
+                    }
                 }
-            }
+            } else return Result.failure(HandledException(HandleErrorTag.USER_NULL))
         }
     }
 

@@ -126,7 +126,7 @@ class MessengerScreenViewModel @Inject constructor(
 
     private suspend fun getUserData(uid: String): Result<User> {
         return runCatching {
-            when (val userResult = getUserDataUseCase(userUID = uid)) {
+            when (val userResult = getUserDataUseCase(userId = uid)) {
                 is FirebaseResult.Success -> {
                     return Result.success(userResult.data.toUserPresentation())
                 }

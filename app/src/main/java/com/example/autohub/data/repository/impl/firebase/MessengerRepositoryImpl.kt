@@ -16,11 +16,11 @@ import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.mapper.toChatConservationDomain
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
-import com.example.autohub.domain.model.User
-import com.example.autohub.domain.model.Message as MessageDomain
+import com.example.autohub.domain.model.user.User
+import com.example.autohub.domain.model.chat.Message as MessageDomain
 import com.example.autohub.domain.utils.TimeProvider
-import com.example.autohub.domain.model.UserStatus as UserStatusDomain
-import com.example.autohub.domain.model.ChatConservation as ChatInfoDomain
+import com.example.autohub.domain.model.chat.UserStatus as UserStatusDomain
+import com.example.autohub.domain.model.chat.ChatConservation as ChatInfoDomain
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
@@ -47,8 +47,8 @@ class MessengerRepositoryImpl @Inject constructor(
             val textWithoutExtraSpaces = text.trim()
             val message = Message(
                 id = messageId,
-                senderUID = sender.uid,
-                receiverUID = receiver.uid,
+                senderId = sender.uid,
+                receiverId = receiver.uid,
                 text = textWithoutExtraSpaces,
                 timeMillis = timeSend,
                 formattedData = formattedData
@@ -95,9 +95,9 @@ class MessengerRepositoryImpl @Inject constructor(
     }
 
     override fun getMessages(authUserId: String, participantId: String): Flow<List<MessageDomain>> {
-        val uniqueId = getUniqueId(senderUID = authUserId, receiverUID = participantId)
-
         return callbackFlow {
+            val uniqueId = getUniqueId(senderId = authUserId, receiverId = participantId)
+
             val listener = fbFirestore
                 .collection(CHATS)
                 .document(uniqueId)
@@ -132,7 +132,7 @@ class MessengerRepositoryImpl @Inject constructor(
                         close(cause = error)
                     }
 
-                    if (!value!!.isEmpty) {
+                    if (value != null && !value.isEmpty) {
                         val chats = value.documents.mapNotNull { document ->
                             document.toObject(ChatConservation::class.java)
                                 ?.toChatConservationDomain()
@@ -209,10 +209,10 @@ class MessengerRepositoryImpl @Inject constructor(
 
         if (document.exists()) reference.update(READ_FIELD, true).await()
     }
+}
 
-    private fun getUniqueId(senderUID: String, receiverUID: String): String {
-        return listOf(senderUID, receiverUID).sorted().joinToString("")
-    }
+private fun getUniqueId(senderId: String, receiverId: String): String {
+    return listOf(senderId, receiverId).sorted().joinToString("")
 }
 
 private fun buildMessageId(timeSend: Long) = "message_${timeSend}"

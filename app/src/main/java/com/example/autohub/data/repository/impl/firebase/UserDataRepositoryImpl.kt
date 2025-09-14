@@ -6,15 +6,15 @@ import com.example.autohub.data.firebase.constants.FirestoreFields.CITY_FIELD
 import com.example.autohub.data.firebase.constants.FirestoreFields.FIRST_NAME_FIELD
 import com.example.autohub.data.firebase.constants.FirestoreFields.IMAGE_FIELD
 import com.example.autohub.data.firebase.constants.FirestoreFields.LAST_NAME_FIELD
-import com.example.autohub.domain.HandledException
+import com.example.autohub.domain.model.result.HandledException
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.firebase.model.user.User
 import com.example.autohub.data.firebase.utils.FirebaseStorageUtils
 import com.example.autohub.data.mapper.toUserDomain
 import com.example.autohub.domain.interfaces.repository.remote.UserDataRepository
-import com.example.autohub.domain.model.HandleErrorTag
+import com.example.autohub.domain.model.result.HandleErrorTag
 import com.example.autohub.domain.model.ImageUploadData
-import com.example.autohub.domain.model.User as UserDomain
+import com.example.autohub.domain.model.user.User as UserDomain
 import com.example.autohub.domain.model.result.FirebaseResult
 import kotlinx.coroutines.tasks.await
 import com.google.firebase.auth.FirebaseAuth
@@ -30,15 +30,15 @@ class UserDataRepositoryImpl @Inject constructor(
     private val user
         get() = fbAuth.currentUser ?: throw HandledException(tag = HandleErrorTag.USER_NULL)
 
-    override suspend fun getUserData(userUID: String): FirebaseResult<UserDomain> {
-        if (userUID.isBlank()) {
-            throw HandledException(tag = HandleErrorTag.USER_NULL)
-        }
-
+    override suspend fun getUserData(userId: String): FirebaseResult<UserDomain> {
         return safeFirebaseCall {
+            if (userId.isBlank()) {
+                throw HandledException(tag = HandleErrorTag.USER_NULL)
+            }
+
             val snapshot = fbFirestore
                 .collection(USERS)
-                .document(userUID)
+                .document(userId)
                 .get()
                 .await()
 

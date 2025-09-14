@@ -1,6 +1,6 @@
 package com.example.autohub.domain.interfaces.usecase
 
-import com.example.autohub.domain.model.CarAd
+import com.example.autohub.domain.model.ad.CarAd
 import com.example.autohub.domain.model.result.FirebaseResult
 
 interface GetCurrentUserAdsUseCase {

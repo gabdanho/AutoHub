@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -26,10 +25,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.BottomNavBar
@@ -39,7 +36,7 @@ import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
-import com.example.autohub.presentation.theme.containerColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun AdsMainScreen(
@@ -90,7 +87,7 @@ fun AdsMainScreen(
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         modifier = modifier
-                            .padding(8.dp)
+                            .padding(AppTheme.dimens.extraSmall)
                             .padding(innerPadding)
                     ) {
                         items(uiState.adsList) { carAd ->
@@ -99,7 +96,7 @@ fun AdsMainScreen(
                                 onAdClick = { viewModel.onAdClick(carAd = carAd) },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(8.dp)
+                                    .padding(AppTheme.dimens.extraSmall)
                             )
                         }
                     }
@@ -109,11 +106,11 @@ fun AdsMainScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(innerPadding)
-                            .padding(8.dp)
+                            .padding(AppTheme.dimens.extraSmall)
                     ) {
                         Text(
                             text = stringResource(id = R.string.text_ads_not_found),
-                            color = Color.LightGray
+                            color = AppTheme.colors.placeholderColor
                         )
                     }
                 }
@@ -154,7 +151,7 @@ private fun SearchAdsBar(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(AppTheme.dimens.extraSmall)
     ) {
         TextField(
             value = searchText,
@@ -162,7 +159,7 @@ private fun SearchAdsBar(
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Search,
-                    tint = Color.LightGray,
+                    tint = AppTheme.colors.placeholderColor,
                     contentDescription = stringResource(id = R.string.content_search_field)
                 )
             },
@@ -170,29 +167,29 @@ private fun SearchAdsBar(
             placeholder = {
                 Text(
                     text = stringResource(id = R.string.text_search_ads),
-                    color = Color.LightGray
+                    color = AppTheme.colors.placeholderColor
                 )
             },
-            shape = RoundedCornerShape(20.dp),
+            shape = AppTheme.shapes.textFieldShape,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedIndicatorColor = containerColor,
-                focusedIndicatorColor = containerColor
+                unfocusedContainerColor = AppTheme.colors.transparent,
+                focusedContainerColor = AppTheme.colors.transparent,
+                unfocusedIndicatorColor = AppTheme.colors.containerColor,
+                focusedIndicatorColor = AppTheme.colors.containerColor
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
                     getAds()
                 }
             ),
-            modifier = Modifier.fillMaxWidth(0.8f)
+            modifier = Modifier.fillMaxWidth(AppTheme.dimens.textFieldWidth)
         )
         Icon(
             imageVector = Icons.AutoMirrored.Filled.List,
             contentDescription = stringResource(id = R.string.content_search_filters),
             modifier = Modifier
-                .size(40.dp)
-                .padding(start = 8.dp)
+                .size(AppTheme.dimens.iconImage)
+                .padding(start = AppTheme.dimens.extraSmall)
                 .clickable { onFiltersClick() }
         )
     }

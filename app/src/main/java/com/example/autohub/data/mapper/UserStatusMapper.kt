@@ -1,7 +1,7 @@
 package com.example.autohub.data.mapper
 
 import com.example.autohub.data.firebase.model.user.UserStatus
-import com.example.autohub.domain.model.UserStatus as UserStatusDomain
+import com.example.autohub.domain.model.chat.UserStatus as UserStatusDomain
 
 fun UserStatusDomain.toUserStatusData(): UserStatus {
     return when (this) {

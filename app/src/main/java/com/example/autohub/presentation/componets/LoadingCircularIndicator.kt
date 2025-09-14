@@ -6,7 +6,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.autohub.presentation.theme.containerColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun LoadingCircularIndicator(modifier: Modifier = Modifier) {
@@ -16,7 +16,7 @@ fun LoadingCircularIndicator(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         CircularProgressIndicator(
-            color = containerColor
+            color = AppTheme.colors.containerColor
         )
     }
 }

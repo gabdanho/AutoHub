@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.CustomButton
@@ -35,7 +34,7 @@ import com.example.autohub.presentation.model.options.EngineType
 import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
-import com.example.autohub.presentation.theme.barColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun FiltersScreen(
@@ -57,8 +56,8 @@ fun FiltersScreen(
                 onBackButtonClick = { viewModel.onBackButtonClick() },
                 modifier = modifier
                     .fillMaxWidth()
-                    .background(color = barColor)
-                    .padding(bottom = 8.dp)
+                    .background(color = AppTheme.colors.barColor)
+                    .padding(bottom = AppTheme.dimens.extraSmall)
             )
         }
     ) { innerPadding ->
@@ -76,7 +75,7 @@ fun FiltersScreen(
                     onValueChange = { viewModel.updateBrandValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_model),
@@ -84,7 +83,7 @@ fun FiltersScreen(
                     onValueChange = { viewModel.updateModelValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_color),
@@ -92,7 +91,7 @@ fun FiltersScreen(
                     onValueChange = { viewModel.updateColorValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_drive_type),
@@ -101,7 +100,7 @@ fun FiltersScreen(
                     returnType = { viewModel.updateDriveTypeValue(value = it as DriveType?) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_max_year_created),
@@ -110,7 +109,7 @@ fun FiltersScreen(
                     onValueChange = { viewModel.updateRealiseYearValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_bodywork),
@@ -119,7 +118,7 @@ fun FiltersScreen(
                     returnType = { viewModel.updateBodyTypeValue(value = it as BodyType?) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_engine_type),
@@ -128,7 +127,7 @@ fun FiltersScreen(
                     returnType = { viewModel.updateEngineTypeValue(value = it as EngineType?) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_engine_capacity),
@@ -137,7 +136,7 @@ fun FiltersScreen(
                     onValueChange = { viewModel.updateEngineCapacityValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_transmission_type),
@@ -146,7 +145,7 @@ fun FiltersScreen(
                     returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType?) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_steering_wheel),
@@ -155,7 +154,7 @@ fun FiltersScreen(
                     returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType?) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_max_mileage),
@@ -164,7 +163,7 @@ fun FiltersScreen(
                     onValueChange = { viewModel.updateMileageValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 RowRadioButtons(
                     option = stringResource(id = R.string.radio_condition),
@@ -173,7 +172,7 @@ fun FiltersScreen(
                     returnType = { viewModel.updateConditionValue(value = it as ConditionType?) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_price),
@@ -182,7 +181,7 @@ fun FiltersScreen(
                     onValueChange = { viewModel.updatePriceValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_city),
@@ -190,14 +189,14 @@ fun FiltersScreen(
                     onValueChange = { viewModel.updateCityValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
             }
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(AppTheme.dimens.extraSmall)
                     .fillMaxWidth()
             ) {
                 CustomButton(
@@ -210,8 +209,8 @@ fun FiltersScreen(
                     imageVector = Icons.Default.Delete,
                     contentDescription = stringResource(id = R.string.content_clear_all_filters),
                     modifier = Modifier
-                        .padding(start = 8.dp)
-                        .size(30.dp)
+                        .padding(start = AppTheme.dimens.extraSmall)
+                        .size(AppTheme.dimens.iconImage)
                         .clickable {
                             viewModel.onClearFiltersClick()
                         }

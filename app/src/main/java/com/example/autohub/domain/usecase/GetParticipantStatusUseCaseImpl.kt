@@ -2,7 +2,7 @@ package com.example.autohub.domain.usecase
 
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
 import com.example.autohub.domain.interfaces.usecase.GetParticipantStatusUseCase
-import com.example.autohub.domain.model.UserStatus
+import com.example.autohub.domain.model.chat.UserStatus
 import kotlinx.coroutines.flow.Flow
 
 class GetParticipantStatusUseCaseImpl(

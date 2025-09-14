@@ -1,7 +1,7 @@
 package com.example.autohub.domain.interfaces.repository.remote
 
-import com.example.autohub.domain.model.CarAd
-import com.example.autohub.domain.model.SearchFilter
+import com.example.autohub.domain.model.ad.CarAd
+import com.example.autohub.domain.model.ad.SearchFilter
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.result.FirebaseResult
 

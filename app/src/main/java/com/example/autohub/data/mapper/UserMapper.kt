@@ -2,7 +2,7 @@ package com.example.autohub.data.mapper
 
 import com.example.autohub.data.firebase.model.user.User
 import com.example.autohub.data.firebase.model.user.UserStatus
-import com.example.autohub.domain.model.User as UserDomain
+import com.example.autohub.domain.model.user.User as UserDomain
 
 fun User.toUserDomain(): UserDomain {
     return UserDomain(

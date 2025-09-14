@@ -1,7 +1,7 @@
-package com.example.autohub.domain.model
+package com.example.autohub.domain.model.ad
 
 data class CarAd(
-    val userUID: String = "",
+    val userId: String = "",
     val adID: String = "",
     val dateAdPublished: String = "",
     val city: String = "",

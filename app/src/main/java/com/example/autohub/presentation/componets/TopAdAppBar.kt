@@ -11,13 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun TopAdAppBar(
     titleText: String,
     onBackButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -26,13 +26,13 @@ fun TopAdAppBar(
     ) {
         BackButton(
             onBackClick = { onBackButtonClick() },
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(AppTheme.dimens.extraSmall)
         )
         Text(
             text = titleText,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AppTheme.dimens.extraSmall))
     }
 }

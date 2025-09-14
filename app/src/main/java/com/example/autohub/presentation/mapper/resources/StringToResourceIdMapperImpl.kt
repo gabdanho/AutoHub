@@ -56,7 +56,6 @@ class StringToResourceIdMapperImpl : StringToResourceIdMapper {
         StringResNamePresentation.ERROR_SHOW_USER_DATA to R.string.error_to_show_user_data,
         StringResNamePresentation.ERROR_LISTEN_CHATS to R.string.error_listen_chats,
         StringResNamePresentation.ERROR_GET_USER to R.string.error_get_user,
-        StringResNamePresentation.ERROR_NECESSARY_VERIF_EMAIL to R.string.error_necessary_verif_email,
         StringResNamePresentation.ERROR_TIMEOUT_ERROR to R.string.error_timeout_error,
         StringResNamePresentation.ERROR_LOGIN to R.string.error_login,
         StringResNamePresentation.ERROR_UPDATE_USER_FIELDS to R.string.error_update_user_field,

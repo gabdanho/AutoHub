@@ -1,9 +1,9 @@
 package com.example.autohub.domain.interfaces.repository.remote
 
-import com.example.autohub.domain.model.ChatConservation
-import com.example.autohub.domain.model.Message
-import com.example.autohub.domain.model.User
-import com.example.autohub.domain.model.UserStatus
+import com.example.autohub.domain.model.chat.ChatConservation
+import com.example.autohub.domain.model.chat.Message
+import com.example.autohub.domain.model.user.User
+import com.example.autohub.domain.model.chat.UserStatus
 import kotlinx.coroutines.flow.Flow
 
 interface MessengerRepository {

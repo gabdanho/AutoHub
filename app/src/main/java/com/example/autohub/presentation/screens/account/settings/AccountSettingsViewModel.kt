@@ -359,7 +359,7 @@ class AccountSettingsViewModel @Inject constructor(
             val uid = getLocalUserIdUseCase()
 
             uid?.let {
-                when (val userResult = getUserDataUseCase(userUID = uid)) {
+                when (val userResult = getUserDataUseCase(userId = uid)) {
                     is FirebaseResult.Success -> {
                         _uiState.update { state ->
                             state.copy(

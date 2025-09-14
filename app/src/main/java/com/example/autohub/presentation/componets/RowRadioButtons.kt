@@ -15,18 +15,13 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.autohub.R
 import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.options.CarOption
-import com.example.autohub.presentation.theme.containerColor
-import com.example.autohub.presentation.theme.labelColor
-import com.example.autohub.presentation.theme.unfocusedTextFieldColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun RowRadioButtons(
@@ -37,10 +32,10 @@ fun RowRadioButtons(
     currentType: CarOption? = null,
     isError: Boolean = false,
     radioButtonColors: RadioButtonColors = RadioButtonColors(
-        selectedColor = containerColor,
-        disabledSelectedColor = unfocusedTextFieldColor,
-        unselectedColor = labelColor,
-        disabledUnselectedColor = unfocusedTextFieldColor
+        selectedColor = AppTheme.colors.containerColor,
+        disabledSelectedColor = AppTheme.colors.unfocusedTextFieldColor,
+        unselectedColor = AppTheme.colors.labelColor,
+        disabledUnselectedColor = AppTheme.colors.unfocusedTextFieldColor
     ),
 ) {
     Column {
@@ -49,20 +44,20 @@ fun RowRadioButtons(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = AppTheme.dimens.extraSmall)
         ) {
             Text(option)
             if (isError) {
                 Icon(
                     imageVector = Icons.Default.Warning,
                     contentDescription = stringResource(id = R.string.content_necessary_fill_field),
-                    modifier = Modifier.padding(start = 4.dp)
+                    modifier = Modifier.padding(start = AppTheme.dimens.ultraSmall)
                 )
             }
         }
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = modifier.padding(horizontal = 8.dp)
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraSmall),
+            modifier = modifier.padding(horizontal = AppTheme.dimens.extraSmall)
         ) {
             items(typesName) { type ->
                 Column(

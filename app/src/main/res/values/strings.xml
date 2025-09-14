@@ -126,7 +126,7 @@
     <string name="text_mileage">Пробег</string>
     <string name="text_description">Описание</string>
     <string name="text_ads_not_found">Объявлений не найдено</string>
-    <string name="text_participant_name">%1$s %2$s.</string>
+    <string name="text_participant_name">%1$s %2$s</string>
     <string name="text_incorrect_first_last_name">Имя и фамилия должны содержать только буквы</string>
     <string name="text_incorrect_email">Некорректная почта</string>
     <string name="text_incorrect_phone">Некорректный номер телефона</string>

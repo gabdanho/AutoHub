@@ -2,8 +2,8 @@ package com.example.autohub.domain.usecase
 
 import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
 import com.example.autohub.domain.interfaces.usecase.GetAdsUseCase
-import com.example.autohub.domain.model.CarAd
-import com.example.autohub.domain.model.SearchFilter
+import com.example.autohub.domain.model.ad.CarAd
+import com.example.autohub.domain.model.ad.SearchFilter
 import com.example.autohub.domain.model.result.FirebaseResult
 
 class GetAdsUseCaseImpl(

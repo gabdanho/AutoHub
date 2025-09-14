@@ -6,8 +6,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import com.example.autohub.presentation.screens.MainScreen
+import com.example.autohub.presentation.theme.AppTheme
+import com.example.autohub.presentation.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,7 +24,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             requestNotificationPermission()
-            MainScreen()
+            MainTheme {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = AppTheme.colors.white),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    MainScreen()
+                }
+            }
         }
     }
 

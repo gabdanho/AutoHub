@@ -2,7 +2,6 @@ package com.example.autohub.presentation.componets
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults.buttonColors
@@ -11,8 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.dp
-import com.example.autohub.presentation.theme.containerColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun CustomButton(
@@ -20,12 +18,12 @@ fun CustomButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
-    border: BorderStroke = BorderStroke(0.dp, Color.Transparent),
+    border: BorderStroke = BorderStroke(AppTheme.dimens.emptySize, AppTheme.colors.transparent),
     colorButton: ButtonColors = buttonColors(
-        containerColor = containerColor
+        containerColor = AppTheme.colors.containerColor
     ),
     textColor: Color = Color.White,
-    shape: Shape = RoundedCornerShape(topStart = 25.dp, bottomEnd = 25.dp)
+    shape: Shape = AppTheme.shapes.buttonShape,
 ) {
     Button(
         onClick = { onClick() },
@@ -33,7 +31,7 @@ fun CustomButton(
         colors = colorButton,
         border = border,
         enabled = isEnabled,
-        modifier = modifier.fillMaxWidth(0.5f)
+        modifier = modifier.fillMaxWidth(AppTheme.dimens.buttonFillHalfWidth)
     ) {
         Text(
             text = text,

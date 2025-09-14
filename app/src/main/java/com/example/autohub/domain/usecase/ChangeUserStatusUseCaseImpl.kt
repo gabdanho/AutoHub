@@ -2,7 +2,7 @@ package com.example.autohub.domain.usecase
 
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
 import com.example.autohub.domain.interfaces.usecase.ChangeUserStatusUseCase
-import com.example.autohub.domain.model.UserStatus
+import com.example.autohub.domain.model.chat.UserStatus
 
 class ChangeUserStatusUseCaseImpl(
     private val authUserRepository: AuthUserRepository

@@ -235,7 +235,7 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideClearUserUidUseCase(userPreferences: UserPreferencesRepository): ClearUserIdUseCase {
+    fun provideClearUserIdUseCase(userPreferences: UserPreferencesRepository): ClearUserIdUseCase {
         return ClearUserIdUseCaseImpl(userPreferences = userPreferences)
     }
 

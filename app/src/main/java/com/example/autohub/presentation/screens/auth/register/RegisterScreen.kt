@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.BackButton
@@ -29,6 +30,7 @@ import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun RegisterScreen(
@@ -37,6 +39,7 @@ fun RegisterScreen(
 ) {
     val context = LocalContext.current
     val uiState = viewModel.uiState.collectAsState().value
+    val scrollState = rememberScrollState()
 
     BackHandler {
         viewModel.onBackClick()
@@ -75,12 +78,13 @@ fun RegisterScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = modifier
                     .fillMaxSize()
+                    .verticalScroll(scrollState)
                     .padding(innerPadding)
             ) {
                 Text(
                     text = stringResource(id = R.string.text_registration),
                     style = MaterialTheme.typography.displaySmall,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = AppTheme.dimens.extraSmall)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_first_name),
@@ -90,7 +94,7 @@ fun RegisterScreen(
                     onValueChange = { viewModel.updateFirstNameValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_last_name),
@@ -100,7 +104,7 @@ fun RegisterScreen(
                     onValueChange = { viewModel.updateLastNameValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_email),
@@ -110,7 +114,7 @@ fun RegisterScreen(
                     onValueChange = { viewModel.updateEmailValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_phone),
@@ -121,7 +125,7 @@ fun RegisterScreen(
                     onValueChange = { viewModel.updatePhoneValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_city),
@@ -131,7 +135,7 @@ fun RegisterScreen(
                     onValueChange = { viewModel.updateCityValue(value = it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_password),
@@ -142,7 +146,7 @@ fun RegisterScreen(
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 InputField(
                     text = stringResource(id = R.string.input_repeat_password),
@@ -153,7 +157,7 @@ fun RegisterScreen(
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppTheme.dimens.medium)
                 )
                 CustomButton(
                     text = stringResource(id = R.string.button_registration),
@@ -161,8 +165,8 @@ fun RegisterScreen(
                         viewModel.registerAccount()
                     },
                     modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .padding(top = 32.dp)
+                        .fillMaxWidth(AppTheme.dimens.buttonFillHalfWidth)
+                        .padding(top = AppTheme.dimens.large)
                 )
             }
         }

@@ -7,26 +7,24 @@ import com.example.autohub.presentation.model.options.DriveType
 import com.example.autohub.presentation.model.options.EngineType
 import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
-import com.example.autohub.domain.model.CarAd as CarAdDomain
-
-// FixMe : Избавиться от !!
+import com.example.autohub.domain.model.ad.CarAd as CarAdDomain
 
 fun CarAd.toCarAdDomain(): CarAdDomain {
     return CarAdDomain(
-        userUID = userUID,
+        userId = userId,
         brand = brand,
         dateAdPublished = dateAdPublished,
         model = model,
         realiseYear = realiseYear,
         price = price,
-        body = body!!.tag,
-        typeEngine = typeEngine!!.tag,
-        transmission = transmission!!.tag,
-        drive = drive!!.tag,
+        body = body?.tag ?: "",
+        typeEngine = typeEngine?.tag ?: "",
+        transmission = transmission?.tag ?: "",
+        drive = drive?.tag ?: "",
         description = description,
-        condition = condition!!.tag,
+        condition = condition?.tag ?: "",
         engineCapacity = engineCapacity,
-        steeringWheelSide = steeringWheelSide!!.tag,
+        steeringWheelSide = steeringWheelSide?.tag ?: "",
         mileage = mileage,
         color = color,
         imagesUrl = imagesUrl
@@ -35,7 +33,7 @@ fun CarAd.toCarAdDomain(): CarAdDomain {
 
 fun CarAdDomain.toCarAdPresentation(): CarAd {
     return CarAd(
-        userUID = userUID,
+        userId = userId,
         brand = brand,
         dateAdPublished = dateAdPublished,
         model = model,

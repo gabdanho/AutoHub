@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.componets
 
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.FloatingActionButton
@@ -10,17 +9,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.autohub.R
-import com.example.autohub.presentation.theme.containerColor as themeContainerColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun BackButton(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = themeContainerColor,
+    containerColor: Color = AppTheme.colors.containerColor,
     contentColor: Color = Color.White,
-    shape: Shape = RoundedCornerShape(25.dp)
+    shape: Shape = AppTheme.shapes.backButtonShape,
 ) {
     FloatingActionButton(
         onClick = { onBackClick() },

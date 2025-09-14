@@ -1,7 +1,7 @@
 package com.example.autohub.presentation.mapper
 
 import com.example.autohub.presentation.model.SearchFilter
-import com.example.autohub.domain.model.SearchFilter as SearchFilterDomain
+import com.example.autohub.domain.model.ad.SearchFilter as SearchFilterDomain
 
 fun SearchFilter.toSearchFilterDomain(): SearchFilterDomain {
     return SearchFilterDomain(

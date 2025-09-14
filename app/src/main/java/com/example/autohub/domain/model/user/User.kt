@@ -1,4 +1,6 @@
-package com.example.autohub.domain.model
+package com.example.autohub.domain.model.user
+
+import com.example.autohub.domain.model.chat.UserStatus
 
 data class User(
     val firstName: String = "",

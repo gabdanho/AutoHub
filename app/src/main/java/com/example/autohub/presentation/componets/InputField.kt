@@ -1,7 +1,6 @@
 package com.example.autohub.presentation.componets
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -16,9 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import com.example.autohub.R
-import com.example.autohub.presentation.theme.labelColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun InputField(
@@ -31,7 +29,7 @@ fun InputField(
     isError: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Unspecified,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    placeholderColor: Color = Color.LightGray
+    placeholderColor: Color = AppTheme.colors.placeholderColor
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -39,14 +37,14 @@ fun InputField(
     ) {
         Text(
             text = text,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(AppTheme.dimens.fullWeight)
         )
         TextField(
             value = value,
             onValueChange = {
                 onValueChange(it)
             },
-            shape = RoundedCornerShape(20.dp),
+            shape = AppTheme.shapes.textFieldShape,
             placeholder = {
                 Text(
                     text = placeHolder,
@@ -58,8 +56,8 @@ fun InputField(
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
-                unfocusedIndicatorColor = labelColor,
-                focusedIndicatorColor = labelColor
+                unfocusedIndicatorColor = AppTheme.colors.labelColor,
+                focusedIndicatorColor = AppTheme.colors.labelColor
             ),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             trailingIcon = {
@@ -70,7 +68,7 @@ fun InputField(
                     )
                 }
             },
-            modifier = Modifier.weight(3f)
+            modifier = Modifier.weight(AppTheme.dimens.inputFieldWeight)
         )
     }
 }

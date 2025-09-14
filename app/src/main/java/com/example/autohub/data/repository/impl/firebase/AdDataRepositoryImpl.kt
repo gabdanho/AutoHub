@@ -9,9 +9,9 @@ import com.example.autohub.data.firebase.model.ad.CarAd
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.firebase.utils.FirebaseStorageUtils
 import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
-import com.example.autohub.domain.model.CarAd as CarAdDomain
+import com.example.autohub.domain.model.ad.CarAd as CarAdDomain
 import com.example.autohub.domain.model.ImageUploadData
-import com.example.autohub.domain.model.SearchFilter
+import com.example.autohub.domain.model.ad.SearchFilter
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.utils.TimeProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -66,7 +66,7 @@ class AdDataRepositoryImpl @Inject constructor(
             val snapshot = fbStoreRef.get().await()
             snapshot.documents
                 .mapNotNull { it.toObject(CarAd::class.java) }
-                .filter { it.userUID == uid }
+                .filter { it.userId == uid }
                 .map { it.toCarAdDomain() }
         }
     }
@@ -78,7 +78,7 @@ class AdDataRepositoryImpl @Inject constructor(
         return safeFirebaseCall {
             val timeStamp = timeProvider.currentTimeMillis()
             val currentDate = timeProvider.millisToDate(timeStamp)
-            val adReference = createAdReference(userId = carAdInfo.userUID, timeStamp = timeStamp)
+            val adReference = createAdReference(userId = carAdInfo.userId, timeStamp = timeStamp)
             val docReference = fbFirestore
                 .collection(ADS)
                 .document(adReference)

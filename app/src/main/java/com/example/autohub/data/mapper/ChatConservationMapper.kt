@@ -1,12 +1,12 @@
 package com.example.autohub.data.mapper
 
 import com.example.autohub.data.firebase.model.chat.ChatConservation
-import com.example.autohub.domain.model.ChatConservation as ChatConservationDomain
+import com.example.autohub.domain.model.chat.ChatConservation as ChatConservationDomain
 
 fun ChatConservationDomain.toChatConservationData(): ChatConservation {
     return ChatConservation(
         lastMessage = lastMessage,
-        timeMillis = time,
+        timeMillis = timeMillis,
         uid = uid,
         name = name,
         imageUrl = imageUrl
@@ -16,7 +16,7 @@ fun ChatConservationDomain.toChatConservationData(): ChatConservation {
 fun ChatConservation.toChatConservationDomain(): ChatConservationDomain {
     return ChatConservationDomain(
         lastMessage = lastMessage,
-        time = timeMillis,
+        timeMillis = timeMillis,
         uid = uid,
         name = name,
         imageUrl = imageUrl

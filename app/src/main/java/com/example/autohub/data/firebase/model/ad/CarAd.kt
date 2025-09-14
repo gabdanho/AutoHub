@@ -1,7 +1,7 @@
 package com.example.autohub.data.firebase.model.ad
 
 data class CarAd(
-    val userUID: String = "",
+    val userId: String = "",
     val adID: String = "",
     val dateAdPublished: String = "",
     val city: String = "",

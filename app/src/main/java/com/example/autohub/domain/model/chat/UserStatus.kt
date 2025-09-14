@@ -1,4 +1,4 @@
-package com.example.autohub.domain.model
+package com.example.autohub.domain.model.chat
 
 sealed class UserStatus {
 

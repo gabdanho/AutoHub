@@ -1,6 +1,6 @@
 package com.example.autohub.data.firebase.model
 
-import com.example.autohub.domain.HandledException
+import com.example.autohub.domain.model.result.HandledException
 import com.example.autohub.domain.model.result.FirebaseResult
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout

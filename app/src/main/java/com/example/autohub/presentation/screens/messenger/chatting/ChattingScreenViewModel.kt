@@ -22,7 +22,6 @@ import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
-import com.example.autohub.presentation.model.messenger.ChatSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,8 +54,8 @@ class ChattingScreenViewModel @Inject constructor(
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> = _messages.asStateFlow()
 
-    private val _chatSideEffect = MutableStateFlow<ChatSideEffect>(ChatSideEffect.ScrollToLastMessage)
-    val chatSideEffect: StateFlow<ChatSideEffect> = _chatSideEffect.asStateFlow()
+    private val _chatSideEffect = MutableStateFlow<ChattingSideEffect>(ChattingSideEffect.ScrollToLastMessage)
+    val chatSideEffect: StateFlow<ChattingSideEffect> = _chatSideEffect.asStateFlow()
 
     private var statusJob: Job? = null
     private var messagesJob: Job? = null
@@ -65,7 +64,7 @@ class ChattingScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
-            when (val authUserResult = getUserDataUseCase(userUID = getAuthUserIdUseCase())) {
+            when (val authUserResult = getUserDataUseCase(userId = getAuthUserIdUseCase())) {
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
                         state.copy(
@@ -129,7 +128,7 @@ class ChattingScreenViewModel @Inject constructor(
                         text = state.messageTextValue
                     )
                 }
-                _chatSideEffect.value = ChatSideEffect.ScrollToLastMessage
+                _chatSideEffect.value = ChattingSideEffect.ScrollToLastMessage
                 _uiState.update { state -> state.copy(messageTextValue = "") }
             } catch (e: Exception) {
                 _uiState.update {
@@ -167,7 +166,7 @@ class ChattingScreenViewModel @Inject constructor(
         }
     }
 
-    fun changeChatSideEffect(value: ChatSideEffect) {
+    fun changeChatSideEffect(value: ChattingSideEffect) {
         _chatSideEffect.value = value
     }
 

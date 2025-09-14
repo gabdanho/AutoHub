@@ -1,12 +1,12 @@
 package com.example.autohub.presentation.mapper
 
 import com.example.autohub.presentation.model.messenger.ChatConservation
-import com.example.autohub.domain.model.ChatConservation as ChatConservationDomain
+import com.example.autohub.domain.model.chat.ChatConservation as ChatConservationDomain
 
 fun ChatConservation.toChatConservationDomain(): ChatConservationDomain {
     return ChatConservationDomain(
         lastMessage = lastMessage,
-        time = time.toLong(),
+        timeMillis = timeMillis.toLong(),
         uid = uid,
         name = name,
         imageUrl = imageUrl
@@ -16,7 +16,7 @@ fun ChatConservation.toChatConservationDomain(): ChatConservationDomain {
 fun ChatConservationDomain.toChatConservationPresentation(): ChatConservation {
     return ChatConservation(
         lastMessage = lastMessage,
-        time = time.toString(),
+        timeMillis = timeMillis.toString(),
         uid = uid,
         name = name,
         imageUrl = imageUrl

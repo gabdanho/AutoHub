@@ -11,9 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.HorizontalDivider
@@ -26,13 +25,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
@@ -43,8 +40,7 @@ import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
-import com.example.autohub.presentation.theme.barColor
-import com.example.autohub.presentation.theme.containerColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun AuthUserAccountScreen(
@@ -69,8 +65,8 @@ fun AuthUserAccountScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
                     .fillMaxWidth()
-                    .background(color = barColor)
-                    .padding(8.dp)
+                    .background(color = AppTheme.colors.barColor)
+                    .padding(AppTheme.dimens.extraSmall)
             ) {
                 Text(
                     text = stringResource(id = R.string.text_account),
@@ -89,129 +85,134 @@ fun AuthUserAccountScreen(
     ) { innerPadding ->
         when (uiState.loadingState) {
             is LoadingState.Success -> {
-                Column(
+                LazyColumn(
                     modifier = modifier
                         .padding(innerPadding)
-                        .padding(8.dp)
+                        .padding(AppTheme.dimens.extraSmall)
                         .fillMaxSize()
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center
-                    ) {
+                    item {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            AsyncImage(
-                                model = uiState.user.image,
-                                contentDescription = stringResource(id = R.string.content_user_image),
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(CircleShape)
-                                    .border(2.dp, containerColor, CircleShape)
-                            )
-                            Column(
-                                modifier = Modifier.padding(start = 16.dp)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(
-                                    text = stringResource(
-                                        id = R.string.text_user_first_last_name,
-                                        uiState.user.firstName,
-                                        uiState.user.lastName
-                                    ),
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(bottom = 8.dp)
+                                AsyncImage(
+                                    model = uiState.user.image,
+                                    contentDescription = stringResource(id = R.string.content_user_image),
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(AppTheme.dimens.profileImageSize)
+                                        .clip(CircleShape)
+                                        .border(
+                                            AppTheme.dimens.smallBorderSize,
+                                            AppTheme.colors.containerColor,
+                                            CircleShape
+                                        )
                                 )
-                                Text(
-                                    text = uiState.user.city,
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
+                                Column(
+                                    modifier = Modifier.padding(start = AppTheme.dimens.medium)
+                                ) {
+                                    Text(
+                                        text = stringResource(
+                                            id = R.string.text_user_first_last_name,
+                                            uiState.user.firstName,
+                                            uiState.user.lastName
+                                        ),
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(bottom = AppTheme.dimens.extraSmall)
+                                    )
+                                    Text(
+                                        text = uiState.user.city,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                }
                             }
                         }
-                    }
-                    Column(
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(
-                                id = R.string.text_user_email,
-                                uiState.user.email
-                            ),
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                        Text(
-                            text = stringResource(
-                                id = R.string.text_user_phone,
-                                uiState.user.phoneNumber
+                        Column(
+                            modifier = Modifier
+                                .padding(vertical = AppTheme.dimens.extraSmall)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = stringResource(
+                                    id = R.string.text_user_email,
+                                    uiState.user.email
+                                ),
+                                modifier = Modifier.padding(bottom = AppTheme.dimens.extraSmall)
                             )
-                        )
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        CustomButton(
-                            text = stringResource(id = R.string.button_change),
-                            onClick = { viewModel.onChangeInfoClick() },
-                            colorButton = buttonColors(
-                                containerColor = Color.White
-                            ),
-                            textColor = Color.Black,
-                            border = BorderStroke(4.dp, containerColor),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                                .weight(1f)
-                        )
-                        CustomButton(
-                            text = stringResource(id = R.string.button_exit),
-                            onClick = { viewModel.onSignOutClick() },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                        )
-                    }
-                    Text(
-                        text = stringResource(id = R.string.text_your_ads),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp)
-                    )
-                    HorizontalDivider()
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp)
-                    ) {
-                        CustomButton(
-                            text = stringResource(id = R.string.button_create),
-                            onClick = { viewModel.onAdCreateClick() },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2)
-                    ) {
-                        items(uiState.ads) { ad ->
-                            CarAdCard(
-                                ad = ad,
-                                onAdClick = { viewModel.onAdClick(ad = ad) },
-                                modifier = modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp)
+                            Text(
+                                text = stringResource(
+                                    id = R.string.text_user_phone,
+                                    uiState.user.phoneNumber
+                                )
                             )
                         }
                     }
+                    item {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            CustomButton(
+                                text = stringResource(id = R.string.button_change),
+                                onClick = { viewModel.onChangeInfoClick() },
+                                colorButton = buttonColors(
+                                    containerColor = AppTheme.colors.white
+                                ),
+                                textColor = AppTheme.colors.textColor,
+                                border = BorderStroke(
+                                    AppTheme.dimens.mediumBorderSize,
+                                    AppTheme.colors.containerColor
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(AppTheme.dimens.ultraSmall)
+                                    .weight(AppTheme.dimens.fullWeight)
+                            )
+                            CustomButton(
+                                text = stringResource(id = R.string.button_exit),
+                                onClick = { viewModel.onSignOutClick() },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(AppTheme.dimens.fullWeight)
+                            )
+                        }
+                        Text(
+                            text = stringResource(id = R.string.text_your_ads),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = AppTheme.dimens.extraSmall)
+                        )
+                        HorizontalDivider()
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = AppTheme.dimens.extraSmall)
+                        ) {
+                            CustomButton(
+                                text = stringResource(id = R.string.button_create),
+                                onClick = { viewModel.onAdCreateClick() },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                    items(uiState.ads) { ad ->
+                        CarAdCard(
+                            ad = ad,
+                            imageHeight = AppTheme.dimens.carAdCardImageSize,
+                            onAdClick = { viewModel.onAdClick(ad) },
+                            modifier = Modifier.padding(AppTheme.dimens.extraSmall)
+                        )
+                    }
                 }
-
             }
 
             is LoadingState.Error -> {

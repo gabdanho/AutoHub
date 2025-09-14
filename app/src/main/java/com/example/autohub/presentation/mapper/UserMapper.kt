@@ -1,7 +1,7 @@
 package com.example.autohub.presentation.mapper
 
 import com.example.autohub.presentation.model.user.User
-import com.example.autohub.domain.model.User as UserDomain
+import com.example.autohub.domain.model.user.User as UserDomain
 
 fun User.toUserDomain(): UserDomain {
     return UserDomain(

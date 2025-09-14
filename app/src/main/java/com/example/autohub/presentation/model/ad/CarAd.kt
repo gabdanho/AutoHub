@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CarAd(
-    val userUID: String = "",
+    val userId: String = "",
     val dateAdPublished: String = "",
     val brand: String = "",
     val model: String = "",

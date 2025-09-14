@@ -12,7 +12,7 @@ import com.example.autohub.R
 fun ImageDialog(
     uri: Uri,
     closeDialog: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Dialog(closeDialog) {
         AsyncImage(
@@ -27,7 +27,7 @@ fun ImageDialog(
 fun ImageDialog(
     url: String,
     closeDialog: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Dialog(closeDialog) {
         AsyncImage(

@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.CustomButton
@@ -39,8 +38,7 @@ import com.example.autohub.presentation.model.options.DriveType
 import com.example.autohub.presentation.model.options.EngineType
 import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
-import com.example.autohub.presentation.theme.barColor
-import com.example.autohub.presentation.theme.cardColor
+import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.convertUriToBytes
 
 @Composable
@@ -84,8 +82,8 @@ fun AdCreateScreen(
                 onBackButtonClick = { viewModel.onBackButtonClick() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = barColor)
-                    .padding(bottom = 8.dp)
+                    .background(color = AppTheme.colors.barColor)
+                    .padding(bottom = AppTheme.dimens.extraSmall)
             )
         }
     ) { innerPadding ->
@@ -101,33 +99,32 @@ fun AdCreateScreen(
                         .fillMaxSize()
                 )
             } else {
-                Column(modifier = Modifier.weight(1.4f)) {
-                    Text(
-                        text = stringResource(id = R.string.text_car_images),
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    ListAddedPhotos(
-                        images = uiState.images.map { it.uri },
-                        imageToShow = uiState.imageToShow?.uri,
-                        onAddImageClick = {
-                            galleryLauncher.launch("image/*")
-                        },
-                        changeImageToShow = {
-                            viewModel.updateImageToShow(value = it?.let {
-                                UiImage(uri = it)
-                            })
-                        },
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .background(cardColor)
-                    )
-                }
                 Column(
                     modifier = Modifier
-                        .weight(3f)
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal = AppTheme.dimens.extraSmall)
                         .verticalScroll(scrollState)
                 ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = R.string.text_car_images),
+                            modifier = Modifier.padding(AppTheme.dimens.medium)
+                        )
+                        ListAddedPhotos(
+                            images = uiState.images.map { it.uri },
+                            imageToShow = uiState.imageToShow?.uri,
+                            onAddImageClick = {
+                                galleryLauncher.launch("image/*")
+                            },
+                            changeImageToShow = {
+                                viewModel.updateImageToShow(value = it?.let {
+                                    UiImage(uri = it)
+                                })
+                            },
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .background(AppTheme.colors.cardColor)
+                        )
+                    }
                     InputField(
                         text = stringResource(id = R.string.input_brand),
                         value = uiState.brandValue,
@@ -135,7 +132,7 @@ fun AdCreateScreen(
                         onValueChange = { viewModel.updateBrandValue(value = it) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     InputField(
                         text = stringResource(id = R.string.input_model),
@@ -144,7 +141,7 @@ fun AdCreateScreen(
                         onValueChange = { viewModel.updateModelValue(value = it) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     InputField(
                         text = stringResource(id = R.string.text_color),
@@ -153,7 +150,7 @@ fun AdCreateScreen(
                         onValueChange = { viewModel.updateColorValue(value = it) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     InputField(
                         text = stringResource(id = R.string.input_year_created),
@@ -163,7 +160,7 @@ fun AdCreateScreen(
                         onValueChange = { viewModel.updateRealiseYearValue(value = it) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
 
                     RowRadioButtons(
@@ -174,7 +171,7 @@ fun AdCreateScreen(
                         returnType = { viewModel.updateBodyTypeValue(value = it as BodyType?) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 8.dp)
+                            .padding(end = AppTheme.dimens.extraSmall)
                     )
                     RowRadioButtons(
                         option = stringResource(id = R.string.radio_engine_type),
@@ -184,7 +181,7 @@ fun AdCreateScreen(
                         returnType = { viewModel.updateEngineTypeValue(value = it as EngineType?) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 8.dp)
+                            .padding(end = AppTheme.dimens.extraSmall)
                     )
                     InputField(
                         text = stringResource(id = R.string.input_engine_capacity),
@@ -194,7 +191,7 @@ fun AdCreateScreen(
                         onValueChange = { viewModel.updateEngineCapacityValue(value = it) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     RowRadioButtons(
                         option = stringResource(id = R.string.radio_transmission_type),
@@ -204,7 +201,7 @@ fun AdCreateScreen(
                         returnType = { viewModel.updateTransmissionValue(value = it as TransmissionType?) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 8.dp)
+                            .padding(end = AppTheme.dimens.extraSmall)
                     )
                     RowRadioButtons(
                         option = stringResource(id = R.string.radio_drive_type),
@@ -214,7 +211,7 @@ fun AdCreateScreen(
                         returnType = { viewModel.updateDriveTypeValue(value = it as DriveType?) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 8.dp)
+                            .padding(end = AppTheme.dimens.extraSmall)
                     )
                     RowRadioButtons(
                         option = stringResource(id = R.string.radio_steering_wheel),
@@ -224,7 +221,7 @@ fun AdCreateScreen(
                         returnType = { viewModel.updateSteeringWheelSideValue(value = it as SteeringWheelSideType?) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 8.dp)
+                            .padding(end = AppTheme.dimens.extraSmall)
                     )
                     InputField(
                         text = stringResource(id = R.string.input_mileage),
@@ -234,7 +231,7 @@ fun AdCreateScreen(
                         onValueChange = { viewModel.updateMileageValue(value = it) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     RowRadioButtons(
                         option = stringResource(id = R.string.radio_condition),
@@ -244,7 +241,7 @@ fun AdCreateScreen(
                         returnType = { viewModel.updateConditionValue(value = it as ConditionType?) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 8.dp)
+                            .padding(end = AppTheme.dimens.extraSmall)
                     )
                     InputField(
                         text = stringResource(id = R.string.input_price),
@@ -254,7 +251,7 @@ fun AdCreateScreen(
                         onValueChange = { viewModel.updatePriceValue(value = it) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     InputField(
                         text = stringResource(id = R.string.input_description),
@@ -263,18 +260,18 @@ fun AdCreateScreen(
                         onValueChange = { viewModel.updateDescriptionValue(value = it) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp)
+                            .padding(vertical = AppTheme.dimens.extraSmall)
                     ) {
                         CustomButton(
                             text = stringResource(id = R.string.button_create),
                             onClick = { viewModel.onCreateAdClick() },
-                            modifier = Modifier.fillMaxWidth(0.5f)
+                            modifier = Modifier.fillMaxWidth(AppTheme.dimens.buttonFillHalfWidth)
                         )
                     }
                 }

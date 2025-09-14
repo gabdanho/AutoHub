@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.componets
 
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -10,10 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
-import com.example.autohub.presentation.theme.focusedTextFieldColor
-import com.example.autohub.presentation.theme.labelColor
-import com.example.autohub.presentation.theme.unfocusedTextFieldColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun RoundedCornerTextField(
@@ -21,16 +17,16 @@ fun RoundedCornerTextField(
     label: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(20.dp),
+    shape: Shape = AppTheme.shapes.textFieldShape,
     colors: TextFieldColors = TextFieldDefaults.colors(
-        unfocusedContainerColor = unfocusedTextFieldColor,
-        focusedContainerColor = focusedTextFieldColor,
+        unfocusedContainerColor = AppTheme.colors.unfocusedTextFieldColor,
+        focusedContainerColor = AppTheme.colors.focusedTextFieldColor,
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
-        unfocusedLabelColor = labelColor,
-        focusedLabelColor = labelColor
+        unfocusedLabelColor = AppTheme.colors.labelColor,
+        focusedLabelColor = AppTheme.colors.labelColor
     ),
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     TextField(
         value = text,

@@ -3,17 +3,17 @@ package com.example.autohub.data.repository.impl.firebase
 import com.example.autohub.data.firebase.constants.FirestoreCollections.USERS
 import com.example.autohub.data.firebase.constants.FirestoreFields.LOCAL_TOKEN_FIELD
 import com.example.autohub.data.firebase.constants.FirestoreFields.STATUS_FIELD
-import com.example.autohub.domain.HandledException
+import com.example.autohub.domain.model.result.HandledException
 import com.example.autohub.data.mapper.toUserStatusDomain
 import com.example.autohub.data.mapper.toUserStatusData
 import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.mapper.toUserData
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
-import com.example.autohub.domain.model.HandleErrorTag
+import com.example.autohub.domain.model.result.HandleErrorTag
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.domain.model.User as UserDataDomain
-import com.example.autohub.domain.model.UserStatus as UserStatusDomain
+import com.example.autohub.domain.model.user.User as UserDataDomain
+import com.example.autohub.domain.model.chat.UserStatus as UserStatusDomain
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging

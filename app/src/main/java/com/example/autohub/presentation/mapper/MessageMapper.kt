@@ -1,13 +1,13 @@
 package com.example.autohub.presentation.mapper
 
 import com.example.autohub.presentation.model.messenger.Message
-import com.example.autohub.domain.model.Message as MessageDomain
+import com.example.autohub.domain.model.chat.Message as MessageDomain
 
 fun Message.toUserDomain(): MessageDomain {
     return MessageDomain(
         id = id,
-        senderUID = senderUid,
-        receiverUID = receiverUID,
+        senderId = senderId,
+        receiverId = receiverId,
         text = text,
         timeMillis = timeMillis,
         isRead = isRead,
@@ -18,8 +18,8 @@ fun Message.toUserDomain(): MessageDomain {
 fun MessageDomain.toUserPresentation(): Message {
     return Message(
         id = id,
-        senderUid = senderUID,
-        receiverUID = receiverUID,
+        senderId = senderId,
+        receiverId = receiverId,
         text = text,
         timeMillis = timeMillis,
         isRead = isRead,

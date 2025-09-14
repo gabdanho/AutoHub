@@ -1,7 +1,7 @@
 package com.example.autohub.domain.interfaces.repository.remote
 
-import com.example.autohub.domain.model.User
-import com.example.autohub.domain.model.UserStatus
+import com.example.autohub.domain.model.user.User
+import com.example.autohub.domain.model.chat.UserStatus
 import com.example.autohub.domain.model.result.FirebaseResult
 
 interface AuthUserRepository {

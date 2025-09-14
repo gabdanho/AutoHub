@@ -45,7 +45,7 @@ class AdScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
-            when (val result = getUserDataUseCase(userUID = uid)) {
+            when (val result = getUserDataUseCase(userId = uid)) {
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
                         state.copy(

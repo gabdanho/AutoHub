@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -39,7 +40,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -49,8 +49,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.autohub.R
@@ -61,9 +59,9 @@ import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.Message
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
-import com.example.autohub.presentation.model.messenger.ChatSideEffect
-import com.example.autohub.presentation.theme.cardColor
-import com.example.autohub.presentation.theme.containerColor
+import com.example.autohub.presentation.theme.AppTheme
+
+private const val MAX_LINES_MESSAGES = 6
 
 @Composable
 fun ChattingScreen(
@@ -104,13 +102,13 @@ fun ChattingScreen(
     )
 
     Scaffold(
-        bottomBar = {
-            MessageInputField(
-                text = uiState.messageTextValue,
-                onValueChange = { viewModel.updateMessageTextValue(value = it) },
-                onSendMessageClick = {
-                    viewModel.sendMessage()
-                }
+        topBar = {
+            ParticipantTopBar(
+                imageUrl = uiState.participantData.image,
+                firstName = uiState.participantData.firstName,
+                lastName = uiState.participantData.lastName,
+                participantStatus = participantStatus,
+                onParticipantClick = { viewModel.onParticipantClick(user = uiState.participantData) }
             )
         },
         modifier = modifier.fillMaxSize()
@@ -122,67 +120,33 @@ fun ChattingScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(innerPadding)
+                        .imePadding()
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(cardColor)
-                            .clickable { viewModel.onParticipantClick(user = uiState.participantData) }
-                    ) {
-
-                        Box {
-                            val circleSize = with(LocalDensity.current) { 4.dp.toPx() }
-
-                            AsyncImage(
-                                model = uiState.participantData.image,
-                                contentDescription = stringResource(id = R.string.content_participant_image),
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .size(60.dp)
-                                    .clip(CircleShape)
-                                    .border(2.dp, containerColor, CircleShape)
-                            )
-                            Canvas(
-                                modifier = Modifier
-                                    .size(4.dp)
-                                    .padding(8.dp)
-                            ) {
-                                drawCircle(
-                                    radius = circleSize,
-                                    color = if (participantStatus == UserStatus.Online) Color.Green else Color.Gray
-                                )
-                            }
-                        }
-                        Text(
-                            text = stringResource(
-                                id = R.string.text_participant_name,
-                                uiState.participantData.firstName,
-                                uiState.participantData.lastName
-                            ),
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.W300,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-
                     LazyColumn(
                         state = listState,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.weight(AppTheme.dimens.fullWeight)
                     ) {
                         items(messages) { message ->
-                            if (message.receiverUID == uiState.authUserData.uid && !message.isRead)
+                            if (message.receiverId == uiState.authUserData.uid && !message.isRead)
                                 viewModel.markMessageAsRead(messageId = message.id)
                             UserMessage(
                                 text = message.text,
                                 time = message.formattedData,
                                 authUserId = uiState.authUserData.uid,
-                                senderUid = message.senderUid,
+                                senderId = message.senderId,
                                 isRead = message.isRead
                             )
                         }
                     }
+
+                    MessageInputField(
+                        text = uiState.messageTextValue,
+                        onValueChange = { viewModel.updateMessageTextValue(value = it) },
+                        onSendMessageClick = {
+                            viewModel.sendMessage()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
 
@@ -209,52 +173,104 @@ fun ChattingScreen(
 }
 
 @Composable
+private fun ParticipantTopBar(
+    imageUrl: String,
+    firstName: String,
+    lastName: String,
+    participantStatus: UserStatus,
+    onParticipantClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(AppTheme.colors.cardColor)
+            .clickable { onParticipantClick() }
+    ) {
+
+        Box {
+            val circleSize = with(LocalDensity.current) { AppTheme.dimens.circleStatusSize.toPx() }
+            val onlineColor = AppTheme.colors.userOnlineColor
+            val offlineColor = AppTheme.colors.userOfflineColor
+
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = stringResource(id = R.string.content_participant_image),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .padding(AppTheme.dimens.extraSmall)
+                    .size(AppTheme.dimens.chattingProfileImageSize)
+                    .clip(CircleShape)
+                    .border(AppTheme.dimens.smallBorderSize, AppTheme.colors.containerColor, CircleShape)
+            )
+            Canvas(
+                modifier = Modifier
+                    .size(AppTheme.dimens.circleStatusSize)
+                    .padding(AppTheme.dimens.extraSmall)
+            ) {
+                drawCircle(
+                    radius = circleSize,
+                    color = if (participantStatus == UserStatus.Online) onlineColor else offlineColor
+                )
+            }
+        }
+        Text(
+            text = stringResource(id = R.string.text_participant_name, firstName, lastName),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.W300,
+            modifier = Modifier.padding(start = AppTheme.dimens.extraSmall)
+        )
+    }
+}
+
+@Composable
 private fun UserMessage(
     text: String,
     time: String,
     authUserId: String,
-    senderUid: String,
+    senderId: String,
     isRead: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val windowInfo = LocalWindowInfo.current
     val maxWidth = with(LocalDensity.current) {
-        (windowInfo.containerSize.width * 0.7f).toDp()
+        (windowInfo.containerSize.width * AppTheme.dimens.messageMaxSize).toDp()
     }
 
     Row(
-        horizontalArrangement = if (senderUid == authUserId) Arrangement.End else Arrangement.Start,
+        horizontalArrangement = if (senderId == authUserId) Arrangement.End else Arrangement.Start,
         modifier = Modifier.fillMaxWidth()
     ) {
         Card(
-            elevation = CardDefaults.cardElevation(2.dp),
-            colors = CardDefaults.cardColors(cardColor),
+            elevation = CardDefaults.cardElevation(AppTheme.dimens.messageElevation),
+            colors = CardDefaults.cardColors(AppTheme.colors.cardColor),
             modifier = modifier
                 .widthIn(max = maxWidth)
-                .padding(8.dp)
+                .padding(AppTheme.dimens.extraSmall)
         ) {
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 4.dp)
+                modifier = Modifier.padding(horizontal = AppTheme.dimens.ultraSmall)
             ) {
-                if (!isRead && authUserId == senderUid) {
+                if (!isRead && authUserId == senderId) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .size(7.dp)
-                            .background(color = containerColor, shape = CircleShape)
+                            .size(AppTheme.dimens.messageReadCircleSize)
+                            .background(color = AppTheme.colors.containerColor, shape = CircleShape)
                     ) { }
                 }
                 Text(
                     buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontSize = 15.sp)) {
+                        withStyle(style = SpanStyle(fontSize = AppTheme.fonts.message)) {
                             append(text = "$text ")
                         }
-                        withStyle(style = SpanStyle(color = Color.LightGray, fontSize = 10.sp)) {
+                        withStyle(style = SpanStyle(color = AppTheme.colors.dateChatColor, fontSize = AppTheme.fonts.date)) {
                             append(text = time)
                         }
-                    }, modifier = Modifier.padding(8.dp)
+                    }, modifier = Modifier.padding(AppTheme.dimens.extraSmall)
                 )
             }
         }
@@ -275,20 +291,20 @@ private fun MessageInputField(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .border(width = 2.dp, color = containerColor.copy(alpha = 0.5f))
+            .padding(AppTheme.dimens.extraSmall)
+            .border(width = AppTheme.dimens.smallBorderSize, color = AppTheme.colors.containerColorAlpha50)
     ) {
         TextField(
             value = text,
             onValueChange = { onValueChange(it) },
             placeholder = { Text(text = stringResource(id = R.string.placeholder_message)) },
-            maxLines = 6,
+            maxLines = MAX_LINES_MESSAGES,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White,
+                unfocusedContainerColor = AppTheme.colors.white,
+                focusedContainerColor = AppTheme.colors.white,
             ),
             modifier = Modifier
-                .weight(1f)
+                .weight(AppTheme.dimens.fullWeight)
                 .verticalScroll(scrollState)
         )
         IconButton(
@@ -297,7 +313,7 @@ private fun MessageInputField(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.Send,
                 contentDescription = stringResource(id = R.string.content_send_message),
-                tint = containerColor
+                tint = AppTheme.colors.containerColor
             )
         }
     }
@@ -305,23 +321,23 @@ private fun MessageInputField(
 
 @Composable
 private fun HandleSideEffects(
-    chatSideEffect: ChatSideEffect,
+    chatSideEffect: ChattingSideEffect,
     listState: LazyListState,
     messages: List<Message>,
-    changeSideEffect: (ChatSideEffect) -> Unit,
+    changeSideEffect: (ChattingSideEffect) -> Unit,
 ) {
     LaunchedEffect(messages) {
         when (chatSideEffect) {
-            ChatSideEffect.ScrollToLastMessage -> {
+            ChattingSideEffect.ScrollToLastMessage -> {
                 if (messages.isNotEmpty()) {
-                    listState.scrollToItem(messages.size - 1)
-                    changeSideEffect(ChatSideEffect.StayInLastMessages)
+                    listState.animateScrollToItem(messages.size - 1)
+                    changeSideEffect(ChattingSideEffect.StayInLastMessages)
                 }
             }
 
-            ChatSideEffect.StayInLastMessages -> {
+            ChattingSideEffect.StayInLastMessages -> {
                 if (messages.isNotEmpty() && listState.isScrolledToTheEnd()) {
-                    listState.scrollToItem(messages.size - 1)
+                    listState.animateScrollToItem(messages.size - 1)
                 }
             }
         }

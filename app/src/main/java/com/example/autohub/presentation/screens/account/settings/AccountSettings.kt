@@ -13,8 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ButtonDefaults.buttonColors
@@ -38,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -50,8 +50,7 @@ import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.TopAdAppBar
 import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
-import com.example.autohub.presentation.theme.containerColor
-import com.example.autohub.presentation.theme.labelColor
+import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.convertUriToBytes
 
 @Composable
@@ -78,6 +77,7 @@ fun AccountSettings(
                 ).show()
             }
         }
+    val scrollState = rememberScrollState()
 
     BackHandler {
         viewModel.onBackButtonClick()
@@ -128,22 +128,23 @@ fun AccountSettings(
             Column(
                 modifier = modifier
                     .padding(innerPadding)
-                    .padding(8.dp)
+                    .padding(AppTheme.dimens.extraSmall)
                     .fillMaxSize()
+                    .verticalScroll(scrollState)
             ) {
                 // Имя фамилия
                 Text(
                     text = stringResource(id = R.string.text_first_and_last_name),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                         .fillMaxWidth()
                 )
                 HorizontalDivider()
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(AppTheme.dimens.extraSmall)
                 ) {
                     InputField(
                         text = stringResource(id = R.string.input_first_name),
@@ -153,7 +154,7 @@ fun AccountSettings(
                         placeHolder = uiState.user.firstName,
                         modifier = modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     InputField(
                         text = stringResource(id = R.string.input_last_name),
@@ -163,7 +164,7 @@ fun AccountSettings(
                         placeHolder = uiState.user.lastName,
                         modifier = modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     CustomButton(
                         text = stringResource(id = R.string.button_accept_changes),
@@ -173,7 +174,7 @@ fun AccountSettings(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp)
+                            .padding(top = AppTheme.dimens.extraSmall)
                     )
                 }
                 // Город
@@ -181,14 +182,14 @@ fun AccountSettings(
                     text = stringResource(id = R.string.text_city),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                         .fillMaxWidth()
                 )
                 HorizontalDivider()
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(AppTheme.dimens.extraSmall)
                 ) {
                     InputField(
                         text = stringResource(id = R.string.input_city),
@@ -197,7 +198,7 @@ fun AccountSettings(
                         placeHolder = uiState.user.city,
                         modifier = modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = AppTheme.dimens.medium)
                     )
                     CustomButton(
                         text = stringResource(id = R.string.button_accept_changes),
@@ -207,7 +208,7 @@ fun AccountSettings(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp)
+                            .padding(top = AppTheme.dimens.extraSmall)
                     )
                 }
                 // Фото профиля
@@ -215,7 +216,7 @@ fun AccountSettings(
                     text = stringResource(id = R.string.content_user_image),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                         .fillMaxWidth()
                 )
                 HorizontalDivider()
@@ -223,16 +224,16 @@ fun AccountSettings(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(AppTheme.dimens.extraSmall)
                 ) {
                     AsyncImage(
                         model = uiState.user.image,
                         contentDescription = stringResource(id = R.string.content_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(100.dp)
+                            .size(AppTheme.dimens.profileImageSize)
                             .clip(CircleShape)
-                            .border(2.dp, containerColor, CircleShape)
+                            .border(AppTheme.dimens.smallBorderSize, AppTheme.colors.containerColor, CircleShape)
                     )
                     CustomButton(
                         text = stringResource(id = R.string.button_change_user_image),
@@ -241,8 +242,8 @@ fun AccountSettings(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 8.dp)
-                            .weight(1f)
+                            .padding(start = AppTheme.dimens.extraSmall)
+                            .weight(AppTheme.dimens.fullWeight)
                     )
                 }
                 // Смена пароля
@@ -250,7 +251,7 @@ fun AccountSettings(
                     text = stringResource(id = R.string.text_password),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(end = 8.dp)
+                        .padding(end = AppTheme.dimens.extraSmall)
                         .fillMaxWidth()
                 )
                 HorizontalDivider()
@@ -261,7 +262,7 @@ fun AccountSettings(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = AppTheme.dimens.extraSmall)
                 )
             }
         }
@@ -282,7 +283,7 @@ fun ChangePasswordDialog(
             colors = CardDefaults.cardColors(containerColor = Color.White),
             modifier = modifier
         ) {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(AppTheme.dimens.extraSmall)) {
                 Text(
                     text = stringResource(id = R.string.text_incorrect_password),
                     textAlign = TextAlign.Center,
@@ -291,7 +292,7 @@ fun ChangePasswordDialog(
                 TextField(
                     value = passwordValue,
                     onValueChange = { onPasswordValueChange(it) },
-                    shape = RoundedCornerShape(20.dp),
+                    shape = AppTheme.shapes.textFieldShape,
                     placeholder = {
                         Text(text = stringResource(id = R.string.text_new_password))
                     },
@@ -300,8 +301,8 @@ fun ChangePasswordDialog(
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,
-                        unfocusedIndicatorColor = labelColor,
-                        focusedIndicatorColor = labelColor
+                        unfocusedIndicatorColor = AppTheme.colors.labelColor,
+                        focusedIndicatorColor = AppTheme.colors.labelColor
                     ),
                     trailingIcon = {
                         if (isInputError) Icon(
@@ -320,14 +321,14 @@ fun ChangePasswordDialog(
                         text = stringResource(id = R.string.button_cancel),
                         onClick = { hideDialog() },
                         colorButton = buttonColors(
-                            containerColor = Color.White
+                            containerColor = AppTheme.colors.white
                         ),
                         textColor = Color.Black,
-                        border = BorderStroke(4.dp, containerColor),
+                        border = BorderStroke(AppTheme.dimens.mediumBorderSize, AppTheme.colors.containerColor),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 8.dp)
-                            .weight(1f)
+                            .padding(end = AppTheme.dimens.extraSmall)
+                            .weight(AppTheme.dimens.fullWeight)
                     )
                     CustomButton(
                         text = stringResource(id = R.string.button_confirm),
@@ -337,7 +338,7 @@ fun ChangePasswordDialog(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
+                            .weight(AppTheme.dimens.fullWeight)
                     )
                 }
             }

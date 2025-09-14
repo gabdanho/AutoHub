@@ -1,7 +1,5 @@
 package com.example.autohub.domain.model.result
 
-import com.example.autohub.domain.model.HandleErrorTag
-
 /**
  * Обобщённый класс-обёртка, представляющий результат выполнения операции.
  *

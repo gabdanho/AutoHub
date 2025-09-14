@@ -1,11 +1,11 @@
 package com.example.autohub.data.mapper
 
 import com.example.autohub.data.firebase.model.ad.CarAd
-import com.example.autohub.domain.model.CarAd as CarAdDomain
+import com.example.autohub.domain.model.ad.CarAd as CarAdDomain
 
 fun CarAdDomain.toCarAdData(): CarAd {
     return CarAd(
-        userUID = userUID,
+        userId = userId,
         adID = adID,
         dateAdPublished = dateAdPublished,
         city = city,
@@ -29,7 +29,7 @@ fun CarAdDomain.toCarAdData(): CarAd {
 
 fun CarAd.toCarAdDomain(): CarAdDomain {
     return CarAdDomain(
-        userUID = userUID,
+        userId = userId,
         adID = adID,
         dateAdPublished = dateAdPublished,
         city = city,

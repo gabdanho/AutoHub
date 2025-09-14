@@ -2,7 +2,7 @@ package com.example.autohub.domain.usecase
 
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
 import com.example.autohub.domain.interfaces.usecase.GetParticipantsChatsUseCase
-import com.example.autohub.domain.model.ChatConservation
+import com.example.autohub.domain.model.chat.ChatConservation
 import kotlinx.coroutines.flow.Flow
 
 class GetParticipantsChatsUseCaseImpl(

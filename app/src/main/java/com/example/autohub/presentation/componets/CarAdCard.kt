@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
@@ -16,25 +15,25 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.model.ad.CarAd
-import com.example.autohub.presentation.theme.cardColor
+import com.example.autohub.presentation.theme.AppTheme
 
 @Composable
 fun CarAdCard(
     ad: CarAd,
     onAdClick: () -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(bottomEnd = 15.dp, bottomStart = 15.dp),
-    elevation: CardElevation = CardDefaults.cardElevation(4.dp),
-
+    shape: Shape = AppTheme.shapes.carAdCardShape,
+    elevation: CardElevation = CardDefaults.cardElevation(AppTheme.dimens.carAdElevation),
+    imageHeight: Dp = AppTheme.dimens.carAdsMainAdCardImageSize,
 ) {
     Card(
         shape = shape,
         elevation = elevation,
-        colors = CardDefaults.cardColors(cardColor),
+        colors = CardDefaults.cardColors(AppTheme.colors.cardColor),
         onClick = { onAdClick() },
         modifier = modifier
     ) {
@@ -46,14 +45,14 @@ fun CarAdCard(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(150.dp)
+                        .height(imageHeight)
                 )
             }
             Text(
                 text = stringResource(id = R.string.text_ad_price, ad.price),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(AppTheme.dimens.extraSmall)
             )
             Text(
                 text = stringResource(
@@ -64,7 +63,7 @@ fun CarAdCard(
                     ad.realiseYear,
                     ad.mileage
                 ),
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(AppTheme.dimens.extraSmall)
             )
             Text(
                 text = stringResource(
@@ -73,7 +72,7 @@ fun CarAdCard(
                     ad.dateAdPublished
                 ),
                 style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(AppTheme.dimens.extraSmall)
             )
         }
     }
