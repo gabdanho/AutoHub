@@ -28,7 +28,8 @@ data class AdCreateScreenUiState(
     val conditionValue: ConditionType? = null,
 
     val images: List<UiImage> = emptyList(),
-    val imageToShow: UiImage? = null,
+    val imageIdToShow: Int = 0,
+    val isShowImagePager: Boolean = false,
 
     val isBrandValueError: Boolean = false,
     val isModelValueError: Boolean = false,

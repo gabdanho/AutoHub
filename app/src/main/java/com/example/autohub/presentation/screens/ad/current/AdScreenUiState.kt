@@ -9,5 +9,6 @@ data class AdScreenUiState(
     val user: User = User(),
     val loadingState: LoadingState? = null,
     val uiMessage: UiMessage = UiMessage(),
-    val imageToShow: String? = null,
+    val imageIdToShow: Int = 0,
+    val isShowImagePager: Boolean = false,
 )

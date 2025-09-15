@@ -61,6 +61,7 @@
     <string name="content_clear_all_filters">Очистить все фильтры</string>
     <string name="content_participant_image">Фото покупателя</string>
     <string name="content_user_image">Фото профиля</string>
+    <string name="content_delete_image">Удалить изображение</string>
 
     <string name="text_messenger">Мессенджер</string>
     <string name="text_ad_price">%1$s Р.</string>

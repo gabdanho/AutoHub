@@ -1,5 +1,6 @@
 package com.example.autohub.presentation.screens.ad.create
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.model.result.HandledException
@@ -119,14 +120,25 @@ class AdCreateScreenViewModel @Inject constructor(
         _uiState.update { state -> state.copy(conditionValue = value) }
     }
 
-    fun updateImageToShow(value: UiImage?) {
+    fun updateImageIdToShow(value: Int) {
         _uiState.update { state ->
-            state.copy(imageToShow = value)
+            state.copy(imageIdToShow = value, isShowImagePager = true)
         }
     }
 
     fun addImage(image: UiImage) {
         _uiState.update { state -> state.copy(images = state.images + image) }
+    }
+
+    fun removeImage(imageUri: Uri) {
+        _uiState.update { state ->
+            val currentImageUi = state.images.first { it.uri == imageUri }
+            state.copy(images = state.images - currentImageUi)
+        }
+    }
+
+    fun changeIsShowImagePager(value: Boolean) {
+        _uiState.update { state -> state.copy(isShowImagePager = value) }
     }
 
     fun onCreateAdClick() {

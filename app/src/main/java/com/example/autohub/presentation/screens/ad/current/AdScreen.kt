@@ -34,6 +34,7 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.componets.CustomButton
+import com.example.autohub.presentation.componets.ImagePagerString
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.ListPhotos
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
@@ -103,8 +104,7 @@ fun AdScreen(
                 ) {
                     ListPhotos(
                         imagesUrl = carAd.imagesUrl,
-                        imageToShow = uiState.imageToShow,
-                        changeImageToShow = { viewModel.changeImageToShow(value = it) },
+                        onImageClick = { viewModel.changeImageIdToShow(value = it) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(AppTheme.colors.cardColor)
@@ -301,6 +301,14 @@ fun AdScreen(
 
             null -> {}
         }
+    }
+
+    if (uiState.isShowImagePager) {
+        ImagePagerString(
+            images = carAd.imagesUrl,
+            currentImageId = uiState.imageIdToShow,
+            onClose = { viewModel.changeIsShowImagePager(value = false) }
+        )
     }
 }
 

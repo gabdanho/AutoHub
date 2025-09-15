@@ -124,8 +124,8 @@ class AdScreenViewModel @Inject constructor(
         }
     }
 
-    fun changeImageToShow(value: String?) {
-        _uiState.update { state -> state.copy(imageToShow = value) }
+    fun changeImageIdToShow(value: Int) {
+        _uiState.update { state -> state.copy(imageIdToShow = value, isShowImagePager = true) }
     }
 
     fun clearCallEvent() {
@@ -134,5 +134,9 @@ class AdScreenViewModel @Inject constructor(
 
     fun clearMessage() {
         _uiState.update { state -> state.copy(uiMessage = UiMessage()) }
+    }
+
+    fun changeIsShowImagePager(value: Boolean) {
+        _uiState.update { state -> state.copy(isShowImagePager = value) }
     }
 }

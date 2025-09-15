@@ -22,6 +22,7 @@ data class Colors(
     val userOnlineColor: Color = Color.Green,
     val userOfflineColor: Color = Color.Gray,
     val dateChatColor: Color = Color.LightGray,
+    val imagePagerBackground: Color = Color(0xFF363636),
 )
 
 val lightColors = Colors()

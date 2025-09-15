@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -23,8 +23,7 @@ private const val WIDTH_DIVIDER = 3
 @Composable
 fun ListPhotos(
     imagesUrl: List<String>,
-    imageToShow: String?,
-    changeImageToShow: (String?) -> Unit,
+    onImageClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val windowInfo = LocalWindowInfo.current
@@ -32,7 +31,7 @@ fun ListPhotos(
     val imageWidth = (width / WIDTH_DIVIDER).coerceAtMost(AppTheme.dimens.maxAdImageWidth)
 
     LazyRow(modifier = modifier) {
-        items(imagesUrl) { url ->
+        itemsIndexed(imagesUrl) { id, url ->
             AsyncImage(
                 model = url,
                 contentDescription = stringResource(id = R.string.content_image),
@@ -40,16 +39,9 @@ fun ListPhotos(
                 modifier = Modifier
                     .width(imageWidth)
                     .aspectRatio(AppTheme.dimens.imageAspectRatio)
-                    .clickable { changeImageToShow(url) }
+                    .clickable { onImageClick(id) }
                     .padding(horizontal = AppTheme.dimens.ultraSmall)
             )
         }
-    }
-
-    if (imageToShow != null) {
-        ImageDialog(
-            url = imageToShow,
-            closeDialog = { changeImageToShow(null) }
-        )
     }
 }

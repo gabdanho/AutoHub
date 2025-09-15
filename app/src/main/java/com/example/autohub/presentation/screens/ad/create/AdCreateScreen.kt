@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.CustomButton
+import com.example.autohub.presentation.componets.ImagePagerUri
 import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.ListAddedPhotos
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
@@ -109,14 +110,12 @@ fun AdCreateScreen(
                         )
                         ListAddedPhotos(
                             images = uiState.images.map { it.uri },
-                            imageToShow = uiState.imageToShow?.uri,
                             onAddImageClick = {
                                 galleryLauncher.launch("image/*")
                             },
-                            changeImageToShow = {
-                                viewModel.updateImageToShow(value = it?.let {
-                                    UiImage(uri = it)
-                                })
+                            onImageClick = { viewModel.updateImageIdToShow(it) },
+                            onRemoveImageClick = {
+                                viewModel.removeImage(imageUri = it)
                             },
                             modifier = modifier
                                 .fillMaxWidth()
@@ -275,5 +274,13 @@ fun AdCreateScreen(
                 }
             }
         }
+    }
+
+    if (uiState.isShowImagePager) {
+        ImagePagerUri(
+            images = uiState.images.map { it.uri },
+            currentImageId = uiState.imageIdToShow,
+            onClose = { viewModel.changeIsShowImagePager(value = false) }
+        )
     }
 }
