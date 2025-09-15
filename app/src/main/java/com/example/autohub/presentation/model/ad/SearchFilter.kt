@@ -1,4 +1,4 @@
-package com.example.autohub.presentation.model
+package com.example.autohub.presentation.model.ad
 
 import kotlinx.serialization.Serializable
 

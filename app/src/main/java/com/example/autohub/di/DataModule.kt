@@ -13,6 +13,10 @@ import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
 import com.example.autohub.domain.interfaces.repository.remote.UserDataRepository
+import com.example.autohub.domain.interfaces.usecase.MillisToDateUseCase
+import com.example.autohub.domain.interfaces.usecase.MillisToTimeUseCase
+import com.example.autohub.domain.usecase.MillisToDateUseCaseImpl
+import com.example.autohub.domain.usecase.MillisToTimeUseCaseImpl
 import com.example.autohub.domain.utils.TimeProvider
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -128,5 +132,17 @@ object DataModule {
     @Singleton
     fun provideUserPreferencesRepository(@ApplicationContext context: Context): UserPreferencesRepository {
         return UserPreferencesRepositoryImpl(context = context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMillisToDate(systemTimeProvider: TimeProvider): MillisToDateUseCase {
+        return MillisToDateUseCaseImpl(systemTimeProvider = systemTimeProvider)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMillisToTime(systemTimeProvider: TimeProvider): MillisToTimeUseCase {
+        return MillisToTimeUseCaseImpl(systemTimeProvider = systemTimeProvider)
     }
 }

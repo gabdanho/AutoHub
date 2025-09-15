@@ -77,14 +77,13 @@ class AdDataRepositoryImpl @Inject constructor(
     ): FirebaseResult<Unit> {
         return safeFirebaseCall {
             val timeStamp = timeProvider.currentTimeMillis()
-            val currentDate = timeProvider.millisToDate(timeStamp)
             val adReference = createAdReference(userId = carAdInfo.userId, timeStamp = timeStamp)
             val docReference = fbFirestore
                 .collection(ADS)
                 .document(adReference)
             val updatedCarAd = carAdInfo.copy(
                 adID = adReference,
-                dateAdPublished = currentDate
+                timeMillis = timeStamp
             )
 
             docReference.set(updatedCarAd).await()

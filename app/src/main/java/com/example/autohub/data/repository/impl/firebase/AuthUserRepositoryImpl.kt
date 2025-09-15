@@ -75,6 +75,7 @@ class AuthUserRepositoryImpl @Inject constructor(
 
     override suspend fun signOut() {
         safeFirebaseCall {
+            changeUserStatus(status = UserStatusDomain.Offline)
             fbAuth.signOut()
         }
     }

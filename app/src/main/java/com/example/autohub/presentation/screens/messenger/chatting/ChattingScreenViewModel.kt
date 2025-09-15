@@ -8,8 +8,10 @@ import com.example.autohub.domain.interfaces.usecase.GetParticipantStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.interfaces.usecase.MarkMessagesAsReadUseCase
+import com.example.autohub.domain.interfaces.usecase.MillisToTimeUseCase
 import com.example.autohub.domain.interfaces.usecase.SendMessageUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
+import com.example.autohub.presentation.mapper.mapListMessageDomainToPresentation
 import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.mapper.toUserDomain
 import com.example.autohub.presentation.mapper.toUserPresentation
@@ -43,6 +45,7 @@ class ChattingScreenViewModel @Inject constructor(
     private val getParticipantStatusUseCase: GetParticipantStatusUseCase,
     private val getAuthUserIdUseCase: GetAuthUserIdUseCase,
     private val getUserDataUseCase: GetUserDataUseCase,
+    private val millisToTimeUseCase: MillisToTimeUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChattingScreenUiState())
@@ -200,7 +203,10 @@ class ChattingScreenViewModel @Inject constructor(
                 participantId = state.participantData.uid
             )
                 .onEach { messages ->
-                    _messages.value = messages.map { it.toUserPresentation() }
+                    _messages.value = mapListMessageDomainToPresentation(
+                        messages = messages,
+                        millisToTime = millisToTimeUseCase::invoke
+                    )
                 }
                 .catch { error ->
                     Log.e(ChatLog.TAG, ChatLog.ERROR_MESSAGES, error)

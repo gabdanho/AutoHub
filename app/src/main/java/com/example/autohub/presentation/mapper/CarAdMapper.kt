@@ -13,7 +13,6 @@ fun CarAd.toCarAdDomain(): CarAdDomain {
     return CarAdDomain(
         userId = userId,
         brand = brand,
-        dateAdPublished = dateAdPublished,
         model = model,
         realiseYear = realiseYear,
         price = price,
@@ -27,7 +26,8 @@ fun CarAd.toCarAdDomain(): CarAdDomain {
         steeringWheelSide = steeringWheelSide?.tag ?: "",
         mileage = mileage,
         color = color,
-        imagesUrl = imagesUrl
+        imagesUrl = imagesUrl,
+        timeMillis = timeMillis,
     )
 }
 
@@ -35,7 +35,6 @@ fun CarAdDomain.toCarAdPresentation(): CarAd {
     return CarAd(
         userId = userId,
         brand = brand,
-        dateAdPublished = dateAdPublished,
         model = model,
         realiseYear = realiseYear,
         price = price,
@@ -49,6 +48,14 @@ fun CarAdDomain.toCarAdPresentation(): CarAd {
         steeringWheelSide = SteeringWheelSideType.fromTag(value = steeringWheelSide),
         mileage = mileage,
         color = color,
-        imagesUrl = imagesUrl
+        imagesUrl = imagesUrl,
+        timeMillis = timeMillis,
     )
+}
+
+fun mapListCarAdDomainToPresentation(ads: List<CarAdDomain>, millisToDate: (Long) -> String): List<CarAd> {
+    return ads.map { carAd ->
+        carAd.toCarAdPresentation()
+            .copy(dateAdPublished = millisToDate(carAd.timeMillis))
+    }
 }

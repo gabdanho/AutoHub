@@ -11,7 +11,6 @@ fun Message.toUserDomain(): MessageDomain {
         text = text,
         timeMillis = timeMillis,
         isRead = isRead,
-        formattedData = formattedData
     )
 }
 
@@ -23,6 +22,12 @@ fun MessageDomain.toUserPresentation(): Message {
         text = text,
         timeMillis = timeMillis,
         isRead = isRead,
-        formattedData = formattedData
     )
+}
+
+fun mapListMessageDomainToPresentation(messages: List<MessageDomain>, millisToTime: (Long) -> String): List<Message> {
+    return messages.map { message ->
+        message.toUserPresentation()
+            .copy(timeFormatted = millisToTime(message.timeMillis))
+    }
 }

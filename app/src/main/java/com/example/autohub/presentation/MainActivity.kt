@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,13 +16,18 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
+import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.screens.MainScreen
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainActivityViewModel by viewModels()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +45,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.changeUserStatus(status = UserStatus.Online)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.changeUserStatus(status = UserStatus.Offline)
     }
 
     private fun requestNotificationPermission() {

@@ -41,7 +41,6 @@ class MessengerRepositoryImpl @Inject constructor(
     ) {
         safeFirebaseCall {
             val timeSend = timeProvider.currentTimeMillis()
-            val formattedData = timeProvider.millisToDate(millis = timeSend)
             val messageId = buildMessageId(timeSend = timeSend)
             val uniqueChatID = getUniqueId(sender.uid, receiver.uid)
             val textWithoutExtraSpaces = text.trim()
@@ -50,8 +49,7 @@ class MessengerRepositoryImpl @Inject constructor(
                 senderId = sender.uid,
                 receiverId = receiver.uid,
                 text = textWithoutExtraSpaces,
-                timeMillis = timeSend,
-                formattedData = formattedData
+                timeMillis = timeSend
             )
             val senderConservation = ChatConservation(
                 lastMessage = message.text,

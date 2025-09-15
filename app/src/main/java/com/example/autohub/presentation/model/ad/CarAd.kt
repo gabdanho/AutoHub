@@ -27,5 +27,6 @@ data class CarAd(
     val mileage: String = "",
     val color: String = "",
     val imagesUrl: List<String> = listOf(),
+    val timeMillis: Long = 0L,
     val city: String = ""
 )

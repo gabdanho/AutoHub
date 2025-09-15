@@ -14,7 +14,13 @@ class SystemTimeProvider : TimeProvider {
         return dateFormat.format(Date(millis))
     }
 
+    override fun millisToTime(millis: Long): String {
+        val timeFormat = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
+        return timeFormat.format(Date(millis))
+    }
+
     companion object {
         const val DATE_FORMAT = "dd.MM.yyyy"
+        const val TIME_FORMAT = "HH:mm"
     }
 }

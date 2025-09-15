@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetCurrentUserAdsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
+import com.example.autohub.domain.interfaces.usecase.MillisToDateUseCase
 import com.example.autohub.domain.interfaces.usecase.SignOutAndClearUserIdUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.presentation.mapper.toCarAdPresentation
+import com.example.autohub.presentation.mapper.mapListCarAdDomainToPresentation
 import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.model.LoadingState
@@ -32,6 +33,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
     private val getCurrentUserAdsUseCase: GetCurrentUserAdsUseCase,
     private val getLocalUserIdUseCase: GetLocalUserIdUseCase,
     private val signOutAndClearUserIdUseCase: SignOutAndClearUserIdUseCase,
+    private val millisToDateUseCase: MillisToDateUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUserAccountScreenUiState())
@@ -107,7 +109,10 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                             is FirebaseResult.Success -> {
                                 _uiState.update { state ->
                                     state.copy(
-                                        ads = adsResult.data.map { it.toCarAdPresentation() },
+                                        ads = mapListCarAdDomainToPresentation(
+                                            ads = adsResult.data,
+                                            millisToDate = millisToDateUseCase::invoke
+                                        ),
                                         loadingState = LoadingState.Success
                                     )
                                 }

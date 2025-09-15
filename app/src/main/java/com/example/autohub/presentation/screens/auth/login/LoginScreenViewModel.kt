@@ -162,7 +162,8 @@ class LoginScreenViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             message = StringResNamePresentation.INFO_LINK_TO_RESET_PASSWORD_SENT,
-                            loadingState = LoadingState.Success
+                            loadingState = LoadingState.Success,
+                            isShowPasswordDialog = false
                         )
                     }
                 }

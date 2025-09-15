@@ -1,7 +1,7 @@
 package com.example.autohub.presentation.navigation.model.nav_type
 
 import androidx.compose.runtime.Immutable
-import com.example.autohub.presentation.model.SearchFilter
+import com.example.autohub.presentation.model.ad.SearchFilter
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 

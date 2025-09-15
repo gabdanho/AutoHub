@@ -3,12 +3,13 @@ package com.example.autohub.presentation.screens.ad.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetAdsUseCase
+import com.example.autohub.domain.interfaces.usecase.MillisToDateUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.presentation.mapper.toCarAdPresentation
+import com.example.autohub.presentation.mapper.mapListCarAdDomainToPresentation
 import com.example.autohub.presentation.mapper.toSearchFilterDomain
 import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.model.LoadingState
-import com.example.autohub.presentation.model.SearchFilter
+import com.example.autohub.presentation.model.ad.SearchFilter
 import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.navigation.Navigator
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class AdsMainScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getAdsUseCase: GetAdsUseCase,
+    private val millisToDateUseCase: MillisToDateUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdsMainScreenUiState())
@@ -89,7 +91,10 @@ class AdsMainScreenViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             loadingState = LoadingState.Success,
-                            adsList = result.data.map { it.toCarAdPresentation() }
+                            adsList = mapListCarAdDomainToPresentation(
+                                ads = result.data,
+                                millisToDate = millisToDateUseCase::invoke
+                            )
                         )
                     }
                 }

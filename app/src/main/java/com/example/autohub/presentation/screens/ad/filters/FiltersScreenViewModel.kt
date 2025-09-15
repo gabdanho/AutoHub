@@ -17,7 +17,7 @@ import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD
 import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_REALISE_YEAR
 import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_STEERING_WHEEL_SIDE
 import com.example.autohub.presentation.constants.CarOptionsNamesConstants.FIELD_TRANSMISSION
-import com.example.autohub.presentation.model.SearchFilter
+import com.example.autohub.presentation.model.ad.SearchFilter
 import com.example.autohub.presentation.model.options.BodyType
 import com.example.autohub.presentation.model.options.CarOption
 import com.example.autohub.presentation.model.options.ConditionType

@@ -11,7 +11,6 @@ fun Message.toMessageDomain(): MessageDomain {
         text = text,
         timeMillis = timeMillis,
         isRead = read,
-        formattedData = formattedData
     )
 }
 
@@ -23,6 +22,5 @@ fun MessageDomain.toMessageData(): Message {
         text = text,
         timeMillis = timeMillis,
         read = isRead,
-        formattedData = formattedData
     )
 }

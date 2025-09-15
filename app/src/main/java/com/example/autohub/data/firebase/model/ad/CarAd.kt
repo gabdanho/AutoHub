@@ -3,7 +3,6 @@ package com.example.autohub.data.firebase.model.ad
 data class CarAd(
     val userId: String = "",
     val adID: String = "",
-    val dateAdPublished: String = "",
     val city: String = "",
     val brand: String = "",
     val model: String = "",
@@ -19,5 +18,6 @@ data class CarAd(
     val steeringWheelSide: String = "",
     val mileage: String = "",
     val color: String = "",
+    val timeMillis: Long = 0L,
     val imagesUrl: List<String> = listOf()
 )

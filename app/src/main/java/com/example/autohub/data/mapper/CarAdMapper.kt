@@ -7,7 +7,6 @@ fun CarAdDomain.toCarAdData(): CarAd {
     return CarAd(
         userId = userId,
         adID = adID,
-        dateAdPublished = dateAdPublished,
         city = city,
         brand = brand,
         model = model,
@@ -23,7 +22,8 @@ fun CarAdDomain.toCarAdData(): CarAd {
         steeringWheelSide = steeringWheelSide,
         mileage = mileage,
         color = color,
-        imagesUrl = imagesUrl
+        imagesUrl = imagesUrl,
+        timeMillis = timeMillis,
     )
 }
 
@@ -31,7 +31,6 @@ fun CarAd.toCarAdDomain(): CarAdDomain {
     return CarAdDomain(
         userId = userId,
         adID = adID,
-        dateAdPublished = dateAdPublished,
         city = city,
         brand = brand,
         model = model,
@@ -47,6 +46,7 @@ fun CarAd.toCarAdDomain(): CarAdDomain {
         steeringWheelSide = steeringWheelSide,
         mileage = mileage,
         color = color,
-        imagesUrl = imagesUrl
+        imagesUrl = imagesUrl,
+        timeMillis = timeMillis,
     )
 }

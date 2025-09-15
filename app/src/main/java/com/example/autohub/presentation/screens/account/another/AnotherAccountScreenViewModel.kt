@@ -3,8 +3,9 @@ package com.example.autohub.presentation.screens.account.another
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetCurrentUserAdsUseCase
+import com.example.autohub.domain.interfaces.usecase.MillisToDateUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
-import com.example.autohub.presentation.mapper.toCarAdPresentation
+import com.example.autohub.presentation.mapper.mapListCarAdDomainToPresentation
 import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class AnotherAccountScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getCurrentUserAdsUseCase: GetCurrentUserAdsUseCase,
+    private val millisToDateUseCase: MillisToDateUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AnotherAccountScreenUiState())
@@ -42,7 +44,10 @@ class AnotherAccountScreenViewModel @Inject constructor(
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
                         state.copy(
-                            sellerAds = result.data.map { it.toCarAdPresentation() },
+                            sellerAds = mapListCarAdDomainToPresentation(
+                                ads = result.data,
+                                millisToDate = millisToDateUseCase::invoke
+                            ),
                             loadingState = LoadingState.Success
                         )
                     }
