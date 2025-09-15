@@ -18,7 +18,7 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
 
-private const val IMAGE_DIVIDER = 3
+private const val WIDTH_DIVIDER = 3
 
 @Composable
 fun ListPhotos(
@@ -29,7 +29,7 @@ fun ListPhotos(
 ) {
     val windowInfo = LocalWindowInfo.current
     val width = with(LocalDensity.current) { windowInfo.containerSize.width.dp }
-    val imageWidth = (width / IMAGE_DIVIDER).coerceAtMost(AppTheme.dimens.maxAdImageWidth)
+    val imageWidth = (width / WIDTH_DIVIDER).coerceAtMost(AppTheme.dimens.maxAdImageWidth)
 
     LazyRow(modifier = modifier) {
         items(imagesUrl) { url ->

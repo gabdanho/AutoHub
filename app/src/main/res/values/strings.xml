@@ -64,7 +64,6 @@
 
     <string name="text_messenger">Мессенджер</string>
     <string name="text_ad_price">%1$s Р.</string>
-    <string name="text_incorrect_city">Неверно введен город</string>
     <string name="text_password">Пароль</string>
     <string name="text_auto_description">%1$s %2$s %3$s, %4$s, %5$s км</string>
     <string name="text_city_and_date_published">%1$s\n%2$s</string>
@@ -128,8 +127,6 @@
     <string name="text_ads_not_found">Объявлений не найдено</string>
     <string name="text_participant_name">%1$s %2$s</string>
     <string name="text_incorrect_first_last_name">Имя и фамилия должны содержать только буквы</string>
-    <string name="text_incorrect_email">Некорректная почта</string>
-    <string name="text_incorrect_phone">Некорректный номер телефона</string>
     <string name="text_passwords_dont_match">Пароли не совпадают</string>
     <string name="text_help_message_to_change_password">Чтобы сменить пароль, перейдите по ссылке, отправленной на Вашу почту.</string>
     <string name="text_registration">Регистрация</string>
@@ -187,6 +184,7 @@
     <string name="error_to_send_link_to_reset_password">Не удалось отправить ссылку для сброса пароля</string>
     <string name="error_registration_failed">Не удалось завершить регистрацию</string>
     <string name="error_send_message">Не удалось отправить сообщение</string>
+    <string name="error_incorrect_city">Неверно введен город</string>
     <string name="error_open_chat">Не удалось открыть чат с пользователем</string>
     <string name="error_listen_chats">Не удаётся получить сообщения</string>
     <string name="error_get_user">Не удалось получить данные о пользователе</string>
@@ -194,6 +192,9 @@
     <string name="error_timeout_error">Превышено время ожидания</string>
     <string name="error_login">Ошибка авторизации</string>
     <string name="error_update_user_field">Не удалось обновить данные</string>
+    <string name="error_incorrect_email">Некорректная почта</string>
+    <string name="error_incorrect_phone">Некорректный номер телефона</string>
+    <string name="error_name_incorrect">Имя/фамилия должно состоять только из букв и "-"</string>
 
     <string name="info_message_changed">Пароль успешно изменен</string>
     <string name="info_verif_code_sent">Подтверждение было отправлено почту</string>

@@ -20,7 +20,7 @@ import com.example.autohub.domain.model.user.User
 import com.example.autohub.domain.model.chat.Message as MessageDomain
 import com.example.autohub.domain.utils.TimeProvider
 import com.example.autohub.domain.model.chat.UserStatus as UserStatusDomain
-import com.example.autohub.domain.model.chat.ChatConservation as ChatInfoDomain
+import com.example.autohub.domain.model.chat.ChatConservation as ChatConservationDomain
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
@@ -120,7 +120,7 @@ class MessengerRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getParticipantsChats(authUserId: String): Flow<List<ChatInfoDomain>> {
+    override fun getParticipantsChats(authUserId: String): Flow<List<ChatConservationDomain>> {
         return callbackFlow {
             val listener = fbFirestore
                 .collection(CONSERVATIONS)

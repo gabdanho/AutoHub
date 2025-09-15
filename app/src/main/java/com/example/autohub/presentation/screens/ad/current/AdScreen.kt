@@ -118,7 +118,7 @@ fun AdScreen(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(AppTheme.dimens.extraSmall)
                         )
-
+                        println("${uiState.authUserId} != ${carAd.userId}")
                         if (uiState.authUserId != carAd.userId) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,

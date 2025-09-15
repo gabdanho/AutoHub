@@ -2,6 +2,7 @@ package com.example.autohub.presentation.screens.ad.current
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toStringResNamePresentation
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class AdScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getUserDataUseCase: GetUserDataUseCase,
+    private val getLocalUserIdUseCase: GetLocalUserIdUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdScreenUiState())
@@ -30,6 +32,14 @@ class AdScreenViewModel @Inject constructor(
 
     private val _callEvent = MutableStateFlow<String?>(null)
     val callEvent: StateFlow<String?> = _callEvent.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            getLocalUserIdUseCase()?.let { uid ->
+                _uiState.update { state -> state.copy(authUserId = uid) }
+            }
+        }
+    }
 
     fun onUserClick() {
         viewModelScope.launch {

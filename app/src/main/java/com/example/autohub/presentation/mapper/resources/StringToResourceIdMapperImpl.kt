@@ -42,7 +42,7 @@ class StringToResourceIdMapperImpl : StringToResourceIdMapper {
 
         StringResNamePresentation.ERROR_CALL to R.string.error_to_call,
         StringResNamePresentation.ERROR_EMPTY_PASSWORD to R.string.error_empty_password,
-        StringResNamePresentation.ERROR_INCORRECT_PASSWORD to R.string.text_incorrect_password,
+        StringResNamePresentation.ERROR_INCORRECT_PASSWORD to R.string.error_incorrect_password,
         StringResNamePresentation.ERROR_FAILED_CHANGE_PASSWORD to R.string.error_failed_change_password,
         StringResNamePresentation.ERROR_NO_IMAGES to R.string.error_no_images,
         StringResNamePresentation.ERROR_FIELD_AND_OPTIONS_NOT_FILLED_IN to R.string.error_fields_and_options_not_filled_in,
@@ -59,13 +59,17 @@ class StringToResourceIdMapperImpl : StringToResourceIdMapper {
         StringResNamePresentation.ERROR_TIMEOUT_ERROR to R.string.error_timeout_error,
         StringResNamePresentation.ERROR_LOGIN to R.string.error_login,
         StringResNamePresentation.ERROR_UPDATE_USER_FIELDS to R.string.error_update_user_field,
+        StringResNamePresentation.ERROR_NAME_INCORRECT to R.string.error_name_incorrect,
+        StringResNamePresentation.ERROR_PHONE_INCORRECT to R.string.error_incorrect_phone,
+        StringResNamePresentation.ERROR_EMAIL_INCORRECT to R.string.error_incorrect_email,
+        StringResNamePresentation.ERROR_CITY_INCORRECT to R.string.error_incorrect_city,
 
         StringResNamePresentation.INFO_PASSWORD_IS_CHANGED to R.string.info_message_changed,
         StringResNamePresentation.INFO_VERIF_CODE_SENT to R.string.info_verif_code_sent,
         StringResNamePresentation.INFO_LINK_TO_RESET_PASSWORD_SENT to R.string.info_link_to_reset_password_sent,
         StringResNamePresentation.INFO_REGISTRATION_SUCCESS to R.string.info_registration_success,
         StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS to R.string.info_update_user_fields_success,
-        StringResNamePresentation.INFO_AD_CREATED to R.string.info_ad_created
+        StringResNamePresentation.INFO_AD_CREATED to R.string.info_ad_created,
     )
 
     override fun map(resId: StringResNamePresentation): Int {

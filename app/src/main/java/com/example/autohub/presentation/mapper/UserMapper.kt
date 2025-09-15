@@ -5,28 +5,28 @@ import com.example.autohub.domain.model.user.User as UserDomain
 
 fun User.toUserDomain(): UserDomain {
     return UserDomain(
-        firstName = this.firstName,
-        lastName = this.lastName,
-        email = this.email,
-        phoneNumber = this.phoneNumber,
-        city = this.city,
-        image = this.image,
-        status = this.status.toUserStatusDomain(),
-        localToken = this.localToken,
-        uid = this.uid
+        firstName = firstName,
+        lastName = lastName,
+        email = email,
+        phoneNumber = phoneNumber,
+        city = city,
+        image = image,
+        status = status.toUserStatusDomain(),
+        localToken = localToken,
+        uid = uid
     )
 }
 
 fun UserDomain.toUserPresentation(): User {
     return User(
-        firstName = this.firstName,
-        lastName = this.lastName,
-        email = this.email,
-        phoneNumber = this.phoneNumber,
-        city = this.city,
-        image = this.image,
-        status = this.status.toUserStatusPresentation(),
-        localToken = this.localToken,
-        uid = this.uid
+        firstName = firstName,
+        lastName = lastName,
+        email = email,
+        phoneNumber = phoneNumber,
+        city = city,
+        image = image,
+        status = status.toUserStatusPresentation(),
+        localToken = localToken,
+        uid = uid
     )
 }

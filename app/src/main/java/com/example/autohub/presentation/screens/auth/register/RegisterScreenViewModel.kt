@@ -11,6 +11,11 @@ import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AuthGraph
+import com.example.autohub.presentation.utils.isNameValid
+import com.example.autohub.presentation.utils.isPasswordValid
+import com.example.autohub.presentation.utils.isValidCity
+import com.example.autohub.presentation.utils.isValidEmail
+import com.example.autohub.presentation.utils.isValidPhoneNumber
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,19 +45,39 @@ class RegisterScreenViewModel @Inject constructor(
     }
 
     fun updateFirstNameValue(value: String) {
-        _uiState.update { state -> state.copy(firstNameValue = value) }
+        _uiState.update { state ->
+            state.copy(
+                firstNameValue = value,
+                isFirstNameError = !isNameValid(name = value)
+            )
+        }
     }
 
     fun updateLastNameValue(value: String) {
-        _uiState.update { state -> state.copy(lastNameValue = value) }
+        _uiState.update { state ->
+            state.copy(
+                lastNameValue = value,
+                isLastNameError = !isNameValid(name = value)
+            )
+        }
     }
 
     fun updateEmailValue(value: String) {
-        _uiState.update { state -> state.copy(emailValue = value) }
+        _uiState.update { state ->
+            state.copy(
+                emailValue = value,
+                isEmailError = !isValidEmail(email = value)
+            )
+        }
     }
 
     fun updatePasswordValue(value: String) {
-        _uiState.update { state -> state.copy(passwordValue = value) }
+        _uiState.update { state ->
+            state.copy(
+                passwordValue = value,
+                isPasswordError = !isPasswordValid(password = value)
+            )
+        }
     }
 
     fun updateRepeatPasswordValue(value: String) {
@@ -60,49 +85,37 @@ class RegisterScreenViewModel @Inject constructor(
     }
 
     fun updatePhoneValue(value: String) {
-        _uiState.update { state -> state.copy(phoneValue = value) }
+        _uiState.update { state ->
+            state.copy(
+                phoneValue = value,
+                isPhoneError = !isValidPhoneNumber(number = value)
+            )
+        }
     }
 
     fun updateCityValue(value: String) {
-        _uiState.update { state -> state.copy(cityValue = value) }
+        _uiState.update { state ->
+            state.copy(
+                cityValue = value,
+                isCityError = !isValidCity(city = value)
+            )
+        }
     }
 
     fun registerAccount() {
         viewModelScope.launch {
-            _uiState.update { state ->
-                state.copy(
-                    isFirstNameError = state.firstNameValue.isBlank(),
-                    isLastNameError = state.lastNameValue.isBlank(),
-                    isCityError = state.cityValue.isBlank(),
-                    isPhoneError = state.phoneValue.isBlank(),
-                    isEmailError = state.emailValue.isBlank(),
-                    isPasswordError = state.passwordValue.isBlank(),
-                    isRepeatPasswordError = state.repeatPasswordValue.isBlank()
-                )
-            }
+            if (!isFullFieldsValid()) return@launch
 
-            when {
-                hasValidationErrors() -> {
-                    _uiState.update { it.copy(message = StringResNamePresentation.ERROR_FIELD_AND_OPTIONS_NOT_FILLED_IN) }
-                    return@launch
-                }
-
-                !isPasswordsMatch() -> {
-                    _uiState.update { it.copy(message = StringResNamePresentation.ERROR_PASSWORDS_DONT_MATCH) }
-                    return@launch
-                }
-            }
-
-            val currentState = _uiState.value
             val newUser = formingNewAccount()
+            val state = _uiState.value
 
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
             when (
                 val result = registerUserUseCase(
                     user = newUser.toUserDomain(),
-                    email = currentState.emailValue,
-                    password = currentState.passwordValue
+                    email = state.emailValue,
+                    password = state.passwordValue
                 )
             ) {
                 is FirebaseResult.Success -> {
@@ -154,13 +167,47 @@ class RegisterScreenViewModel @Inject constructor(
         _uiState.update { state -> state.copy(messageDetails = null) }
     }
 
-    private fun hasValidationErrors(): Boolean {
+    private fun isFullFieldsValid(): Boolean {
         val state = _uiState.value
 
-        return state.isFirstNameError || state.isLastNameError ||
-                state.isPhoneError || state.isEmailError ||
-                state.isCityError || state.isPasswordError ||
-                state.isRepeatPasswordError
+        return when {
+            !isAllFieldsFilled() -> {
+                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_FIELD_AND_OPTIONS_NOT_FILLED_IN) }
+                false
+            }
+
+            state.isFirstNameError || state.isLastNameError -> {
+                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_NAME_INCORRECT) }
+                false
+            }
+
+            state.isEmailError -> {
+                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_EMAIL_INCORRECT) }
+                false
+            }
+
+            state.isPhoneError -> {
+                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_PHONE_INCORRECT) }
+                false
+            }
+
+            state.isCityError -> {
+                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_CITY_INCORRECT) }
+                false
+            }
+
+            state.isPasswordError -> {
+                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_INCORRECT_PASSWORD) }
+                false
+            }
+
+            !isPasswordsMatch() -> {
+                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_PASSWORDS_DONT_MATCH) }
+                false
+            }
+
+            else -> true
+        }
     }
 
     private fun formingNewAccount(): User {
@@ -183,5 +230,14 @@ class RegisterScreenViewModel @Inject constructor(
             )
         }
         return isMatch
+    }
+
+    private fun isAllFieldsFilled(): Boolean {
+        val state = _uiState.value
+
+        return state.firstNameValue.isNotBlank() && state.lastNameValue.isNotBlank() &&
+                state.emailValue.isNotBlank() && state.phoneValue.isNotBlank() &&
+                state.cityValue.isNotBlank() && state.passwordValue.isNotBlank() &&
+                state.repeatPasswordValue.isNotBlank()
     }
 }

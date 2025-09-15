@@ -122,6 +122,7 @@ class ChattingScreenViewModel @Inject constructor(
                 val state = _uiState.value
 
                 if (_uiState.value.messageTextValue.isNotBlank()) {
+                    _uiState.update { state -> state.copy(messageTextValue = "") }
                     sendMessageUseCase(
                         sender = state.authUserData.toUserDomain(),
                         receiver = state.participantData.toUserDomain(),
@@ -129,7 +130,6 @@ class ChattingScreenViewModel @Inject constructor(
                     )
                 }
                 _chatSideEffect.value = ChattingSideEffect.ScrollToLastMessage
-                _uiState.update { state -> state.copy(messageTextValue = "") }
             } catch (e: Exception) {
                 _uiState.update {
                     state -> state.copy(message = StringResNamePresentation.ERROR_SEND_MESSAGE)

@@ -17,7 +17,7 @@ import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
-import com.example.autohub.presentation.utils.isOnlyLetters
+import com.example.autohub.presentation.utils.isNameValid
 import com.example.autohub.presentation.utils.isPasswordValid
 import com.example.autohub.presentation.utils.isValidCity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,7 +55,7 @@ class AccountSettingsViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(
                 firstNameValue = value,
-                isFirstNameValueError = !value.isOnlyLetters()
+                isFirstNameValueError = if (value.isNotBlank()) !isNameValid(name = value) else false
             )
         }
         isNamesButtonAvailable()
@@ -65,7 +65,7 @@ class AccountSettingsViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(
                 lastNameValue = value,
-                isLastNameValueError = !value.isOnlyLetters()
+                isLastNameValueError = if (value.isNotBlank()) !isNameValid(name = value) else false
             )
         }
         isNamesButtonAvailable()
@@ -347,7 +347,9 @@ class AccountSettingsViewModel @Inject constructor(
         val isLastNameCorrect = !_uiState.value.isLastNameValueError
 
         val isAvailable =
-            (isFirstNameCorrect && isLastNameCorrect) || (firstName.isBlank() && isLastNameCorrect) || (lastName.isBlank() && isFirstNameCorrect)
+            (isFirstNameCorrect && firstName.isNotBlank() && isLastNameCorrect && lastName.isNotBlank()) ||
+                    (firstName.isBlank() && lastName.isNotBlank() && isLastNameCorrect) ||
+                    (lastName.isBlank() && firstName.isNotBlank() && isFirstNameCorrect)
 
         _uiState.update { state -> state.copy(isNamesButtonEnabled = isAvailable) }
     }

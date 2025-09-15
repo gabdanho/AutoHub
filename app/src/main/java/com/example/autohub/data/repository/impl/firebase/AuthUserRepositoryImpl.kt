@@ -44,8 +44,8 @@ class AuthUserRepositoryImpl @Inject constructor(
             fbAuth.createUserWithEmailAndPassword(email, password).await()
             val userId = getAuthUserId()
             val docReference = fbStore.collection(USERS).document(userId)
-            val updatedData = user.copy(uid = userId)
-            val mappedData = updatedData.toUserData()
+            val updatedDataWithUidAndImage = user.copy(uid = userId, image = DEFAULT_USER_IMAGE)
+            val mappedData = updatedDataWithUidAndImage.toUserData()
             docReference.set(mappedData).await()
 
             fbAuth.currentUser?.sendEmailVerification()?.await().also {
@@ -103,4 +103,8 @@ class AuthUserRepositoryImpl @Inject constructor(
 
     override fun getAuthUserId(): String =
         fbAuth.currentUser?.uid ?: throw HandledException(tag = HandleErrorTag.USER_NULL)
+
+    companion object {
+        const val DEFAULT_USER_IMAGE = "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+    }
 }
