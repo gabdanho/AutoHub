@@ -18,6 +18,7 @@ import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
+import com.example.autohub.presentation.navigation.model.graphs.destinations.AuthGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.MessengerGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,7 +72,12 @@ class AuthUserAccountScreenViewModel @Inject constructor(
     fun onSignOutClick() {
         viewModelScope.launch {
             signOutAndClearUserIdUseCase()
-            navigator.navigate(destination = AdGraph.AdsMainScreen())
+            navigator.navigate(
+                destination = AdGraph.AdsMainScreen(),
+                navOptions = {
+                    popUpTo(0) { inclusive }
+                }
+            )
         }
     }
 
@@ -93,20 +99,20 @@ class AuthUserAccountScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 
-            val uid = getLocalUserIdUseCase()
+            val authUserId = getLocalUserIdUseCase()
 
-            uid?.let {
-                when (val userResult = getUserDataUseCase(userId = uid)) {
+            if (authUserId != null) {
+                when (val userResult = getUserDataUseCase(userId = authUserId)) {
 
                     is FirebaseResult.Success -> {
                         _uiState.update { state ->
                             state.copy(
-                                user = userResult.data.toUserPresentation().copy(uid = uid),
+                                user = userResult.data.toUserPresentation().copy(uid = authUserId),
                                 loadingState = LoadingState.Success
                             )
                         }
 
-                        when (val adsResult = getCurrentUserAdsUseCase(uid = uid)) {
+                        when (val adsResult = getCurrentUserAdsUseCase(uid = authUserId)) {
                             is FirebaseResult.Success -> {
                                 _uiState.update { state ->
                                     state.copy(
@@ -175,6 +181,15 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                         }
                     }
                 }
+            } else {
+                navigator.navigate(
+                    destination = AuthGraph.LoginScreen(),
+                    navOptions = {
+                        popUpTo(AccountGraph.AuthUserAccountScreen) {
+                            inclusive = true
+                        }
+                    }
+                )
             }
         }
     }

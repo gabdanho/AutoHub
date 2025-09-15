@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
+import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetParticipantStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
@@ -25,6 +26,7 @@ import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
+import com.example.autohub.presentation.navigation.model.graphs.destinations.AuthGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +49,7 @@ class ChattingScreenViewModel @Inject constructor(
     private val getAuthUserIdUseCase: GetAuthUserIdUseCase,
     private val getUserDataUseCase: GetUserDataUseCase,
     private val millisToTimeUseCase: MillisToTimeUseCase,
+    private val getLocalUserIdUseCase: GetLocalUserIdUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChattingScreenUiState())
@@ -67,47 +70,55 @@ class ChattingScreenViewModel @Inject constructor(
 
     fun initChat(participant: User) {
         viewModelScope.launch {
-            _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+            val authUserId = getLocalUserIdUseCase()
 
-            when (val authUserResult = getUserDataUseCase(userId = getAuthUserIdUseCase())) {
-                is FirebaseResult.Success -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            authUserData = authUserResult.data.toUserPresentation(),
-                            participantData = participant,
-                            loadingState = LoadingState.Success
-                        )
+            if (authUserId != null) {
+                _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
+
+                when (val authUserResult = getUserDataUseCase(userId = getAuthUserIdUseCase())) {
+                    is FirebaseResult.Success -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                authUserData = authUserResult.data.toUserPresentation(),
+                                participantData = participant,
+                                loadingState = LoadingState.Success
+                            )
+                        }
+
+                        startListeningStatus()
+                        startListeningMessages()
                     }
 
-                    startListeningStatus()
-                    startListeningMessages()
-                }
+                    is FirebaseResult.Error.TimeoutError -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
+                                loadingState = LoadingState.Error(message = authUserResult.message)
+                            )
+                        }
+                    }
 
-                is FirebaseResult.Error.TimeoutError -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
-                            loadingState = LoadingState.Error(message = authUserResult.message)
-                        )
+                    is FirebaseResult.Error.HandledError -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                uiMessage = UiMessage(textResName = authUserResult.tag.toStringResNamePresentation()),
+                                loadingState = LoadingState.Error(message = authUserResult.message)
+                            )
+                        }
+                    }
+
+                    is FirebaseResult.Error -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Error(message = authUserResult.message)
+                            )
+                        }
                     }
                 }
-
-                is FirebaseResult.Error.HandledError -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            uiMessage = UiMessage(textResName = authUserResult.tag.toStringResNamePresentation()),
-                            loadingState = LoadingState.Error(message = authUserResult.message)
-                        )
-                    }
-                }
-
-                is FirebaseResult.Error -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            loadingState = LoadingState.Error(message = authUserResult.message)
-                        )
-                    }
-                }
+            } else {
+                navigator.navigate(
+                    destination = AuthGraph.LoginScreen()
+                )
             }
         }
     }

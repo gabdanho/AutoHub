@@ -5,7 +5,7 @@ import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.model.user.User
 
 data class AdScreenUiState(
-    val authUserId: String = "",
+    val authUserId: String? = null,
     val user: User = User(),
     val loadingState: LoadingState? = null,
     val uiMessage: UiMessage = UiMessage(),

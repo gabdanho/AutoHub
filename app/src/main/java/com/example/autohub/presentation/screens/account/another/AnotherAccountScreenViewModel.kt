@@ -3,6 +3,7 @@ package com.example.autohub.presentation.screens.account.another
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.autohub.domain.interfaces.usecase.GetCurrentUserAdsUseCase
+import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.MillisToDateUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.mapListCarAdDomainToPresentation
@@ -29,6 +30,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getCurrentUserAdsUseCase: GetCurrentUserAdsUseCase,
     private val millisToDateUseCase: MillisToDateUseCase,
+    private val getLocalUserIdUseCase: GetLocalUserIdUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AnotherAccountScreenUiState())
@@ -86,19 +88,33 @@ class AnotherAccountScreenViewModel @Inject constructor(
 
     fun writeToUser(user: User) {
         viewModelScope.launch {
-            navigator.navigate(
-                destination = MessengerGraph.ChattingScreen(
-                    participant = user
+            val authUserId = getLocalUserIdUseCase()
+
+            if (authUserId != null) {
+                navigator.navigate(
+                    destination = MessengerGraph.ChattingScreen(
+                        participant = user
+                    )
                 )
-            )
+            } else {
+                _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_NEED_AUTH)) }
+            }
         }
     }
 
     fun callToUser(number: String) {
-        if (number.isNotBlank()) {
-            _callEvent.update { number }
-        } else {
-            _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_CALL)) }
+        viewModelScope.launch {
+            val authUserId = getLocalUserIdUseCase()
+
+            if (authUserId != null) {
+                if (number.isNotBlank()) {
+                    _callEvent.update { number }
+                } else {
+                    _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_CALL)) }
+                }
+            } else {
+                _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_NEED_AUTH)) }
+            }
         }
     }
 

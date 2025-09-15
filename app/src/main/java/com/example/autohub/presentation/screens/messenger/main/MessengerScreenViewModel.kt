@@ -7,6 +7,7 @@ import com.example.autohub.domain.interfaces.usecase.GetAuthUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetParticipantStatusUseCase
 import com.example.autohub.domain.interfaces.usecase.GetParticipantsChatsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetCountUnreadMessagesUseCase
+import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toChatConservationPresentation
@@ -22,6 +23,7 @@ import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
+import com.example.autohub.presentation.navigation.model.graphs.destinations.AuthGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.MessengerGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -44,6 +46,7 @@ class MessengerScreenViewModel @Inject constructor(
     private val getAuthUserIdUseCase: GetAuthUserIdUseCase,
     private val getCountUnreadMessagesUseCase: GetCountUnreadMessagesUseCase,
     private val getUserDataUseCase: GetUserDataUseCase,
+    private val getLocalUserIdUseCase: GetLocalUserIdUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MessengerScreenUiState())
@@ -198,7 +201,20 @@ class MessengerScreenViewModel @Inject constructor(
 
     private fun initChat() {
         viewModelScope.launch {
-            startListeningChats()
+            val authUserId = getLocalUserIdUseCase()
+
+            if (authUserId != null) {
+                startListeningChats()
+            } else {
+                navigator.navigate(
+                    destination = AuthGraph.LoginScreen(),
+                    navOptions = {
+                        popUpTo(MessengerGraph.MessengerScreen) {
+                            inclusive = true
+                        }
+                    }
+                )
+            }
         }
     }
 

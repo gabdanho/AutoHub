@@ -342,14 +342,14 @@ private fun HandleSideEffects(
         when (chatSideEffect) {
             ChattingSideEffect.ScrollToLastMessage -> {
                 if (messages.isNotEmpty()) {
-                    listState.animateScrollToItem(messages.size - 1)
+                    listState.scrollToItem(messages.size - 1)
                     changeSideEffect(ChattingSideEffect.StayInLastMessages)
                 }
             }
 
             ChattingSideEffect.StayInLastMessages -> {
                 if (messages.isNotEmpty() && listState.isScrolledToTheEnd()) {
-                    listState.animateScrollToItem(messages.size - 1)
+                    listState.scrollToItem(messages.size - 1)
                 }
             }
         }

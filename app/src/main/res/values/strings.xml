@@ -204,4 +204,5 @@
     <string name="info_registration_success">Успешная регистрация. Подтвердите почту, через ссылку отправленную на почту</string>
     <string name="info_update_user_fields_success">Данные успешно изменены</string>
     <string name="info_ad_created">Объявление успешно создано</string>
+    <string name="info_need_auth">Для совершения этого действия, вы должны авторизоваться</string>
 </resources>

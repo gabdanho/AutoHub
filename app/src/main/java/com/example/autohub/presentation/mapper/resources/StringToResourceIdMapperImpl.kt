@@ -71,6 +71,7 @@ class StringToResourceIdMapperImpl : StringToResourceIdMapper {
         StringResNamePresentation.INFO_REGISTRATION_SUCCESS to R.string.info_registration_success,
         StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS to R.string.info_update_user_fields_success,
         StringResNamePresentation.INFO_AD_CREATED to R.string.info_ad_created,
+        StringResNamePresentation.INFO_NEED_AUTH to R.string.info_need_auth,
     )
 
     override fun map(resId: StringResNamePresentation): Int {

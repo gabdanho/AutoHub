@@ -36,7 +36,7 @@ class AdScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getLocalUserIdUseCase()?.let { uid ->
+            getLocalUserIdUseCase().let { uid ->
                 _uiState.update { state -> state.copy(authUserId = uid) }
             }
         }
@@ -98,22 +98,30 @@ class AdScreenViewModel @Inject constructor(
 
     fun onMessageClick(participantId: String) {
         viewModelScope.launch {
-            val userNav = _uiState.value.user.copy(uid = participantId)
+            if (_uiState.value.authUserId != null) {
+                val userNav = _uiState.value.user.copy(uid = participantId)
 
-            navigator.navigate(
-                destination = MessengerGraph.ChattingScreen(
-                    participant = userNav
+                navigator.navigate(
+                    destination = MessengerGraph.ChattingScreen(
+                        participant = userNav
+                    )
                 )
-            )
+            } else {
+                _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_NEED_AUTH)) }
+            }
         }
     }
 
     fun callToUser() {
-        with(_uiState.value.user.phoneNumber) {
-            if (this.isNotBlank()) {
-                _callEvent.update { this }
+        viewModelScope.launch {
+            if (_uiState.value.authUserId != null) {
+                if (_uiState.value.user.phoneNumber.isNotBlank()) {
+                    _callEvent.update { _uiState.value.user.phoneNumber }
+                } else {
+                    _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_CALL)) }
+                }
             } else {
-                _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_CALL)) }
+                _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_NEED_AUTH)) }
             }
         }
     }
