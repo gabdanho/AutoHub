@@ -195,6 +195,7 @@
     <string name="error_incorrect_email">Некорректная почта</string>
     <string name="error_incorrect_phone">Некорректный номер телефона</string>
     <string name="error_name_incorrect">Имя/фамилия должно состоять только из букв и "-"</string>
+    <string name="error_cant_send_message_no_internet">Не удалось отправить сообщения. Нет подключения к интернету</string>
 
     <string name="info_message_changed">Пароль успешно изменен</string>
     <string name="info_verif_code_sent">Подтверждение было отправлено почту</string>

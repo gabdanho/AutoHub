@@ -9,6 +9,7 @@ import com.example.autohub.presentation.mapper.mapListCarAdDomainToPresentation
 import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.Navigator
@@ -56,7 +57,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.TimeoutError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -65,7 +66,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.HandledError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = result.tag.toStringResNamePresentation(),
+                            uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -75,7 +76,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
                     _uiState.update { state ->
                         state.copy(
                             loadingState = LoadingState.Error(message = result.message),
-                            message = StringResNamePresentation.ERROR_SHOW_USER_DATA
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_SHOW_USER_DATA)
                         )
                     }
                 }
@@ -97,7 +98,7 @@ class AnotherAccountScreenViewModel @Inject constructor(
         if (number.isNotBlank()) {
             _callEvent.update { number }
         } else {
-            _uiState.update { state -> state.copy(message = StringResNamePresentation.ERROR_CALL) }
+            _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_CALL)) }
         }
     }
 
@@ -120,6 +121,6 @@ class AnotherAccountScreenViewModel @Inject constructor(
     }
 
     fun clearMessage() {
-        _uiState.update { state -> state.copy(message = null) }
+        _uiState.update { state -> state.copy(uiMessage = UiMessage()) }
     }
 }

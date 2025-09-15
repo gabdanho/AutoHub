@@ -63,6 +63,7 @@ class StringToResourceIdMapperImpl : StringToResourceIdMapper {
         StringResNamePresentation.ERROR_PHONE_INCORRECT to R.string.error_incorrect_phone,
         StringResNamePresentation.ERROR_EMAIL_INCORRECT to R.string.error_incorrect_email,
         StringResNamePresentation.ERROR_CITY_INCORRECT to R.string.error_incorrect_city,
+        StringResNamePresentation.ERROR_CANT_SEND_MESSAGE_NO_INTERNET to R.string.error_cant_send_message_no_internet,
 
         StringResNamePresentation.INFO_PASSWORD_IS_CHANGED to R.string.info_message_changed,
         StringResNamePresentation.INFO_VERIF_CODE_SENT to R.string.info_verif_code_sent,

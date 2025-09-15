@@ -15,6 +15,7 @@ import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
 import com.example.autohub.presentation.utils.isNameValid
@@ -107,7 +108,7 @@ class AccountSettingsViewModel @Inject constructor(
                         state.copy(
                             user = state.user.copy(image = uriString),
                             loadingState = LoadingState.Success,
-                            message = StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS)
                         )
                     }
                 }
@@ -115,7 +116,7 @@ class AccountSettingsViewModel @Inject constructor(
                 is FirebaseResult.Error.TimeoutError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -124,7 +125,7 @@ class AccountSettingsViewModel @Inject constructor(
                 is FirebaseResult.Error.HandledError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = result.tag.toStringResNamePresentation(),
+                            uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -136,8 +137,10 @@ class AccountSettingsViewModel @Inject constructor(
                             loadingState = LoadingState.Error(
                                 message = result.message
                             ),
-                            message = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
-                            messageDetails = result.message
+                            uiMessage = UiMessage(
+                                textResName = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
+                                details = result.message
+                            )
                         )
                     }
                 }
@@ -163,7 +166,7 @@ class AccountSettingsViewModel @Inject constructor(
                                 loadingState = LoadingState.Success,
                                 firstNameValue = "",
                                 isNamesButtonEnabled = false,
-                                message = StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS)
                             )
                         }
                     }
@@ -171,7 +174,7 @@ class AccountSettingsViewModel @Inject constructor(
                     is FirebaseResult.Error.TimeoutError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                                 loadingState = LoadingState.Error(message = result.message)
                             )
                         }
@@ -180,7 +183,7 @@ class AccountSettingsViewModel @Inject constructor(
                     is FirebaseResult.Error.HandledError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = result.tag.toStringResNamePresentation(),
+                                uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
                                 loadingState = LoadingState.Error(message = result.message)
                             )
                         }
@@ -192,8 +195,10 @@ class AccountSettingsViewModel @Inject constructor(
                                 loadingState = LoadingState.Error(
                                     message = result.message
                                 ),
-                                message = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
-                                messageDetails = result.message
+                                uiMessage = UiMessage(
+                                    textResName = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
+                                    details = result.message
+                                )
                             )
                         }
                     }
@@ -208,7 +213,7 @@ class AccountSettingsViewModel @Inject constructor(
                                 loadingState = LoadingState.Success,
                                 lastNameValue = "",
                                 isNamesButtonEnabled = false,
-                                message = StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS)
                             )
                         }
                     }
@@ -216,7 +221,7 @@ class AccountSettingsViewModel @Inject constructor(
                     is FirebaseResult.Error.TimeoutError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                                 loadingState = LoadingState.Error(message = result.message)
                             )
                         }
@@ -225,7 +230,7 @@ class AccountSettingsViewModel @Inject constructor(
                     is FirebaseResult.Error.HandledError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = result.tag.toStringResNamePresentation(),
+                                uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
                                 loadingState = LoadingState.Error(message = result.message)
                             )
                         }
@@ -237,8 +242,10 @@ class AccountSettingsViewModel @Inject constructor(
                                 loadingState = LoadingState.Error(
                                     message = result.message
                                 ),
-                                message = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
-                                messageDetails = result.message
+                                uiMessage = UiMessage(
+                                    textResName = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
+                                    details = result.message
+                                )
                             )
                         }
                     }
@@ -261,7 +268,7 @@ class AccountSettingsViewModel @Inject constructor(
                             loadingState = LoadingState.Success,
                             cityValue = "",
                             isCityValueError = true,
-                            message = StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS)
                         )
                     }
                 }
@@ -269,7 +276,7 @@ class AccountSettingsViewModel @Inject constructor(
                 is FirebaseResult.Error.TimeoutError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -278,7 +285,7 @@ class AccountSettingsViewModel @Inject constructor(
                 is FirebaseResult.Error.HandledError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = result.tag.toStringResNamePresentation(),
+                            uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -290,8 +297,10 @@ class AccountSettingsViewModel @Inject constructor(
                             loadingState = LoadingState.Error(
                                 message = result.message
                             ),
-                            message = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
-                            messageDetails = result.message
+                            uiMessage = UiMessage(
+                                textResName = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
+                                details = result.message
+                            )
                         )
                     }
                 }
@@ -330,13 +339,13 @@ class AccountSettingsViewModel @Inject constructor(
                     }
 
                     is FirebaseResult.Error -> {
-                        _uiState.update { state -> state.copy(messageDetails = result.message) }
+                        _uiState.update { state -> state.copy(uiMessage = UiMessage(details = result.message)) }
                         StringResNamePresentation.ERROR_FAILED_CHANGE_PASSWORD
                     }
                 }
             }
 
-            _uiState.update { state -> state.copy(message = message) }
+            _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = message)) }
         }
     }
 
@@ -374,7 +383,7 @@ class AccountSettingsViewModel @Inject constructor(
                     is FirebaseResult.Error.TimeoutError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                                 loadingState = LoadingState.Error(message = userResult.message)
                             )
                         }
@@ -383,7 +392,7 @@ class AccountSettingsViewModel @Inject constructor(
                     is FirebaseResult.Error.HandledError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = userResult.tag.toStringResNamePresentation(),
+                                uiMessage = UiMessage(textResName = userResult.tag.toStringResNamePresentation()),
                                 loadingState = LoadingState.Error(message = userResult.message)
                             )
                         }
@@ -393,8 +402,10 @@ class AccountSettingsViewModel @Inject constructor(
                         _uiState.update { state ->
                             state.copy(
                                 loadingState = LoadingState.Error(message = userResult.message),
-                                message = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
-                                messageDetails = userResult.message
+                                uiMessage = UiMessage(
+                                    textResName = StringResNamePresentation.ERROR_UPDATE_USER_FIELDS,
+                                    details = userResult.message
+                                )
                             )
                         }
                     }
@@ -404,10 +415,6 @@ class AccountSettingsViewModel @Inject constructor(
     }
 
     fun clearMessage() {
-        _uiState.update { state -> state.copy(message = null) }
-    }
-
-    fun clearMessageDetails() {
-        _uiState.update { state -> state.copy(messageDetails = null) }
+        _uiState.update { state -> state.copy(uiMessage = UiMessage()) }
     }
 }

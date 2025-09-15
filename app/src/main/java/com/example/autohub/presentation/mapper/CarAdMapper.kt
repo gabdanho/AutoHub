@@ -28,6 +28,7 @@ fun CarAd.toCarAdDomain(): CarAdDomain {
         color = color,
         imagesUrl = imagesUrl,
         timeMillis = timeMillis,
+        city = city,
     )
 }
 
@@ -50,6 +51,7 @@ fun CarAdDomain.toCarAdPresentation(): CarAd {
         color = color,
         imagesUrl = imagesUrl,
         timeMillis = timeMillis,
+        city = city,
     )
 }
 

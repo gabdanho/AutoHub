@@ -1,13 +1,12 @@
 package com.example.autohub.presentation.screens.account.settings
 
 import com.example.autohub.presentation.model.LoadingState
-import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.model.user.User
 
 data class AccountSettingsUiState(
     val loadingState: LoadingState? = null,
-    val message: StringResNamePresentation? = null,
-    val messageDetails: String? = null,
+    val uiMessage: UiMessage = UiMessage(),
 
     val firstNameValue: String = "",
     val lastNameValue: String = "",

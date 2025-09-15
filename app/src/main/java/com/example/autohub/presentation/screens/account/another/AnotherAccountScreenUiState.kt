@@ -1,11 +1,11 @@
 package com.example.autohub.presentation.screens.account.another
 
 import com.example.autohub.presentation.model.LoadingState
-import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.model.ad.CarAd
 
 data class AnotherAccountScreenUiState(
     val sellerAds: List<CarAd> = emptyList(),
     val loadingState: LoadingState? = LoadingState.Loading,
-    val message: StringResNamePresentation? = null,
+    val uiMessage: UiMessage = UiMessage(),
 )

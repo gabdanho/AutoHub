@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.screens.ad.current
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,6 +44,7 @@ import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.options.CarOption
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.launchDialIntent
+import com.example.autohub.presentation.utils.showUiMessage
 
 private const val COUNT_COLUMNS = 1
 
@@ -70,10 +70,8 @@ fun AdScreen(
         viewModel.clearCallEvent()
     }
 
-    LaunchedEffect(uiState.message) {
-        uiState.message?.let {
-            val resId = StringToResourceIdMapperImpl().map(uiState.message)
-            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+    LaunchedEffect(uiState.uiMessage) {
+        context.showUiMessage(uiMessage = uiState.uiMessage) {
             viewModel.clearMessage()
         }
     }
@@ -350,5 +348,4 @@ private fun GridItem(
             )
         )
     }
-
 }

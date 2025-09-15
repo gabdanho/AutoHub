@@ -8,6 +8,7 @@ import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.mapper.toUserDomain
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AuthGraph
@@ -119,7 +120,7 @@ class RegisterScreenViewModel @Inject constructor(
                 )
             ) {
                 is FirebaseResult.Success -> {
-                    _uiState.update { state -> state.copy(message = StringResNamePresentation.INFO_REGISTRATION_SUCCESS) }
+                    _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_REGISTRATION_SUCCESS)) }
                     navigator.navigate(
                         destination = AuthGraph.LoginScreen(isShowSendEmailText = true),
                         navOptions = {
@@ -131,7 +132,7 @@ class RegisterScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.TimeoutError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -140,7 +141,7 @@ class RegisterScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.HandledError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = result.tag.toStringResNamePresentation(),
+                            uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -149,8 +150,10 @@ class RegisterScreenViewModel @Inject constructor(
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
                         state.copy(
-                            messageDetails = result.message,
-                            message = StringResNamePresentation.ERROR_REGISTRATION_FAILED,
+                            uiMessage = UiMessage(
+                                textResName = StringResNamePresentation.ERROR_REGISTRATION_FAILED,
+                                details = result.message
+                            ),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -160,11 +163,7 @@ class RegisterScreenViewModel @Inject constructor(
     }
 
     fun clearMessage() {
-        _uiState.update { state -> state.copy(message = null) }
-    }
-
-    fun clearMessageDetails() {
-        _uiState.update { state -> state.copy(messageDetails = null) }
+        _uiState.update { state -> state.copy(uiMessage = UiMessage()) }
     }
 
     private fun isFullFieldsValid(): Boolean {
@@ -172,37 +171,37 @@ class RegisterScreenViewModel @Inject constructor(
 
         return when {
             !isAllFieldsFilled() -> {
-                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_FIELD_AND_OPTIONS_NOT_FILLED_IN) }
+                _uiState.update { it.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_FIELD_AND_OPTIONS_NOT_FILLED_IN)) }
                 false
             }
 
             state.isFirstNameError || state.isLastNameError -> {
-                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_NAME_INCORRECT) }
+                _uiState.update { it.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_NAME_INCORRECT)) }
                 false
             }
 
             state.isEmailError -> {
-                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_EMAIL_INCORRECT) }
+                _uiState.update { it.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_EMAIL_INCORRECT)) }
                 false
             }
 
             state.isPhoneError -> {
-                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_PHONE_INCORRECT) }
+                _uiState.update { it.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_PHONE_INCORRECT)) }
                 false
             }
 
             state.isCityError -> {
-                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_CITY_INCORRECT) }
+                _uiState.update { it.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_CITY_INCORRECT)) }
                 false
             }
 
             state.isPasswordError -> {
-                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_INCORRECT_PASSWORD) }
+                _uiState.update { it.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_INCORRECT_PASSWORD)) }
                 false
             }
 
             !isPasswordsMatch() -> {
-                _uiState.update { it.copy(message = StringResNamePresentation.ERROR_PASSWORDS_DONT_MATCH) }
+                _uiState.update { it.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_PASSWORDS_DONT_MATCH)) }
                 false
             }
 

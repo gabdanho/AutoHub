@@ -14,6 +14,7 @@ import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
 import com.example.autohub.presentation.model.UiImage
+import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.model.options.BodyType
 import com.example.autohub.presentation.model.options.ConditionType
@@ -150,12 +151,12 @@ class AdCreateScreenViewModel @Inject constructor(
 
             when {
                 _uiState.value.images.isEmpty() -> {
-                    _uiState.update { state -> state.copy(message = StringResNamePresentation.ERROR_NO_IMAGES) }
+                    _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_NO_IMAGES)) }
                     return@launch
                 }
 
                 hasValidationErrors() -> {
-                    _uiState.update { state -> state.copy(message = StringResNamePresentation.ERROR_FIELD_AND_OPTIONS_NOT_FILLED_IN) }
+                    _uiState.update { state -> state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_FIELD_AND_OPTIONS_NOT_FILLED_IN)) }
                     return@launch
                 }
             }
@@ -184,7 +185,7 @@ class AdCreateScreenViewModel @Inject constructor(
                         _uiState.update { state ->
                             state.copy(
                                 loadingState = LoadingState.Success,
-                                message = StringResNamePresentation.INFO_AD_CREATED
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_AD_CREATED)
                             )
                         }
                         navigateToAuthAccount()
@@ -193,7 +194,7 @@ class AdCreateScreenViewModel @Inject constructor(
                     is FirebaseResult.Error.TimeoutError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                                 loadingState = LoadingState.Error(message = result.message)
                             )
                         }
@@ -202,7 +203,7 @@ class AdCreateScreenViewModel @Inject constructor(
                     is FirebaseResult.Error.HandledError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = result.tag.toStringResNamePresentation(),
+                                uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
                                 loadingState = LoadingState.Error(message = result.message)
                             )
                         }
@@ -211,7 +212,7 @@ class AdCreateScreenViewModel @Inject constructor(
                     is FirebaseResult.Error -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = StringResNamePresentation.ERROR_TO_CREATE_AD,
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TO_CREATE_AD),
                                 loadingState = LoadingState.Error(message = result.message)
                             )
                         }
@@ -221,7 +222,7 @@ class AdCreateScreenViewModel @Inject constructor(
             } else {
                 _uiState.update { state ->
                     state.copy(
-                        message = StringResNamePresentation.ERROR_TO_CREATE_AD
+                        uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TO_CREATE_AD)
                     )
                 }
             }
@@ -289,6 +290,6 @@ class AdCreateScreenViewModel @Inject constructor(
     }
 
     fun clearMessage() {
-        _uiState.update { state -> state.copy(message = null) }
+        _uiState.update { state -> state.copy(uiMessage = UiMessage()) }
     }
 }

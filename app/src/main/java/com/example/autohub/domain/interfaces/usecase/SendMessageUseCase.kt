@@ -1,5 +1,6 @@
 package com.example.autohub.domain.interfaces.usecase
 
+import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.user.User
 
 interface SendMessageUseCase {
@@ -7,5 +8,5 @@ interface SendMessageUseCase {
         sender: User,
         receiver: User,
         text: String
-    )
+    ): FirebaseResult<Unit>
 }

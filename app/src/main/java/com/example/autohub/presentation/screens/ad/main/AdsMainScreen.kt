@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.screens.ad.main
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -33,10 +32,10 @@ import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
-import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.theme.AppTheme
+import com.example.autohub.presentation.utils.showUiMessage
 
 @Composable
 fun AdsMainScreen(
@@ -51,10 +50,8 @@ fun AdsMainScreen(
         viewModel.getAds(filters = filters.filters)
     }
 
-    LaunchedEffect(uiState.message) {
-        uiState.message?.let {
-            val resId = StringToResourceIdMapperImpl().map(uiState.message)
-            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+    LaunchedEffect(uiState.uiMessage) {
+        context.showUiMessage(uiMessage = uiState.uiMessage) {
             viewModel.clearMessage()
         }
     }

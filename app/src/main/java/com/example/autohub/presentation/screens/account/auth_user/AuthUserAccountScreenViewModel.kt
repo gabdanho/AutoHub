@@ -13,6 +13,7 @@ import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AccountGraph
@@ -121,7 +122,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                             is FirebaseResult.Error.TimeoutError -> {
                                 _uiState.update { state ->
                                     state.copy(
-                                        message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                                        uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                                         loadingState = LoadingState.Error(message = adsResult.message)
                                     )
                                 }
@@ -130,7 +131,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                             is FirebaseResult.Error.HandledError -> {
                                 _uiState.update { state ->
                                     state.copy(
-                                        message = adsResult.tag.toStringResNamePresentation(),
+                                        uiMessage = UiMessage(textResName = adsResult.tag.toStringResNamePresentation()),
                                         loadingState = LoadingState.Error(message = adsResult.message)
                                     )
                                 }
@@ -140,7 +141,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                                 _uiState.update { state ->
                                     state.copy(
                                         loadingState = LoadingState.Error(message = adsResult.message),
-                                        message = StringResNamePresentation.ERROR_SHOW_USER_DATA
+                                        uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_SHOW_USER_DATA)
                                     )
                                 }
                             }
@@ -150,7 +151,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                     is FirebaseResult.Error.TimeoutError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                                 loadingState = LoadingState.Error(message = userResult.message)
                             )
                         }
@@ -159,7 +160,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                     is FirebaseResult.Error.HandledError -> {
                         _uiState.update { state ->
                             state.copy(
-                                message = userResult.tag.toStringResNamePresentation(),
+                                uiMessage = UiMessage(textResName = userResult.tag.toStringResNamePresentation()),
                                 loadingState = LoadingState.Error(message = userResult.message)
                             )
                         }
@@ -169,7 +170,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
                         _uiState.update { state ->
                             state.copy(
                                 loadingState = LoadingState.Error(message = userResult.message),
-                                message = StringResNamePresentation.ERROR_SHOW_USER_DATA
+                                uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_SHOW_USER_DATA)
                             )
                         }
                     }
@@ -179,6 +180,6 @@ class AuthUserAccountScreenViewModel @Inject constructor(
     }
 
     fun clearMessage() {
-        _uiState.update { state -> state.copy(message = null) }
+        _uiState.update { state -> state.copy(uiMessage = UiMessage()) }
     }
 }

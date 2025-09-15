@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.screens.account.auth_user
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,9 +37,9 @@ import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
-import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.AppTheme
+import com.example.autohub.presentation.utils.showUiMessage
 
 @Composable
 fun AuthUserAccountScreen(
@@ -50,10 +49,8 @@ fun AuthUserAccountScreen(
     val uiState = viewModel.uiState.collectAsState().value
     val context = LocalContext.current
 
-    LaunchedEffect(uiState.message) {
-        uiState.message?.let {
-            val resId = StringToResourceIdMapperImpl().map(uiState.message)
-            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+    LaunchedEffect(uiState.uiMessage) {
+        context.showUiMessage(uiMessage = uiState.uiMessage) {
             viewModel.clearMessage()
         }
     }

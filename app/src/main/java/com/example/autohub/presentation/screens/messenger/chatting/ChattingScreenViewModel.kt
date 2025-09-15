@@ -18,6 +18,7 @@ import com.example.autohub.presentation.mapper.toUserPresentation
 import com.example.autohub.presentation.mapper.toUserStatusPresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.model.messenger.ChatLog
 import com.example.autohub.presentation.model.messenger.Message
 import com.example.autohub.presentation.model.user.User
@@ -57,7 +58,8 @@ class ChattingScreenViewModel @Inject constructor(
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> = _messages.asStateFlow()
 
-    private val _chatSideEffect = MutableStateFlow<ChattingSideEffect>(ChattingSideEffect.ScrollToLastMessage)
+    private val _chatSideEffect =
+        MutableStateFlow<ChattingSideEffect>(ChattingSideEffect.ScrollToLastMessage)
     val chatSideEffect: StateFlow<ChattingSideEffect> = _chatSideEffect.asStateFlow()
 
     private var statusJob: Job? = null
@@ -84,7 +86,7 @@ class ChattingScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.TimeoutError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                             loadingState = LoadingState.Error(message = authUserResult.message)
                         )
                     }
@@ -93,7 +95,7 @@ class ChattingScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.HandledError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = authUserResult.tag.toStringResNamePresentation(),
+                            uiMessage = UiMessage(textResName = authUserResult.tag.toStringResNamePresentation()),
                             loadingState = LoadingState.Error(message = authUserResult.message)
                         )
                     }
@@ -125,17 +127,48 @@ class ChattingScreenViewModel @Inject constructor(
                 val state = _uiState.value
 
                 if (_uiState.value.messageTextValue.isNotBlank()) {
-                    _uiState.update { state -> state.copy(messageTextValue = "") }
-                    sendMessageUseCase(
-                        sender = state.authUserData.toUserDomain(),
-                        receiver = state.participantData.toUserDomain(),
-                        text = state.messageTextValue
-                    )
+                    _uiState.update { state -> state.copy(isSendButtonEnabled = false) }
+
+                    when (val result =
+                        sendMessageUseCase(
+                            sender = state.authUserData.toUserDomain(),
+                            receiver = state.participantData.toUserDomain(),
+                            text = state.messageTextValue
+                        )
+                    ) {
+                        is FirebaseResult.Success -> {
+                            _uiState.update { state ->
+                                state.copy(
+                                    messageTextValue = "",
+                                    isSendButtonEnabled = true
+                                )
+                            }
+                        }
+
+                        is FirebaseResult.Error.HandledError -> {
+                            _uiState.update { state ->
+                                state.copy(
+                                    uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
+                                    isSendButtonEnabled = true
+                                )
+                            }
+                        }
+
+                        is FirebaseResult.Error -> {
+                            _uiState.update { state ->
+                                state.copy(
+                                    uiMessage = UiMessage(details = result.message),
+                                    isSendButtonEnabled = true
+                                )
+                            }
+                        }
+                    }
+
                 }
                 _chatSideEffect.value = ChattingSideEffect.ScrollToLastMessage
-            } catch (e: Exception) {
-                _uiState.update {
-                    state -> state.copy(message = StringResNamePresentation.ERROR_SEND_MESSAGE)
+            } catch (_: Exception) {
+                _uiState.update { state ->
+                    state.copy(uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_SEND_MESSAGE))
                 }
             }
         }
@@ -174,7 +207,7 @@ class ChattingScreenViewModel @Inject constructor(
     }
 
     fun clearMessage() {
-        _uiState.update { state -> state.copy(message = null) }
+        _uiState.update { state -> state.copy(uiMessage = UiMessage()) }
     }
 
     private fun startListeningStatus() {

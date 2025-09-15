@@ -29,7 +29,6 @@ import com.example.autohub.presentation.componets.ListAddedPhotos
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.RowRadioButtons
 import com.example.autohub.presentation.componets.TopAdAppBar
-import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.UiImage
 import com.example.autohub.presentation.model.options.BodyType
@@ -40,6 +39,7 @@ import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.convertUriToBytes
+import com.example.autohub.presentation.utils.showUiMessage
 
 @Composable
 fun AdCreateScreen(
@@ -67,10 +67,8 @@ fun AdCreateScreen(
             }
         }
 
-    LaunchedEffect(uiState.message) {
-        uiState.message?.let {
-            val resId = StringToResourceIdMapperImpl().map(uiState.message)
-            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+    LaunchedEffect(uiState.uiMessage) {
+        context.showUiMessage(uiMessage = uiState.uiMessage) {
             viewModel.clearMessage()
         }
     }

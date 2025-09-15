@@ -1,5 +1,6 @@
 package com.example.autohub.domain.model.result
 
 enum class HandleErrorTag {
-    USER_NULL
+    USER_NULL,
+    NO_INTERNET
 }

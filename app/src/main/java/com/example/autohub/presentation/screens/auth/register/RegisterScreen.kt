@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.screens.auth.register
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,9 +27,9 @@ import com.example.autohub.presentation.componets.BackButton
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InputField
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
-import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.AppTheme
+import com.example.autohub.presentation.utils.showUiMessage
 
 @Composable
 fun RegisterScreen(
@@ -45,18 +44,9 @@ fun RegisterScreen(
         viewModel.onBackClick()
     }
 
-    LaunchedEffect(uiState.message) {
-        uiState.message?.let {
-            val resId = StringToResourceIdMapperImpl().map(uiState.message)
-            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+    LaunchedEffect(uiState.uiMessage) {
+        context.showUiMessage(uiMessage = uiState.uiMessage) {
             viewModel.clearMessage()
-        }
-    }
-
-    LaunchedEffect(uiState.messageDetails) {
-        if (!uiState.messageDetails.isNullOrBlank()) {
-            Toast.makeText(context, uiState.messageDetails, Toast.LENGTH_LONG).show()
-            viewModel.clearMessageDetails()
         }
     }
 

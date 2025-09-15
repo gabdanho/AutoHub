@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.screens.messenger.chatting
 
-import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -54,12 +53,12 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
-import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.Message
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.theme.AppTheme
+import com.example.autohub.presentation.utils.showUiMessage
 
 private const val MAX_LINES_MESSAGES = 6
 
@@ -82,10 +81,8 @@ fun ChattingScreen(
         }
     }
 
-    LaunchedEffect(uiState.message) {
-        uiState.message?.let {
-            val resId = StringToResourceIdMapperImpl().map(uiState.message)
-            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+    LaunchedEffect(uiState.uiMessage) {
+        context.showUiMessage(uiMessage = uiState.uiMessage) {
             viewModel.clearMessage()
         }
     }
@@ -141,6 +138,7 @@ fun ChattingScreen(
 
                     MessageInputField(
                         text = uiState.messageTextValue,
+                        isButtonEnabled = uiState.isSendButtonEnabled,
                         onValueChange = { viewModel.updateMessageTextValue(value = it) },
                         onSendMessageClick = {
                             viewModel.sendMessage()
@@ -179,7 +177,7 @@ private fun ParticipantTopBar(
     lastName: String,
     participantStatus: UserStatus,
     onParticipantClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -202,7 +200,11 @@ private fun ParticipantTopBar(
                     .padding(AppTheme.dimens.extraSmall)
                     .size(AppTheme.dimens.chattingProfileImageSize)
                     .clip(CircleShape)
-                    .border(AppTheme.dimens.smallBorderSize, AppTheme.colors.containerColor, CircleShape)
+                    .border(
+                        AppTheme.dimens.smallBorderSize,
+                        AppTheme.colors.containerColor,
+                        CircleShape
+                    )
             )
             Canvas(
                 modifier = Modifier
@@ -267,7 +269,12 @@ private fun UserMessage(
                         withStyle(style = SpanStyle(fontSize = AppTheme.fonts.message)) {
                             append(text = "$text ")
                         }
-                        withStyle(style = SpanStyle(color = AppTheme.colors.dateChatColor, fontSize = AppTheme.fonts.date)) {
+                        withStyle(
+                            style = SpanStyle(
+                                color = AppTheme.colors.dateChatColor,
+                                fontSize = AppTheme.fonts.date
+                            )
+                        ) {
                             append(text = time)
                         }
                     }, modifier = Modifier.padding(AppTheme.dimens.extraSmall)
@@ -282,6 +289,7 @@ private fun MessageInputField(
     text: String,
     onValueChange: (String) -> Unit,
     onSendMessageClick: () -> Unit,
+    isButtonEnabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -292,7 +300,10 @@ private fun MessageInputField(
         modifier = modifier
             .fillMaxWidth()
             .padding(AppTheme.dimens.extraSmall)
-            .border(width = AppTheme.dimens.smallBorderSize, color = AppTheme.colors.containerColorAlpha50)
+            .border(
+                width = AppTheme.dimens.smallBorderSize,
+                color = AppTheme.colors.containerColorAlpha50
+            )
     ) {
         TextField(
             value = text,
@@ -308,7 +319,8 @@ private fun MessageInputField(
                 .verticalScroll(scrollState)
         )
         IconButton(
-            onClick = { onSendMessageClick() }
+            onClick = { onSendMessageClick() },
+            enabled = isButtonEnabled
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.Send,

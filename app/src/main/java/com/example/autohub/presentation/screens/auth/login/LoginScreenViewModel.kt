@@ -9,6 +9,7 @@ import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.presentation.mapper.toStringResNamePresentation
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
+import com.example.autohub.presentation.model.UiMessage
 import com.example.autohub.presentation.navigation.Navigator
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AdGraph
 import com.example.autohub.presentation.navigation.model.graphs.destinations.AuthGraph
@@ -73,7 +74,7 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.TimeoutError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -82,7 +83,7 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.HandledError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = result.tag.toStringResNamePresentation(),
+                            uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -91,8 +92,10 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_LOGIN,
-                            messageDetails = result.message,
+                            uiMessage = UiMessage(
+                                textResName = StringResNamePresentation.ERROR_LOGIN,
+                                details = result.message
+                            ),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -120,7 +123,7 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.INFO_VERIF_CODE_SENT
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_VERIF_CODE_SENT)
                         )
                     }
                 }
@@ -128,7 +131,7 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.TimeoutError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR)
                         )
                     }
                 }
@@ -136,7 +139,7 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.HandledError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = result.tag.toStringResNamePresentation()
+                            uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation())
                         )
                     }
                 }
@@ -144,8 +147,10 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TO_SEND_VERIF_CODE,
-                            messageDetails = result.message
+                            uiMessage = UiMessage(
+                                textResName = StringResNamePresentation.ERROR_TO_SEND_VERIF_CODE,
+                                details = result.message
+                            ),
                         )
                     }
                 }
@@ -161,7 +166,7 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.INFO_LINK_TO_RESET_PASSWORD_SENT,
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_LINK_TO_RESET_PASSWORD_SENT),
                             loadingState = LoadingState.Success,
                             isShowPasswordDialog = false
                         )
@@ -171,7 +176,7 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.TimeoutError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TIMEOUT_ERROR,
+                            uiMessage = UiMessage(textResName = StringResNamePresentation.ERROR_TIMEOUT_ERROR),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -180,7 +185,7 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Error.HandledError -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = result.tag.toStringResNamePresentation(),
+                            uiMessage = UiMessage(textResName = result.tag.toStringResNamePresentation()),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -189,8 +194,10 @@ class LoginScreenViewModel @Inject constructor(
                 is FirebaseResult.Error -> {
                     _uiState.update { state ->
                         state.copy(
-                            message = StringResNamePresentation.ERROR_TO_SEND_LINK_TO_RESET_PASSWORD,
-                            messageDetails = result.message,
+                            uiMessage = UiMessage(
+                                textResName = StringResNamePresentation.ERROR_TO_SEND_LINK_TO_RESET_PASSWORD,
+                                details = result.message
+                            ),
                             loadingState = LoadingState.Error(message = result.message)
                         )
                     }
@@ -200,10 +207,6 @@ class LoginScreenViewModel @Inject constructor(
     }
 
     fun clearMessage() {
-        _uiState.update { state -> state.copy(message = null) }
-    }
-
-    fun clearMessageDetails() {
-        _uiState.update { state -> state.copy(messageDetails = null) }
+        _uiState.update { state -> state.copy(uiMessage = UiMessage()) }
     }
 }

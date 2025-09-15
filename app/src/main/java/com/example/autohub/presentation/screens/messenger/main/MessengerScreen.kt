@@ -1,6 +1,5 @@
 package com.example.autohub.presentation.screens.messenger.main
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -41,11 +40,11 @@ import com.example.autohub.presentation.model.messenger.ChatConservation
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
-import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.ChatStatus
 import com.example.autohub.presentation.model.user.UserStatus
 import com.example.autohub.presentation.theme.AppTheme
+import com.example.autohub.presentation.utils.showUiMessage
 
 private const val CHAT_MAX_LINES = 1
 
@@ -64,10 +63,8 @@ fun MessengerScreen(
         viewModel.onBackButtonClick()
     }
 
-    LaunchedEffect(uiState.message) {
-        uiState.message?.let {
-            val resId = StringToResourceIdMapperImpl().map(uiState.message)
-            Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
+    LaunchedEffect(uiState.uiMessage) {
+        context.showUiMessage(uiMessage = uiState.uiMessage) {
             viewModel.clearMessage()
         }
     }

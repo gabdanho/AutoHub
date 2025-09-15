@@ -1,5 +1,6 @@
 package com.example.autohub.di
 
+import com.example.autohub.domain.interfaces.repository.local.NetworkRepository
 import com.example.autohub.domain.interfaces.repository.local.UserPreferencesRepository
 import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
@@ -20,6 +21,7 @@ import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserTokenUseCase
+import com.example.autohub.domain.interfaces.usecase.HasInternetConnectionUseCase
 import com.example.autohub.domain.interfaces.usecase.InsertLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginAndSaveUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginUserUseCase
@@ -49,6 +51,7 @@ import com.example.autohub.domain.usecase.GetMessagesUseCaseImpl
 import com.example.autohub.domain.usecase.GetLocalUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.GetUserDataUseCaseImpl
 import com.example.autohub.domain.usecase.GetUserTokenUseCaseImpl
+import com.example.autohub.domain.usecase.HasInternetConnectionUseCaseImpl
 import com.example.autohub.domain.usecase.InsertLocalUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.LoginAndSaveUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.LoginUserUseCaseImpl
@@ -165,8 +168,14 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideSendMessageUseCase(messengerRepository: MessengerRepository): SendMessageUseCase {
-        return SendMessageUseCaseImpl(messengerRepository = messengerRepository)
+    fun provideSendMessageUseCase(
+        messengerRepository: MessengerRepository,
+        hasInternetConnectionUseCase: HasInternetConnectionUseCase,
+    ): SendMessageUseCase {
+        return SendMessageUseCaseImpl(
+            messengerRepository = messengerRepository,
+            hasInternetConnectionUseCase = hasInternetConnectionUseCase
+        )
     }
 
     @Provides
@@ -186,6 +195,7 @@ object DomainModule {
     fun provideUpdateFirstNameUseCase(userDataRepository: UserDataRepository): UpdateFirstNameUseCase {
         return UpdateFirstNameUseCaseImpl(userDataRepository = userDataRepository)
     }
+
     @Provides
     @Singleton
     fun provideUpdateLastNameUseCase(userDataRepository: UserDataRepository): UpdateLastNameUseCase {
@@ -202,7 +212,7 @@ object DomainModule {
     @Provides
     @Singleton
     fun provideInsertLocalUserIdUseCase(
-        userPreferences: UserPreferencesRepository
+        userPreferences: UserPreferencesRepository,
     ): InsertLocalUserIdUseCase {
         return InsertLocalUserIdUseCaseImpl(userPreferences = userPreferences)
     }
@@ -224,7 +234,7 @@ object DomainModule {
     fun provideLoginAndSaveUserIdUseCase(
         loginUserUseCase: LoginUserUseCase,
         getUserIdUseCase: GetAuthUserIdUseCase,
-        insertLocalUserIdUseCase: InsertLocalUserIdUseCase
+        insertLocalUserIdUseCase: InsertLocalUserIdUseCase,
     ): LoginAndSaveUserIdUseCase {
         return LoginAndSaveUserIdUseCaseImpl(
             loginUserUseCase = loginUserUseCase,
@@ -243,7 +253,7 @@ object DomainModule {
     @Singleton
     fun provideSignOutAndClearUserIdUseCase(
         signOutUseCase: SignOutUseCase,
-        clearUserIdUseCase: ClearUserIdUseCase
+        clearUserIdUseCase: ClearUserIdUseCase,
     ): SignOutAndClearUserIdUseCase {
         return SignOutAndClearUserIdUseCaseImpl(
             signOutUseCase = signOutUseCase,
@@ -261,5 +271,11 @@ object DomainModule {
     @Singleton
     fun provideForgotPasswordUseCase(authUserRepository: AuthUserRepository): ForgotPasswordUseCase {
         return ForgotPasswordUseCaseImpl(authUserRepository = authUserRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHasInternetConnectionUseCase(networkRepository: NetworkRepository): HasInternetConnectionUseCase {
+        return HasInternetConnectionUseCaseImpl(networkRepository = networkRepository)
     }
 }
