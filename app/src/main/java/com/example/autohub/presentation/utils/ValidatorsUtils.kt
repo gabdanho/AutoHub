@@ -28,7 +28,7 @@ fun isValidCity(city: String): Boolean {
 }
 
 fun isPasswordValid(password: String): Boolean {
-    if (password.isNotBlank()) return false
+    if (password.isBlank()) return false
 
     val regex = Regex("[!#\$%&~=',.@?+_]")
 

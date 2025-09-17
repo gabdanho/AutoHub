@@ -39,7 +39,9 @@ class AnotherAccountScreenViewModel @Inject constructor(
     private val _callEvent = MutableStateFlow<String?>(null)
     val callEvent: StateFlow<String?> = _callEvent.asStateFlow()
 
-    fun getUserAds(user: User) {
+    fun getUserAds(user: User, forced: Boolean = false) {
+        if (!forced && _uiState.value.sellerAds.isNotEmpty()) return
+
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 

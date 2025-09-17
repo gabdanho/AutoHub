@@ -55,7 +55,7 @@ fun NavGraphBuilder.adNavigationScreensGraph(
         val args = it.toRoute<AdGraph.AdsMainScreen>()
         AdsMainScreen(
             modifier = modifier,
-            filters = args.searchFilters
+            searchFilters = args.searchFilters
         )
     }
 }

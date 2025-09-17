@@ -1,6 +1,7 @@
 package com.example.autohub.presentation.componets
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,10 @@ fun ImagePagerString(
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(initialPage = currentImageId) { images.size }
+
+    BackHandler {
+        onClose()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
@@ -77,6 +82,10 @@ fun ImagePagerUri(
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(initialPage = currentImageId) { images.size }
+
+    BackHandler {
+        onClose()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(

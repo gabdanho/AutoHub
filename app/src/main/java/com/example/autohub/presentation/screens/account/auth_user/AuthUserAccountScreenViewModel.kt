@@ -95,7 +95,7 @@ class AuthUserAccountScreenViewModel @Inject constructor(
         }
     }
 
-    private fun getUserDataAndAds() {
+    fun getUserDataAndAds() {
         viewModelScope.launch {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 

@@ -32,6 +32,7 @@ import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
+import com.example.autohub.presentation.componets.PullToRefreshContainer
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.theme.AppTheme
@@ -40,14 +41,14 @@ import com.example.autohub.presentation.utils.showUiMessage
 @Composable
 fun AdsMainScreen(
     modifier: Modifier = Modifier,
-    filters: SearchFiltersNav = SearchFiltersNav(),
+    searchFilters: SearchFiltersNav = SearchFiltersNav(),
     viewModel: AdsMainScreenViewModel = hiltViewModel<AdsMainScreenViewModel>(),
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val context = LocalContext.current
 
-    LaunchedEffect(filters) {
-        viewModel.getAds(filters = filters.filters)
+    LaunchedEffect(searchFilters) {
+        viewModel.getAds(filters = searchFilters.filters)
     }
 
     LaunchedEffect(uiState.uiMessage) {
@@ -64,73 +65,78 @@ fun AdsMainScreen(
             ) {
                 SearchAdsBar(
                     searchText = uiState.searchTextValue,
-                    onFiltersClick = { viewModel.onFiltersClick(filters = filters) },
+                    onFiltersClick = { viewModel.onFiltersClick(filters = searchFilters) },
                     onSearchTextChange = { viewModel.updateSearchText(value = it) },
-                    getAds = { viewModel.getAds(filters = filters.filters) }
+                    getAds = { viewModel.getAds(filters = searchFilters.filters) }
                 )
             }
         },
         bottomBar = {
             BottomNavBar(
-                onAdListClick = { viewModel.onAdListClick(filters = filters) },
+                onAdListClick = { viewModel.onAdListClick(filters = searchFilters) },
                 onAccountClick = { viewModel.onAccountClick() },
                 onMessageClick = { viewModel.onMessageClick() }
             )
         }
     ) { innerPadding ->
-        when (uiState.loadingState) {
-            is LoadingState.Success -> {
-                if (uiState.adsList.isNotEmpty()) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = modifier
-                            .padding(AppTheme.dimens.extraSmall)
-                            .padding(innerPadding)
-                    ) {
-                        items(uiState.adsList) { carAd ->
-                            CarAdCard(
-                                ad = carAd,
-                                onAdClick = { viewModel.onAdClick(carAd = carAd) },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(AppTheme.dimens.extraSmall)
+        PullToRefreshContainer(
+            isRefreshing = uiState.loadingState is LoadingState.Loading,
+            onRefresh = { viewModel.getAds(filters = searchFilters.filters, forced = true) },
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            when (uiState.loadingState) {
+                is LoadingState.Success -> {
+                    if (uiState.adsList.isNotEmpty()) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = modifier
+                                .padding(AppTheme.dimens.extraSmall)
+                        ) {
+                            items(uiState.adsList) { carAd ->
+                                CarAdCard(
+                                    ad = carAd,
+                                    onAdClick = { viewModel.onAdClick(carAd = carAd) },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(AppTheme.dimens.extraSmall)
+                                )
+                            }
+                        }
+                    } else {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(innerPadding)
+                                .padding(AppTheme.dimens.extraSmall)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.text_ads_not_found),
+                                color = AppTheme.colors.placeholderColor
                             )
                         }
                     }
-                } else {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(innerPadding)
-                            .padding(AppTheme.dimens.extraSmall)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.text_ads_not_found),
-                            color = AppTheme.colors.placeholderColor
-                        )
-                    }
                 }
-            }
 
-            is LoadingState.Error -> {
-                InfoPlaceholder(
-                    textRes = R.string.error_to_show_page,
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize()
-                )
-            }
+                is LoadingState.Error -> {
+                    InfoPlaceholder(
+                        textRes = R.string.error_to_show_page,
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    )
+                }
 
-            is LoadingState.Loading -> {
-                LoadingCircularIndicator(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize()
-                )
-            }
+                is LoadingState.Loading -> {
+                    LoadingCircularIndicator(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    )
+                }
 
-            null -> {}
+                null -> {}
+            }
         }
     }
 }

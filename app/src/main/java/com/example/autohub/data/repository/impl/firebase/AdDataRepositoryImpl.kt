@@ -40,7 +40,7 @@ class AdDataRepositoryImpl @Inject constructor(
 
             val snapshot = fbStoreRef.get().await()
 
-            if (searchText.isNotBlank()) {
+            val ads = if (searchText.isNotBlank()) {
                 val words = searchText.trim().lowercase().split(' ')
 
                 snapshot.documents.mapNotNull { doc ->
@@ -56,6 +56,8 @@ class AdDataRepositoryImpl @Inject constructor(
                     doc.toObject(CarAd::class.java)?.toCarAdDomain()
                 }
             }
+
+            ads.sortedByDescending { it.timeMillis }
         }
     }
 
@@ -67,6 +69,7 @@ class AdDataRepositoryImpl @Inject constructor(
             snapshot.documents
                 .mapNotNull { it.toObject(CarAd::class.java) }
                 .filter { it.userId == uid }
+                .sortedByDescending { it.timeMillis }
                 .map { it.toCarAdDomain() }
         }
     }
@@ -88,7 +91,12 @@ class AdDataRepositoryImpl @Inject constructor(
 
             docReference.set(updatedCarAd).await()
 
-            uploadAdsImagesToFirebase(images = images, reference = adReference)
+            val imagesLoadResult = uploadAdsImagesToFirebase(images = images, reference = adReference)
+
+            if (imagesLoadResult is FirebaseResult.Error) {
+                docReference.delete().await()
+            }
+            imagesLoadResult
         }
     }
 

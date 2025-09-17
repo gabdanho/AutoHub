@@ -114,8 +114,14 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideCreateAdUseCase(adDataRepository: AdDataRepository): CreateAdUseCase {
-        return CreateAdUseCaseImpl(adDataRepository = adDataRepository)
+    fun provideCreateAdUseCase(
+        adDataRepository: AdDataRepository,
+        hasInternetConnectionUseCase: HasInternetConnectionUseCase,
+    ): CreateAdUseCase {
+        return CreateAdUseCaseImpl(
+            adDataRepository = adDataRepository,
+            hasInternetConnectionUseCase = hasInternetConnectionUseCase
+        )
     }
 
     @Provides

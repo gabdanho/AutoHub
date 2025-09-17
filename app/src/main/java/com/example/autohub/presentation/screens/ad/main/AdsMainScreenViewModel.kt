@@ -78,7 +78,9 @@ class AdsMainScreenViewModel @Inject constructor(
         }
     }
 
-    fun getAds(filters: List<SearchFilter>) {
+    fun getAds(filters: List<SearchFilter>, forced: Boolean = false) {
+        if (!forced && _uiState.value.adsList.isNotEmpty()) return
+
         viewModelScope.launch {
             _uiState.update { state -> state.copy(loadingState = LoadingState.Loading) }
 

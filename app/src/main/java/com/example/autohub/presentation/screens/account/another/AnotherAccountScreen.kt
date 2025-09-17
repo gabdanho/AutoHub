@@ -33,6 +33,7 @@ import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
+import com.example.autohub.presentation.componets.PullToRefreshContainer
 import com.example.autohub.presentation.componets.TopAdAppBar
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.user.User
@@ -78,135 +79,139 @@ fun AnotherAccountScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = modifier
-                .padding(innerPadding)
-                .padding(AppTheme.dimens.extraSmall)
-                .fillMaxSize()
+        PullToRefreshContainer(
+            isRefreshing = uiState.loadingState is LoadingState.Loading,
+            onRefresh = { viewModel.getUserAds(user = user, forced = true) },
+            modifier = Modifier.padding(innerPadding)
         ) {
-            item {
-                Row(
-                    horizontalArrangement = Arrangement.Center
-                ) {
+            LazyColumn(
+                modifier = modifier
+                    .padding(AppTheme.dimens.extraSmall)
+                    .fillMaxSize()
+            ) {
+                item {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        AsyncImage(
-                            model = user.image,
-                            contentDescription = stringResource(id = R.string.content_user_image),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(AppTheme.dimens.profileImageSize)
-                                .clip(CircleShape)
-                                .border(AppTheme.dimens.smallBorderSize, AppTheme.colors.containerColor, CircleShape)
-                        )
-                        Column(
-                            modifier = Modifier.padding(start = AppTheme.dimens.medium)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(
-                                text = stringResource(
-                                    id = R.string.text_user_first_last_name,
-                                    user.firstName,
-                                    user.lastName
-                                ),
-                                style = MaterialTheme.typography.displaySmall,
-                                modifier = Modifier.padding(bottom = AppTheme.dimens.extraSmall)
-                            )
-                            Text(
-                                text = user.city,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-                }
-            }
-            item {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(AppTheme.dimens.extraSmall)
-                        .fillMaxWidth()
-                ) {
-                    CustomButton(
-                        text = stringResource(id = R.string.button_write_message),
-                        onClick = { viewModel.writeToUser(user = user) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = AppTheme.dimens.extraSmall)
-                            .weight(AppTheme.dimens.fullWeight)
-                    )
-                    CustomButton(
-                        text = stringResource(id = R.string.button_call),
-                        onClick = { viewModel.callToUser(number = user.phoneNumber) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(AppTheme.dimens.fullWeight)
-                    )
-                }
-            }
-            item {
-                Text(
-                    text = stringResource(id = R.string.text_displayed_ads),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = AppTheme.dimens.extraSmall)
-                )
-                HorizontalDivider()
-            }
-            when (uiState.loadingState) {
-                is LoadingState.Success -> {
-                    if (uiState.sellerAds.isNotEmpty()) {
-                        items (uiState.sellerAds) { ad ->
-                            CarAdCard(
-                                ad = ad,
-                                onAdClick = { viewModel.onAdClick(ad = ad) },
-                                imageHeight = AppTheme.dimens.carAdCardImageSize,
-                                modifier = modifier
-                                    .fillMaxWidth()
-                                    .padding(AppTheme.dimens.extraSmall)
-                            )
-                        }
-                    } else {
-                        item {
-                            Row(
+                            AsyncImage(
+                                model = user.image,
+                                contentDescription = stringResource(id = R.string.content_user_image),
+                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(AppTheme.dimens.extraSmall),
-                                horizontalArrangement = Arrangement.Center
+                                    .size(AppTheme.dimens.profileImageSize)
+                                    .clip(CircleShape)
+                                    .border(AppTheme.dimens.smallBorderSize, AppTheme.colors.containerColor, CircleShape)
+                            )
+                            Column(
+                                modifier = Modifier.padding(start = AppTheme.dimens.medium)
                             ) {
-                                Text(text = stringResource(id = R.string.text_nothing_was_found))
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.text_user_first_last_name,
+                                        user.firstName,
+                                        user.lastName
+                                    ),
+                                    style = MaterialTheme.typography.displaySmall,
+                                    modifier = Modifier.padding(bottom = AppTheme.dimens.extraSmall)
+                                )
+                                Text(
+                                    text = user.city,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
                             }
                         }
                     }
                 }
-
-                is LoadingState.Error -> {
-                    item {
-                        InfoPlaceholder(
-                            textRes = R.string.error_to_show_user_data,
+                item {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(AppTheme.dimens.extraSmall)
+                            .fillMaxWidth()
+                    ) {
+                        CustomButton(
+                            text = stringResource(id = R.string.button_write_message),
+                            onClick = { viewModel.writeToUser(user = user) },
                             modifier = Modifier
-                                .padding(innerPadding)
-                                .fillMaxSize()
+                                .fillMaxWidth()
+                                .padding(end = AppTheme.dimens.extraSmall)
+                                .weight(AppTheme.dimens.fullWeight)
+                        )
+                        CustomButton(
+                            text = stringResource(id = R.string.button_call),
+                            onClick = { viewModel.callToUser(number = user.phoneNumber) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(AppTheme.dimens.fullWeight)
                         )
                     }
                 }
-
-                is LoadingState.Loading -> {
-                    item {
-                        LoadingCircularIndicator(
-                            modifier = Modifier
-                                .padding(innerPadding)
-                                .fillMaxSize()
-                        )
-                    }
+                item {
+                    Text(
+                        text = stringResource(id = R.string.text_displayed_ads),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = AppTheme.dimens.extraSmall)
+                    )
+                    HorizontalDivider()
                 }
+                when (uiState.loadingState) {
+                    is LoadingState.Success -> {
+                        if (uiState.sellerAds.isNotEmpty()) {
+                            items (uiState.sellerAds) { ad ->
+                                CarAdCard(
+                                    ad = ad,
+                                    onAdClick = { viewModel.onAdClick(ad = ad) },
+                                    imageHeight = AppTheme.dimens.carAdCardImageSize,
+                                    modifier = modifier
+                                        .fillMaxWidth()
+                                        .padding(AppTheme.dimens.extraSmall)
+                                )
+                            }
+                        } else {
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(AppTheme.dimens.extraSmall),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(text = stringResource(id = R.string.text_nothing_was_found))
+                                }
+                            }
+                        }
+                    }
 
-                null -> {}
+                    is LoadingState.Error -> {
+                        item {
+                            InfoPlaceholder(
+                                textRes = R.string.error_to_show_user_data,
+                                modifier = Modifier
+                                    .padding(innerPadding)
+                                    .fillMaxSize()
+                            )
+                        }
+                    }
+
+                    is LoadingState.Loading -> {
+                        item {
+                            LoadingCircularIndicator(
+                                modifier = Modifier
+                                    .padding(innerPadding)
+                                    .fillMaxSize()
+                            )
+                        }
+                    }
+
+                    null -> {}
+                }
             }
-
         }
     }
 }
