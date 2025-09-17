@@ -1,13 +1,13 @@
 package com.example.autohub.presentation.componets
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
@@ -31,13 +31,9 @@ fun RowRadioButtons(
     modifier: Modifier = Modifier,
     currentType: CarOption? = null,
     isError: Boolean = false,
-    radioButtonColors: RadioButtonColors = RadioButtonColors(
-        selectedColor = AppTheme.colors.containerColor,
-        disabledSelectedColor = AppTheme.colors.unfocusedTextFieldColor,
-        unselectedColor = AppTheme.colors.labelColor,
-        disabledUnselectedColor = AppTheme.colors.unfocusedTextFieldColor
-    ),
 ) {
+    val scrollState = rememberScrollState()
+
     Column {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -46,7 +42,7 @@ fun RowRadioButtons(
                 .fillMaxWidth()
                 .padding(vertical = AppTheme.dimens.extraSmall)
         ) {
-            Text(option)
+            Text(text = option)
             if (isError) {
                 Icon(
                     imageVector = Icons.Default.Warning,
@@ -55,35 +51,58 @@ fun RowRadioButtons(
                 )
             }
         }
-        LazyRow(
+        Row(
             horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.extraSmall),
-            modifier = modifier.padding(horizontal = AppTheme.dimens.extraSmall)
+            modifier = modifier
+                .padding(horizontal = AppTheme.dimens.extraSmall)
+                .horizontalScroll(scrollState)
         ) {
-            items(typesName) { type ->
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .clickable {
-                            val newValue = if (currentType != type) type else null
-                            returnType(newValue)
-                        }
-                ) {
-                    Text(
-                        text = stringResource(
-                            id = StringToResourceIdMapperImpl().map(resId = type.textRes)
-                        )
-                    )
-                    RadioButton(
-                        selected = currentType == type,
-                        onClick = {
-                            val newValue = if (currentType != type) type else null
-                            returnType(newValue)
-                        },
-                        colors = radioButtonColors
-                    )
-                }
+            typesName.forEach { type ->
+                OptionRadioButton(
+                    optionType = type,
+                    currentType = currentType,
+                    returnType = returnType
+                )
             }
         }
     }
+}
+
+@Composable
+private fun OptionRadioButton(
+    optionType: CarOption,
+    returnType: (CarOption?) -> Unit,
+    modifier: Modifier = Modifier,
+    currentType: CarOption? = null,
+    radioButtonColors: RadioButtonColors = RadioButtonColors(
+        selectedColor = AppTheme.colors.containerColor,
+        disabledSelectedColor = AppTheme.colors.unfocusedTextFieldColor,
+        unselectedColor = AppTheme.colors.labelColor,
+        disabledUnselectedColor = AppTheme.colors.unfocusedTextFieldColor
+    ),
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .clickable {
+                val newValue = if (currentType != optionType) optionType else null
+                returnType(newValue)
+            }
+    ) {
+        Text(
+            text = stringResource(
+                id = StringToResourceIdMapperImpl().map(resId = optionType.textRes)
+            )
+        )
+        RadioButton(
+            selected = currentType == optionType,
+            onClick = {
+                val newValue = if (currentType != optionType) optionType else null
+                returnType(newValue)
+            },
+            colors = radioButtonColors
+        )
+    }
+
 }

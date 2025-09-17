@@ -4,8 +4,9 @@ import com.example.autohub.domain.interfaces.repository.remote.UserDataRepositor
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
 import com.example.autohub.domain.model.user.User
 import com.example.autohub.domain.model.result.FirebaseResult
+import javax.inject.Inject
 
-class GetUserDataUseCaseImpl(
+class GetUserDataUseCaseImpl @Inject constructor(
     private val userDataRepository: UserDataRepository
 ) : GetUserDataUseCase {
 

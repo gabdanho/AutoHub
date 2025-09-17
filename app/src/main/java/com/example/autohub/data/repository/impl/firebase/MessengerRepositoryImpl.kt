@@ -16,10 +16,11 @@ import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.data.firebase.model.safeFirebaseCall
 import com.example.autohub.data.mapper.toChatConservationDomain
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
+import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.user.User
 import com.example.autohub.domain.model.chat.Message as MessageDomain
 import com.example.autohub.domain.utils.TimeProvider
-import com.example.autohub.domain.model.chat.UserStatus as UserStatusDomain
+import com.example.autohub.domain.model.user.UserStatus as UserStatusDomain
 import com.example.autohub.domain.model.chat.ChatConservation as ChatConservationDomain
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -38,32 +39,32 @@ class MessengerRepositoryImpl @Inject constructor(
         sender: User,
         receiver: User,
         text: String,
-    ) {
-        safeFirebaseCall {
+    ): FirebaseResult<Unit> {
+        return safeFirebaseCall {
             val timeSend = timeProvider.currentTimeMillis()
             val messageId = buildMessageId(timeSend = timeSend)
-            val uniqueChatID = getUniqueId(sender.uid, receiver.uid)
+            val uniqueChatID = getUniqueId(sender.userId, receiver.userId)
             val textWithoutExtraSpaces = text.trim()
             val message = Message(
                 id = messageId,
-                senderId = sender.uid,
-                receiverId = receiver.uid,
+                senderId = sender.userId,
+                receiverId = receiver.userId,
                 text = textWithoutExtraSpaces,
                 timeMillis = timeSend
             )
             val senderConservation = ChatConservation(
                 lastMessage = message.text,
                 timeMillis = timeSend,
-                uid = receiver.uid,
+                userId = receiver.userId,
                 name = receiver.createShortName(),
-                imageUrl = receiver.image
+                imageUrl = receiver.imageUrl
             )
             val receiverConservation = ChatConservation(
                 lastMessage = message.text,
                 timeMillis = timeSend,
-                uid = sender.uid,
+                userId = sender.userId,
                 name = sender.createShortName(),
-                imageUrl = sender.image
+                imageUrl = sender.imageUrl
             )
 
             fbFirestore
@@ -77,16 +78,16 @@ class MessengerRepositoryImpl @Inject constructor(
             fbFirestore
                 .collection(CONSERVATIONS)
                 .document(USERS)
-                .collection(sender.uid)
-                .document(receiver.uid)
+                .collection(sender.userId)
+                .document(receiver.userId)
                 .set(senderConservation)
                 .await()
 
             fbFirestore
                 .collection(CONSERVATIONS)
                 .document(USERS)
-                .collection(receiver.uid)
-                .document(sender.uid)
+                .collection(receiver.userId)
+                .document(sender.userId)
                 .set(receiverConservation)
                 .await()
         }
@@ -116,6 +117,7 @@ class MessengerRepositoryImpl @Inject constructor(
                 }
             awaitClose { listener.remove() }
         }
+
     }
 
     override fun getParticipantsChats(authUserId: String): Flow<List<ChatConservationDomain>> {

@@ -10,10 +10,10 @@ fun User.toUserDomain(): UserDomain {
         email = email,
         phoneNumber = phoneNumber,
         city = city,
-        image = image,
+        imageUrl = imageUrl,
         status = status.toUserStatusDomain(),
         localToken = localToken,
-        uid = uid
+        userId = uid
     )
 }
 
@@ -24,9 +24,9 @@ fun UserDomain.toUserPresentation(): User {
         email = email,
         phoneNumber = phoneNumber,
         city = city,
-        image = image,
+        imageUrl = imageUrl,
         status = status.toUserStatusPresentation(),
         localToken = localToken,
-        uid = uid
+        uid = userId
     )
 }

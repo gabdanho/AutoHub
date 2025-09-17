@@ -11,10 +11,12 @@ fun User.toUserDomain(): UserDomain {
         email = email,
         phoneNumber = phoneNumber,
         city = city,
-        image = image,
-        status = UserStatus.fromValue(status).toUserStatusDomain(),
+        imageUrl = imageUrl,
+        status = runCatching { UserStatus.fromValue(status) }
+            .getOrDefault(UserStatus.OFFLINE)
+            .toUserStatusDomain(),
         localToken = localToken,
-        uid = uid
+        userId = uid
     )
 }
 
@@ -25,9 +27,9 @@ fun UserDomain.toUserData(): User {
         email = email,
         phoneNumber = phoneNumber,
         city = city,
-        image = image,
+        imageUrl = imageUrl,
         status = status.toUserStatusData().value,
         localToken = localToken,
-        uid = uid
+        uid = userId
     )
 }

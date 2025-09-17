@@ -101,7 +101,7 @@ fun ChattingScreen(
     Scaffold(
         topBar = {
             ParticipantTopBar(
-                imageUrl = uiState.participantData.image,
+                imageUrl = uiState.participantData.imageUrl,
                 firstName = uiState.participantData.firstName,
                 lastName = uiState.participantData.lastName,
                 participantStatus = participantStatus,

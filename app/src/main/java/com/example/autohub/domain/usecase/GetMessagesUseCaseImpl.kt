@@ -4,8 +4,9 @@ import com.example.autohub.domain.interfaces.repository.remote.MessengerReposito
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
 import com.example.autohub.domain.model.chat.Message
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetMessagesUseCaseImpl(
+class GetMessagesUseCaseImpl @Inject constructor(
     private val messengerRepository: MessengerRepository
 ) : GetMessagesUseCase {
 

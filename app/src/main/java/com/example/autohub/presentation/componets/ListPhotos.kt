@@ -9,16 +9,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.coerceAtMost
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
-
-private const val WIDTH_DIVIDER = 3
+import com.example.autohub.presentation.utils.getImageInPagerWidth
 
 @Composable
 fun ListPhotos(
@@ -26,9 +21,7 @@ fun ListPhotos(
     onImageClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val windowInfo = LocalWindowInfo.current
-    val width = with(LocalDensity.current) { windowInfo.containerSize.width.dp }
-    val imageWidth = (width / WIDTH_DIVIDER).coerceAtMost(AppTheme.dimens.maxAdImageWidth)
+    val imageWidth = getImageInPagerWidth()
 
     LazyRow(modifier = modifier) {
         itemsIndexed(imagesUrl) { id, url ->

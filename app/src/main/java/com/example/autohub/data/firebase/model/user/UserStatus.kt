@@ -12,7 +12,7 @@ enum class UserStatus(val value: String) {
             return when (value.uppercase()) {
                 ONLINE_VALUE -> ONLINE
                 OFFLINE_VALUE -> OFFLINE
-                else -> throw IllegalArgumentException("Unknown user status: $value")
+                else -> OFFLINE
             }
         }
     }

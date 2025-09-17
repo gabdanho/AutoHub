@@ -11,7 +11,7 @@ class FirebaseStorageUtils @Inject constructor(
         bytes: ByteArray,
         path: String,
     ): String {
-        require(bytes.isNotEmpty()) { throw IllegalArgumentException("EMPTY_BYTE_ARRAY") }
+        require(bytes.isNotEmpty()) { "EMPTY_BYTE_ARRAY" }
 
         val ref = fbStorage.reference.child(path)
         val uri = ref.putBytes(bytes).continueWithTask { task ->

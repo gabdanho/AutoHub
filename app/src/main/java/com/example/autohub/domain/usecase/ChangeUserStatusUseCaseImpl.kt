@@ -2,9 +2,10 @@ package com.example.autohub.domain.usecase
 
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
 import com.example.autohub.domain.interfaces.usecase.ChangeUserStatusUseCase
-import com.example.autohub.domain.model.chat.UserStatus
+import com.example.autohub.domain.model.user.UserStatus
+import javax.inject.Inject
 
-class ChangeUserStatusUseCaseImpl(
+class ChangeUserStatusUseCaseImpl @Inject constructor(
     private val authUserRepository: AuthUserRepository
 ) : ChangeUserStatusUseCase {
 

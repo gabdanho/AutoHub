@@ -20,12 +20,12 @@ open class NavTypeSerializer<T>(
     }
 
     override fun parseValue(value: String): T {
-        val decoded = Uri.decode(value) // ✅ обратно в нормальный JSON
+        val decoded = Uri.decode(value)
         return Json.decodeFromString(serializer, decoded)
     }
 
     override fun serializeAsValue(value: T): String {
         val rawJson = Json.encodeToString(serializer, value)
-        return Uri.encode(rawJson) // ✅ делаем безопасным для route
+        return Uri.encode(rawJson)
     }
 }

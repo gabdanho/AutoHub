@@ -106,7 +106,7 @@ class AccountSettingsViewModel @Inject constructor(
                 is FirebaseResult.Success -> {
                     _uiState.update { state ->
                         state.copy(
-                            user = state.user.copy(image = uriString),
+                            user = state.user.copy(imageUrl = uriString),
                             loadingState = LoadingState.Success,
                             uiMessage = UiMessage(textResName = StringResNamePresentation.INFO_UPDATE_USER_FIELDS_SUCCESS)
                         )

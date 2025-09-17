@@ -5,8 +5,9 @@ import com.example.autohub.domain.interfaces.usecase.InsertLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginAndSaveUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginUserUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
+import javax.inject.Inject
 
-class LoginAndSaveUserIdUseCaseImpl(
+class LoginAndSaveUserIdUseCaseImpl @Inject constructor(
     private val loginUserUseCase: LoginUserUseCase,
     private val getUserIdUseCase: GetAuthUserIdUseCase,
     private val insertLocalUserIdUseCase: InsertLocalUserIdUseCase

@@ -7,9 +7,10 @@ import com.example.autohub.domain.model.ad.CarAd
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.result.HandleErrorTag
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import javax.inject.Inject
 
-class CreateAdUseCaseImpl(
+class CreateAdUseCaseImpl @Inject constructor(
     private val adDataRepository: AdDataRepository,
     private val hasInternetConnectionUseCase: HasInternetConnectionUseCase,
 ) : CreateAdUseCase {
@@ -18,7 +19,7 @@ class CreateAdUseCaseImpl(
         carAdInfo: CarAd,
         images: List<ImageUploadData>
     ): FirebaseResult<Unit> {
-        val isOnline = hasInternetConnectionUseCase().first()
+        val isOnline = hasInternetConnectionUseCase().firstOrNull() ?: false
 
         if (!isOnline) return FirebaseResult.Error.HandledError(tag = HandleErrorTag.NO_INTERNET)
 

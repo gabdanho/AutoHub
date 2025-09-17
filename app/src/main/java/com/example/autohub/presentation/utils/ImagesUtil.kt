@@ -4,6 +4,13 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.example.autohub.presentation.constants.WIDTH_DIVIDER
+import com.example.autohub.presentation.theme.AppTheme
 import java.io.ByteArrayOutputStream
 
 fun Context.convertUriToBytes(uri: Uri, quality: Int = 50): ByteArray? {
@@ -22,4 +29,13 @@ fun Context.convertUriToBytes(uri: Uri, quality: Int = 50): ByteArray? {
         e.printStackTrace()
         null
     }
+}
+
+@Composable
+fun getImageInPagerWidth(): Dp {
+    val windowInfo = LocalWindowInfo.current
+    val width = with(LocalDensity.current) { windowInfo.containerSize.width.dp }
+    val imageWidth = (width / WIDTH_DIVIDER).coerceAtMost(AppTheme.dimens.maxAdImageWidth)
+
+    return imageWidth
 }

@@ -16,17 +16,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -218,13 +213,17 @@ fun AccountSettings(
                         .padding(AppTheme.dimens.extraSmall)
                 ) {
                     AsyncImage(
-                        model = uiState.user.image,
+                        model = uiState.user.imageUrl,
                         contentDescription = stringResource(id = R.string.content_image),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(AppTheme.dimens.profileImageSize)
                             .clip(CircleShape)
-                            .border(AppTheme.dimens.smallBorderSize, AppTheme.colors.containerColor, CircleShape)
+                            .border(
+                                AppTheme.dimens.smallBorderSize,
+                                AppTheme.colors.containerColor,
+                                CircleShape
+                            )
                     )
                     CustomButton(
                         text = stringResource(id = R.string.button_change_user_image),
@@ -280,27 +279,12 @@ fun ChangePasswordDialog(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-                TextField(
+                InputField(
                     value = passwordValue,
+                    text = stringResource(id = R.string.text_new_password),
                     onValueChange = { onPasswordValueChange(it) },
-                    shape = AppTheme.shapes.textFieldShape,
-                    placeholder = {
-                        Text(text = stringResource(id = R.string.text_new_password))
-                    },
-                    singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedIndicatorColor = AppTheme.colors.labelColor,
-                        focusedIndicatorColor = AppTheme.colors.labelColor
-                    ),
-                    trailingIcon = {
-                        if (isInputError) Icon(
-                            imageVector = Icons.Filled.Warning,
-                            contentDescription = stringResource(id = R.string.content_necessary_fill_field)
-                        )
-                    },
+                    isError = isInputError,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Row(
@@ -315,7 +299,10 @@ fun ChangePasswordDialog(
                             containerColor = AppTheme.colors.white
                         ),
                         textColor = Color.Black,
-                        border = BorderStroke(AppTheme.dimens.mediumBorderSize, AppTheme.colors.containerColor),
+                        border = BorderStroke(
+                            AppTheme.dimens.mediumBorderSize,
+                            AppTheme.colors.containerColor
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = AppTheme.dimens.extraSmall)

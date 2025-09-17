@@ -85,7 +85,7 @@ class AdDataRepositoryImpl @Inject constructor(
                 .collection(ADS)
                 .document(adReference)
             val updatedCarAd = carAdInfo.copy(
-                adID = adReference,
+                adId = adReference,
                 timeMillis = timeStamp
             )
 
@@ -107,7 +107,7 @@ class AdDataRepositoryImpl @Inject constructor(
         return safeFirebaseCall {
             val fbStoreRef = fbFirestore.collection(ADS).document(reference)
 
-            val imagesLinks = images.map { image ->
+            val imagesLinks = images.mapNotNull { image ->
                 image.id?.let { id ->
                     fbStorageUtils.uploadImageToFirebase(
                         bytes = image.bytes,

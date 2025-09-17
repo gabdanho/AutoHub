@@ -2,8 +2,9 @@ package com.example.autohub.domain.interfaces.repository.remote
 
 import com.example.autohub.domain.model.chat.ChatConservation
 import com.example.autohub.domain.model.chat.Message
+import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.user.User
-import com.example.autohub.domain.model.chat.UserStatus
+import com.example.autohub.domain.model.user.UserStatus
 import kotlinx.coroutines.flow.Flow
 
 interface MessengerRepository {
@@ -12,7 +13,7 @@ interface MessengerRepository {
         sender: User,
         receiver: User,
         text: String
-    )
+    ): FirebaseResult<Unit>
 
     fun getMessages(authUserId: String, participantId: String): Flow<List<Message>>
 

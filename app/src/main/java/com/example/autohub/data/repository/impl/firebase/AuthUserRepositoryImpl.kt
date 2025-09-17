@@ -13,7 +13,7 @@ import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepositor
 import com.example.autohub.domain.model.result.HandleErrorTag
 import com.example.autohub.domain.model.result.FirebaseResult
 import com.example.autohub.domain.model.user.User as UserDataDomain
-import com.example.autohub.domain.model.chat.UserStatus as UserStatusDomain
+import com.example.autohub.domain.model.user.UserStatus as UserStatusDomain
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
@@ -44,7 +44,7 @@ class AuthUserRepositoryImpl @Inject constructor(
             fbAuth.createUserWithEmailAndPassword(email, password).await()
             val userId = getAuthUserId()
             val docReference = fbStore.collection(USERS).document(userId)
-            val updatedDataWithUidAndImage = user.copy(uid = userId, image = DEFAULT_USER_IMAGE)
+            val updatedDataWithUidAndImage = user.copy(userId = userId, imageUrl = DEFAULT_USER_IMAGE)
             val mappedData = updatedDataWithUidAndImage.toUserData()
             docReference.set(mappedData).await()
 
@@ -92,7 +92,7 @@ class AuthUserRepositoryImpl @Inject constructor(
 
     override suspend fun changePassword(newPassword: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
-            fbAuth.currentUser?.updatePassword(newPassword)
+            fbAuth.currentUser?.updatePassword(newPassword)?.await()
         }
     }
 

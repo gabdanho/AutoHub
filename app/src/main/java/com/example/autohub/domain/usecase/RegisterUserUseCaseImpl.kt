@@ -4,8 +4,9 @@ import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepositor
 import com.example.autohub.domain.interfaces.usecase.RegisterUserUseCase
 import com.example.autohub.domain.model.user.User
 import com.example.autohub.domain.model.result.FirebaseResult
+import javax.inject.Inject
 
-class RegisterUserUseCaseImpl(
+class RegisterUserUseCaseImpl @Inject constructor(
     private val authUserRepository: AuthUserRepository
 ) : RegisterUserUseCase {
 

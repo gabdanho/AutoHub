@@ -5,8 +5,9 @@ import com.example.autohub.domain.interfaces.usecase.GetAdsUseCase
 import com.example.autohub.domain.model.ad.CarAd
 import com.example.autohub.domain.model.ad.SearchFilter
 import com.example.autohub.domain.model.result.FirebaseResult
+import javax.inject.Inject
 
-class GetAdsUseCaseImpl(
+class GetAdsUseCaseImpl @Inject constructor(
     private val adDataRepository: AdDataRepository
 ) : GetAdsUseCase {
 

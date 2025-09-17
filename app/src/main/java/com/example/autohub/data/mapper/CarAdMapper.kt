@@ -6,7 +6,7 @@ import com.example.autohub.domain.model.ad.CarAd as CarAdDomain
 fun CarAdDomain.toCarAdData(): CarAd {
     return CarAd(
         userId = userId,
-        adID = adID,
+        adId = adId,
         city = city,
         brand = brand,
         model = model,
@@ -30,7 +30,7 @@ fun CarAdDomain.toCarAdData(): CarAd {
 fun CarAd.toCarAdDomain(): CarAdDomain {
     return CarAdDomain(
         userId = userId,
-        adID = adID,
+        adId = adId,
         city = city,
         brand = brand,
         model = model,

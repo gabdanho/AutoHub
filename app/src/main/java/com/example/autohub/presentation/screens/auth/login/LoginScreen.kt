@@ -88,7 +88,6 @@ fun LoginScreen(
                 contentDescription = stringResource(id = R.string.context_autohub_logo),
                 modifier = Modifier.fillMaxWidth()
             )
-
             Column(
                 modifier = modifier
                     .fillMaxSize()

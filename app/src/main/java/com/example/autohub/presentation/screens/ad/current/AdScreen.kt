@@ -1,8 +1,6 @@
 package com.example.autohub.presentation.screens.ad.current
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -10,9 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,15 +18,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.componets.CustomButton
@@ -39,6 +31,7 @@ import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.ListPhotos
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.TopAdAppBar
+import com.example.autohub.presentation.componets.UserNamesAndProfileImage
 import com.example.autohub.presentation.mapper.resources.StringToResourceIdMapperImpl
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.StringResNamePresentation
@@ -109,73 +102,43 @@ fun AdScreen(
                             .fillMaxWidth()
                             .background(AppTheme.colors.cardColor)
                     )
-                    Column {
+                    Column(modifier = Modifier.padding(AppTheme.dimens.extraSmall)) {
                         Text(
                             text = stringResource(id = R.string.text_car_price, carAd.price),
                             style = MaterialTheme.typography.displaySmall,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(AppTheme.dimens.extraSmall)
+                            fontWeight = FontWeight.Bold
                         )
                         if (uiState.authUserId != carAd.userId) {
+                            UserNamesAndProfileImage(
+                                imageUrl = uiState.user.imageUrl,
+                                firstName = uiState.user.firstName,
+                                lastName = uiState.user.lastName,
+                                city = uiState.user.city,
+                                onUserClick = { viewModel.onUserClick() },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
                             Row(
+                                horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
+                                    .padding(AppTheme.dimens.extraSmall)
                                     .fillMaxWidth()
-                                    .padding(
-                                        start = AppTheme.dimens.extraSmall,
-                                        end = AppTheme.dimens.extraSmall,
-                                        bottom = AppTheme.dimens.extraSmall
-                                    )
                             ) {
-                                AsyncImage(
-                                    model = uiState.user.image,
-                                    contentDescription = stringResource(id = R.string.content_user_image),
-                                    contentScale = ContentScale.Crop,
+                                CustomButton(
+                                    text = stringResource(id = R.string.button_write_message),
+                                    onClick = { viewModel.onMessageClick(participantId = carAd.userId) },
                                     modifier = Modifier
-                                        .size(AppTheme.dimens.adProfileImageSize)
-                                        .clip(CircleShape)
-                                        .border(
-                                            AppTheme.dimens.smallBorderSize,
-                                            AppTheme.colors.containerColor,
-                                            CircleShape
-                                        )
-                                        .clickable { viewModel.onUserClick() }
+                                        .fillMaxWidth()
+                                        .padding(end = AppTheme.dimens.ultraSmall)
+                                        .weight(AppTheme.dimens.fullWeight)
                                 )
-                                Column(
-                                    modifier = Modifier.padding(start = AppTheme.dimens.medium)
-                                ) {
-                                    Text(
-                                        text = stringResource(
-                                            id = R.string.text_seller_main_info,
-                                            uiState.user.firstName,
-                                            uiState.user.lastName,
-                                            uiState.user.city
-                                        ),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.clickable { viewModel.onUserClick() }
-                                    )
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        CustomButton(
-                                            text = stringResource(id = R.string.button_write_message),
-                                            onClick = { viewModel.onMessageClick(participantId = carAd.userId) },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(end = AppTheme.dimens.ultraSmall)
-                                                .weight(AppTheme.dimens.fullWeight)
-                                        )
-                                        CustomButton(
-                                            text = stringResource(id = R.string.button_call),
-                                            onClick = { viewModel.callToUser() },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .weight(AppTheme.dimens.fullWeight)
-                                        )
-                                    }
-                                }
+                                CustomButton(
+                                    text = stringResource(id = R.string.button_call),
+                                    onClick = { viewModel.callToUser() },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(AppTheme.dimens.fullWeight)
+                                )
                             }
                         }
                         FlowRow(

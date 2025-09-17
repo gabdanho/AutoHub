@@ -4,8 +4,9 @@ import com.example.autohub.domain.interfaces.repository.remote.UserDataRepositor
 import com.example.autohub.domain.interfaces.usecase.UploadUserProfileImageToFirebaseUseCase
 import com.example.autohub.domain.model.ImageUploadData
 import com.example.autohub.domain.model.result.FirebaseResult
+import javax.inject.Inject
 
-class UploadUserProfileImageToFirebaseUseCaseImpl(
+class UploadUserProfileImageToFirebaseUseCaseImpl @Inject constructor(
     private val userDataRepository: UserDataRepository
 ) : UploadUserProfileImageToFirebaseUseCase {
 

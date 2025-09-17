@@ -20,7 +20,6 @@ import com.example.autohub.domain.interfaces.usecase.GetCurrentUserAdsUseCase
 import com.example.autohub.domain.interfaces.usecase.GetMessagesUseCase
 import com.example.autohub.domain.interfaces.usecase.GetLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.GetUserDataUseCase
-import com.example.autohub.domain.interfaces.usecase.GetUserTokenUseCase
 import com.example.autohub.domain.interfaces.usecase.HasInternetConnectionUseCase
 import com.example.autohub.domain.interfaces.usecase.InsertLocalUserIdUseCase
 import com.example.autohub.domain.interfaces.usecase.LoginAndSaveUserIdUseCase
@@ -50,7 +49,6 @@ import com.example.autohub.domain.usecase.GetCurrentUserAdsUseCaseImpl
 import com.example.autohub.domain.usecase.GetMessagesUseCaseImpl
 import com.example.autohub.domain.usecase.GetLocalUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.GetUserDataUseCaseImpl
-import com.example.autohub.domain.usecase.GetUserTokenUseCaseImpl
 import com.example.autohub.domain.usecase.HasInternetConnectionUseCaseImpl
 import com.example.autohub.domain.usecase.InsertLocalUserIdUseCaseImpl
 import com.example.autohub.domain.usecase.LoginAndSaveUserIdUseCaseImpl
@@ -92,12 +90,6 @@ object DomainModule {
     @Singleton
     fun provideLoginUserUseCase(authUserRepository: AuthUserRepository): LoginUserUseCase {
         return LoginUserUseCaseImpl(authUserRepository = authUserRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetUserTokenUseCase(authUserRepository: AuthUserRepository): GetUserTokenUseCase {
-        return GetUserTokenUseCaseImpl(authUserRepository = authUserRepository)
     }
 
     @Provides

@@ -7,7 +7,7 @@ fun ChatConservation.toChatConservationDomain(): ChatConservationDomain {
     return ChatConservationDomain(
         lastMessage = lastMessage,
         timeMillis = timeMillis.toLong(),
-        uid = uid,
+        userId = uid,
         name = name,
         imageUrl = imageUrl
     )
@@ -17,7 +17,7 @@ fun ChatConservationDomain.toChatConservationPresentation(): ChatConservation {
     return ChatConservation(
         lastMessage = lastMessage,
         timeMillis = timeMillis.toString(),
-        uid = uid,
+        uid = userId,
         name = name,
         imageUrl = imageUrl
     )

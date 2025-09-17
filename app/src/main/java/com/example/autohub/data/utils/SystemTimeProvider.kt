@@ -7,20 +7,17 @@ import java.util.Locale
 
 class SystemTimeProvider : TimeProvider {
 
+    private val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
+    private val timeFormat = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
+
     override fun currentTimeMillis(): Long = System.currentTimeMillis()
 
-    override fun millisToDate(millis: Long): String {
-        val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
-        return dateFormat.format(Date(millis))
-    }
+    override fun millisToDate(millis: Long): String = dateFormat.format(Date(millis))
 
-    override fun millisToTime(millis: Long): String {
-        val timeFormat = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
-        return timeFormat.format(Date(millis))
-    }
+    override fun millisToTime(millis: Long): String = timeFormat.format(Date(millis))
 
     companion object {
-        const val DATE_FORMAT = "dd.MM.yyyy"
-        const val TIME_FORMAT = "HH:mm"
+        private const val DATE_FORMAT = "dd.MM.yyyy"
+        private const val TIME_FORMAT = "HH:mm"
     }
 }

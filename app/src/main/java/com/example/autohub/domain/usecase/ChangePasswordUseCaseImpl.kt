@@ -3,8 +3,9 @@ package com.example.autohub.domain.usecase
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
 import com.example.autohub.domain.interfaces.usecase.ChangePasswordUseCase
 import com.example.autohub.domain.model.result.FirebaseResult
+import javax.inject.Inject
 
-class ChangePasswordUseCaseImpl(
+class ChangePasswordUseCaseImpl @Inject constructor(
     private val authUserRepository: AuthUserRepository
 ) : ChangePasswordUseCase {
 

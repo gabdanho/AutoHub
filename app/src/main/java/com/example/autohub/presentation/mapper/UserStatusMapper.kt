@@ -1,7 +1,7 @@
 package com.example.autohub.presentation.mapper
 
 import com.example.autohub.presentation.model.user.UserStatus
-import com.example.autohub.domain.model.chat.UserStatus as UserStatusDomain
+import com.example.autohub.domain.model.user.UserStatus as UserStatusDomain
 
 fun UserStatusDomain.toUserStatusPresentation(): UserStatus {
     return when (this) {

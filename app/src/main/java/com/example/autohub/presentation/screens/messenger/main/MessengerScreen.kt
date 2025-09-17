@@ -186,7 +186,11 @@ private fun ChatCard(
                     modifier = Modifier
                         .size(AppTheme.dimens.chatUserImage)
                         .clip(CircleShape)
-                        .border(AppTheme.dimens.smallBorderSize, AppTheme.colors.containerColor, CircleShape)
+                        .border(
+                            AppTheme.dimens.smallBorderSize,
+                            AppTheme.colors.containerColor,
+                            CircleShape
+                        )
                 )
                 Canvas(modifier = Modifier.size(AppTheme.dimens.circleStatusSize)) {
                     drawCircle(

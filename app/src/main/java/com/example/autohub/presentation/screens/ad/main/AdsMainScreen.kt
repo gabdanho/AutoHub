@@ -10,15 +10,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,6 +29,7 @@ import com.example.autohub.presentation.componets.CarAdCard
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.PullToRefreshContainer
+import com.example.autohub.presentation.componets.SearchInputField
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.theme.AppTheme
@@ -67,7 +64,7 @@ fun AdsMainScreen(
                     searchText = uiState.searchTextValue,
                     onFiltersClick = { viewModel.onFiltersClick(filters = searchFilters) },
                     onSearchTextChange = { viewModel.updateSearchText(value = it) },
-                    getAds = { viewModel.getAds(filters = searchFilters.filters) }
+                    getAds = { viewModel.getAds(filters = searchFilters.filters, forced = true) }
                 )
             }
         },
@@ -107,7 +104,6 @@ fun AdsMainScreen(
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(innerPadding)
                                 .padding(AppTheme.dimens.extraSmall)
                         ) {
                             Text(
@@ -121,17 +117,13 @@ fun AdsMainScreen(
                 is LoadingState.Error -> {
                     InfoPlaceholder(
                         textRes = R.string.error_to_show_page,
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
                 is LoadingState.Loading -> {
                     LoadingCircularIndicator(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
@@ -156,35 +148,11 @@ private fun SearchAdsBar(
             .fillMaxWidth()
             .padding(AppTheme.dimens.extraSmall)
     ) {
-        TextField(
-            value = searchText,
-            onValueChange = { onSearchTextChange(it) },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    tint = AppTheme.colors.placeholderColor,
-                    contentDescription = stringResource(id = R.string.content_search_field)
-                )
-            },
-            singleLine = true,
-            placeholder = {
-                Text(
-                    text = stringResource(id = R.string.text_search_ads),
-                    color = AppTheme.colors.placeholderColor
-                )
-            },
-            shape = AppTheme.shapes.textFieldShape,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = AppTheme.colors.transparent,
-                focusedContainerColor = AppTheme.colors.transparent,
-                unfocusedIndicatorColor = AppTheme.colors.containerColor,
-                focusedIndicatorColor = AppTheme.colors.containerColor
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    getAds()
-                }
-            ),
+        SearchInputField(
+            searchText = searchText,
+            placeholder = stringResource(id = R.string.text_search_ads),
+            onSearchTextChange = onSearchTextChange,
+            onDoneClick = getAds,
             modifier = Modifier.fillMaxWidth(AppTheme.dimens.textFieldWidth)
         )
         Icon(

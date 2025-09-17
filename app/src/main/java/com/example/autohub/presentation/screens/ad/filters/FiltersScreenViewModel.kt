@@ -46,6 +46,39 @@ class FiltersScreenViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(FiltersScreenUiState())
     val uiState: StateFlow<FiltersScreenUiState> = _uiState.asStateFlow()
 
+    fun onBackButtonClick() {
+        viewModelScope.launch {
+            navigator.navigatePopBackStack()
+        }
+    }
+
+    fun onConfirmClick() {
+        viewModelScope.launch {
+            val state = _uiState.value
+            val createdFilters = buildList {
+                addIfNotBlank(name = FIELD_BRAND, value = state.brandValue)
+                addIfNotBlank(name = FIELD_MODEL, value = state.modelValue)
+                addIfNotBlank(name = FIELD_COLOR, value = state.colorValue)
+                addIfNotBlank(name = FIELD_REALISE_YEAR, value = state.realiseYearValue)
+                addIfNotBlank(name = FIELD_ENGINE_CAPACITY, value = state.engineCapacityValue)
+                addIfNotBlank(name = FIELD_MILEAGE, value = state.mileageValue)
+                addIfNotBlank(name = FIELD_PRICE, value = state.priceValue)
+                addIfNotBlank(name = FIELD_DESCRIPTION, value = state.descriptionValue)
+                addIfNotBlank(name = FIELD_CITY, value = state.cityValue)
+                addIfNotNull(name = FIELD_BODY_TYPE, value = state.bodyTypeValue)
+                addIfNotNull(name = FIELD_ENGINE_TYPE, value = state.engineTypeValue)
+                addIfNotNull(name = FIELD_TRANSMISSION, value = state.transmissionValue)
+                addIfNotNull(name = FIELD_DRIVE_TYPE, value = state.driveTypeValue)
+                addIfNotNull(name = FIELD_STEERING_WHEEL_SIDE, value = state.steeringWheelSideValue)
+                addIfNotNull(name = FIELD_CONDITION, value = state.conditionValue)
+            }
+
+            navigator.navigate(
+                destination = AdGraph.AdsMainScreen(searchFilters = SearchFiltersNav(filters = createdFilters))
+            )
+        }
+    }
+
     fun initFilters(filters: List<SearchFilter>) {
         _uiState.update { state ->
             state.copy(
@@ -109,39 +142,6 @@ class FiltersScreenViewModel @Inject constructor(
                         filters = filters
                     )
                 )
-            )
-        }
-    }
-
-    fun onBackButtonClick() {
-        viewModelScope.launch {
-            navigator.navigatePopBackStack()
-        }
-    }
-
-    fun onConfirmClick() {
-        viewModelScope.launch {
-            val state = _uiState.value
-            val createdFilters = buildList {
-                addIfNotBlank(name = FIELD_BRAND, value = state.brandValue)
-                addIfNotBlank(name = FIELD_MODEL, value = state.modelValue)
-                addIfNotBlank(name = FIELD_COLOR, value = state.colorValue)
-                addIfNotBlank(name = FIELD_REALISE_YEAR, value = state.realiseYearValue)
-                addIfNotBlank(name = FIELD_ENGINE_CAPACITY, value = state.engineCapacityValue)
-                addIfNotBlank(name = FIELD_MILEAGE, value = state.mileageValue)
-                addIfNotBlank(name = FIELD_PRICE, value = state.priceValue)
-                addIfNotBlank(name = FIELD_DESCRIPTION, value = state.descriptionValue)
-                addIfNotBlank(name = FIELD_CITY, value = state.cityValue)
-                addIfNotNull(name = FIELD_BODY_TYPE, value = state.bodyTypeValue)
-                addIfNotNull(name = FIELD_ENGINE_TYPE, value = state.engineTypeValue)
-                addIfNotNull(name = FIELD_TRANSMISSION, value = state.transmissionValue)
-                addIfNotNull(name = FIELD_DRIVE_TYPE, value = state.driveTypeValue)
-                addIfNotNull(name = FIELD_STEERING_WHEEL_SIDE, value = state.steeringWheelSideValue)
-                addIfNotNull(name = FIELD_CONDITION, value = state.conditionValue)
-            }
-
-            navigator.navigate(
-                destination = AdGraph.AdsMainScreen(searchFilters = SearchFiltersNav(filters = createdFilters))
             )
         }
     }

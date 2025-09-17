@@ -2,17 +2,14 @@ package com.example.autohub.presentation.screens.account.auth_user
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -23,14 +20,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.CarAdCard
@@ -38,6 +32,7 @@ import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.PullToRefreshContainer
+import com.example.autohub.presentation.componets.UserNamesAndProfileImage
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.showUiMessage
@@ -94,46 +89,13 @@ fun AuthUserAccountScreen(
                             .fillMaxSize()
                     ) {
                         item {
-                            Row(
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    AsyncImage(
-                                        model = uiState.user.image,
-                                        contentDescription = stringResource(id = R.string.content_user_image),
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .size(AppTheme.dimens.profileImageSize)
-                                            .clip(CircleShape)
-                                            .border(
-                                                AppTheme.dimens.smallBorderSize,
-                                                AppTheme.colors.containerColor,
-                                                CircleShape
-                                            )
-                                    )
-                                    Column(
-                                        modifier = Modifier.padding(start = AppTheme.dimens.medium)
-                                    ) {
-                                        Text(
-                                            text = stringResource(
-                                                id = R.string.text_user_first_last_name,
-                                                uiState.user.firstName,
-                                                uiState.user.lastName
-                                            ),
-                                            style = MaterialTheme.typography.titleLarge,
-                                            fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.padding(bottom = AppTheme.dimens.extraSmall)
-                                        )
-                                        Text(
-                                            text = uiState.user.city,
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                    }
-                                }
-                            }
+                            UserNamesAndProfileImage(
+                                imageUrl = uiState.user.imageUrl,
+                                firstName = uiState.user.firstName,
+                                lastName = uiState.user.lastName,
+                                city = uiState.user.city,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
                             Column(
                                 modifier = Modifier
                                     .padding(vertical = AppTheme.dimens.extraSmall)
@@ -220,17 +182,13 @@ fun AuthUserAccountScreen(
                 is LoadingState.Error -> {
                     InfoPlaceholder(
                         textRes = R.string.error_to_show_user_data,
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
                 is LoadingState.Loading -> {
                     LoadingCircularIndicator(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 

@@ -9,7 +9,7 @@ data class User(
     val email: String = "",
     val phoneNumber: String = "",
     val city: String = "",
-    val image: String = "",
+    val imageUrl: String = "",
     val status: UserStatus = UserStatus.Offline,
     val localToken: String = "",
     val uid: String = ""

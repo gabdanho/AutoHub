@@ -2,7 +2,7 @@ package com.example.autohub.domain.model.ad
 
 data class CarAd(
     val userId: String = "",
-    val adID: String = "",
+    val adId: String = "",
     val city: String = "",
     val brand: String = "",
     val model: String = "",
@@ -19,5 +19,5 @@ data class CarAd(
     val mileage: String = "",
     val color: String = "",
     val timeMillis: Long = 0L,
-    val imagesUrl: List<String> = listOf(),
+    val imagesUrl: List<String> = emptyList(),
 )
