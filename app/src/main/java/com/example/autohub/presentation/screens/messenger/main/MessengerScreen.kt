@@ -40,6 +40,7 @@ import com.example.autohub.presentation.model.messenger.ChatConservation
 import com.example.autohub.presentation.componets.BottomNavBar
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
+import com.example.autohub.presentation.componets.TopBarDefault
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.model.messenger.ChatStatus
 import com.example.autohub.presentation.model.user.UserStatus
@@ -77,20 +78,13 @@ fun MessengerScreen(
 
     Scaffold(
         topBar = {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+            TopBarDefault(
+                title = stringResource(id = R.string.text_messenger),
                 modifier = modifier
                     .fillMaxWidth()
                     .background(color = AppTheme.colors.barColor)
                     .padding(AppTheme.dimens.extraSmall)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.text_messenger),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            )
         },
         bottomBar = {
             BottomNavBar(

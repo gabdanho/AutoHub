@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.autohub.R
@@ -32,6 +30,7 @@ import com.example.autohub.presentation.componets.CustomButton
 import com.example.autohub.presentation.componets.InfoPlaceholder
 import com.example.autohub.presentation.componets.LoadingCircularIndicator
 import com.example.autohub.presentation.componets.PullToRefreshContainer
+import com.example.autohub.presentation.componets.TopBarDefault
 import com.example.autohub.presentation.componets.UserNamesAndProfileImage
 import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.AppTheme
@@ -59,20 +58,13 @@ fun AuthUserAccountScreen(
 
     Scaffold(
         topBar = {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = modifier
+            TopBarDefault(
+                title = stringResource(id = R.string.text_account),
+                modifier = Modifier
                     .fillMaxWidth()
                     .background(color = AppTheme.colors.barColor)
                     .padding(AppTheme.dimens.extraSmall)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.text_account),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            )
         },
         bottomBar = {
             BottomNavBar(

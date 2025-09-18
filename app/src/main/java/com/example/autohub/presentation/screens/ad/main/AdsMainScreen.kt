@@ -63,17 +63,15 @@ fun AdsMainScreen(
 
     Scaffold(
         topBar = {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                SearchAdsBar(
-                    searchText = uiState.searchTextValue,
-                    onFiltersClick = { viewModel.onFiltersClick(filters = searchFilters) },
-                    onSearchTextChange = { viewModel.updateSearchText(value = it) },
-                    getAds = { viewModel.getAds(filters = searchFilters.filters, forced = true) }
-                )
-            }
+            SearchAdsBar(
+                searchText = uiState.searchTextValue,
+                onFiltersClick = { viewModel.onFiltersClick(filters = searchFilters) },
+                onSearchTextChange = { viewModel.updateSearchText(value = it) },
+                getAds = { viewModel.getAds(filters = searchFilters.filters, forced = true) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(AppTheme.dimens.extraSmall)
+            )
         },
         bottomBar = {
             BottomNavBar(
@@ -161,8 +159,6 @@ private fun SearchAdsBar(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .fillMaxWidth()
-            .padding(AppTheme.dimens.extraSmall)
     ) {
         SearchInputField(
             searchText = searchText,
