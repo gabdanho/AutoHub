@@ -1,4 +1,4 @@
-package com.example.autohub.presentation
+package com.example.autohub.app
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
