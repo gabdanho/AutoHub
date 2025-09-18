@@ -31,6 +31,15 @@ import javax.inject.Inject
 
 /**
  * ViewModel для экрана [AccountSettings].
+ *
+ * @property navigator Навигация между экранами
+ * @property uploadUserProfileImageToFirebaseUseCase UseCase для загрузки аватара
+ * @property getUserDataUseCase UseCase для получения данных пользователя
+ * @property getLocalUserIdUseCase UseCase для получения локального ID пользователя
+ * @property updateFirstNameUseCase UseCase для обновления имени
+ * @property updateLastNameUseCase UseCase для обновления фамилии
+ * @property updateCityUseCase UseCase для обновления города
+ * @property changePasswordUseCase UseCase для смены пароля
  */
 @HiltViewModel
 class AccountSettingsViewModel @Inject constructor(
@@ -334,15 +343,34 @@ class AccountSettingsViewModel @Inject constructor(
                     }
 
                     is FirebaseResult.Error.TimeoutError -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Error(
+                                    result.message
+                                )
+                            )
+                        }
                         StringResNamePresentation.ERROR_TIMEOUT_ERROR
                     }
 
                     is FirebaseResult.Error.HandledError -> {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingState = LoadingState.Error(
+                                    result.message
+                                )
+                            )
+                        }
                         result.tag.toStringResNamePresentation()
                     }
 
                     is FirebaseResult.Error -> {
-                        _uiState.update { state -> state.copy(uiMessage = UiMessage(details = result.message)) }
+                        _uiState.update { state ->
+                            state.copy(
+                                uiMessage = UiMessage(details = result.message),
+                                loadingState = LoadingState.Error(result.message)
+                            )
+                        }
                         StringResNamePresentation.ERROR_FAILED_CHANGE_PASSWORD
                     }
                 }

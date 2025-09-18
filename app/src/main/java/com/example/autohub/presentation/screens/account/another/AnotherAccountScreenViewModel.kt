@@ -27,6 +27,11 @@ import javax.inject.Inject
 
 /**
  * ViewModel для [AnotherAccountScreen].
+ *
+ * @property navigator Навигация между экранами
+ * @property getCurrentUserAdsUseCase UseCase для получения объявлений пользователя
+ * @property millisToDateUseCase UseCase для преобразования времени в дату
+ * @property getLocalUserIdUseCase UseCase для получения локального ID текущего пользователя
  */
 @HiltViewModel
 class AnotherAccountScreenViewModel @Inject constructor(

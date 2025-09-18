@@ -30,6 +30,13 @@ import javax.inject.Inject
 
 /**
  * ViewModel для [AuthUserAccountScreen].
+ *
+ * @property navigator Навигация между экранами
+ * @property getUserDataUseCase UseCase для получения данных пользователя
+ * @property getCurrentUserAdsUseCase UseCase для получения объявлений пользователя
+ * @property getLocalUserIdUseCase UseCase для получения локального ID пользователя
+ * @property signOutAndClearUserIdUseCase UseCase для выхода из аккаунта и очистки локального ID
+ * @property millisToDateUseCase UseCase для конвертации времени в читаемую дату
  */
 @HiltViewModel
 class AuthUserAccountScreenViewModel @Inject constructor(

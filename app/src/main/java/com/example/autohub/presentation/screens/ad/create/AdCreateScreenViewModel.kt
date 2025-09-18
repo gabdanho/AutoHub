@@ -37,6 +37,11 @@ import javax.inject.Inject
 
 /**
  * ViewModel для [AdCreateScreen].
+ *
+ * @property navigator Навигация между экранами
+ * @property createAdUseCase UseCase для создания объявления
+ * @property getLocalUserIdUseCase UseCase для получения локального ID пользователя
+ * @property getUserDataUseCase UseCase для получения данных пользователя
  */
 @HiltViewModel
 class AdCreateScreenViewModel @Inject constructor(
