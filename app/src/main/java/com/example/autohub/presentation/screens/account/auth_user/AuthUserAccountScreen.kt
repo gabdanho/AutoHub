@@ -37,6 +37,12 @@ import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.showUiMessage
 
+/**
+ * UI Screen для просмотра и управления собственным аккаунтом авторизованного пользователя.
+ *
+ * @param modifier [Modifier] для кастомизации компоновки
+ * @param viewModel [AuthUserAccountScreenViewModel], используемый для бизнес-логики
+ */
 @Composable
 fun AuthUserAccountScreen(
     modifier: Modifier = Modifier,

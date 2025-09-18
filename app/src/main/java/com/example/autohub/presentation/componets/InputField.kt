@@ -18,6 +18,20 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Компонент поля ввода с названием, текстовым полем и с индикатором ошибки.
+ *
+ * @param text Текст заголовка поля (например, "Имя" или "Email").
+ * @param value Текущее значение текстового поля.
+ * @param onValueChange Лямбда, вызываемая при изменении значения текстового поля.
+ * @param modifier Модификатор для настройки внешнего вида и поведения Row.
+ * @param placeHolder Плейсхолдер текстового поля.
+ * @param isSingleLine Флаг, определяющий, является ли поле однострочным.
+ * @param isError Флаг отображения ошибки (если true — показывается иконка предупреждения).
+ * @param keyboardType Тип клавиатуры для текстового поля (например, Email, Number и т.д.).
+ * @param visualTransformation Визуальное преобразование текста (например, PasswordVisualTransformation).
+ * @param placeholderColor Цвет текста плейсхолдера.
+ */
 @Composable
 fun InputField(
     text: String,

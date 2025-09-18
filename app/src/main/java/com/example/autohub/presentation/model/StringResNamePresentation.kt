@@ -1,5 +1,8 @@
 package com.example.autohub.presentation.model
 
+/**
+ * Список ресурсов строк для отображения различных текстов в Presentation слое.
+ */
 enum class StringResNamePresentation {
 
     // CarOptions

@@ -42,6 +42,13 @@ import com.example.autohub.presentation.utils.showUiMessage
 
 private const val COUNT_COLUMNS = 1
 
+/**
+ * Экран просмотра детальной информации о конкретном объявлении автомобиля.
+ *
+ * @param carAd Данные объявления автомобиля для отображения.
+ * @param modifier Модификатор для кастомизации внешнего вида Composable.
+ * @param viewModel ViewModel экрана [AdScreenViewModel].
+ */
 @Composable
 fun AdScreen(
     carAd: CarAd,
@@ -274,6 +281,13 @@ fun AdScreen(
     }
 }
 
+/**
+ * Компонент для отображения отдельного поля в гриде характеристик автомобиля.
+ *
+ * @param title Заголовок характеристики.
+ * @param value Значение характеристики в виде строки.
+ * @param modifier Модификатор для настройки внешнего вида.
+ */
 @Composable
 private fun GridItem(
     title: String,
@@ -294,6 +308,14 @@ private fun GridItem(
 
 }
 
+/**
+ * Компонент для отображения отдельного поля в гриде характеристик автомобиля,
+ * если характеристика представлена типом [CarOption].
+ *
+ * @param title Заголовок характеристики.
+ * @param option Значение характеристики типа [CarOption].
+ * @param modifier Модификатор для настройки внешнего вида.
+ */
 @Composable
 private fun GridItem(
     title: String,

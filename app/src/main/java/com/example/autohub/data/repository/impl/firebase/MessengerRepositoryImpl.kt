@@ -30,11 +30,22 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+/**
+ * Репозиторий работы с чатами и сообщениями.
+ */
 class MessengerRepositoryImpl @Inject constructor(
     private val fbFirestore: FirebaseFirestore,
     private val timeProvider: TimeProvider,
 ) : MessengerRepository {
 
+    /**
+     * Отправка сообщения другому пользователю.
+     *
+     * @param sender Отправитель
+     * @param receiver Получатель
+     * @param text Текст сообщения
+     * @return Результат операции
+     */
     override suspend fun sendMessage(
         sender: User,
         receiver: User,
@@ -93,6 +104,13 @@ class MessengerRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Получение списка сообщений между двумя пользователями.
+     *
+     * @param authUserId Id авторизованного пользователя
+     * @param participantId Id участника чата
+     * @return Flow списка сообщений
+     */
     override fun getMessages(authUserId: String, participantId: String): Flow<List<MessageDomain>> {
         return callbackFlow {
             val uniqueId = getUniqueId(senderId = authUserId, receiverId = participantId)
@@ -117,9 +135,14 @@ class MessengerRepositoryImpl @Inject constructor(
                 }
             awaitClose { listener.remove() }
         }
-
     }
 
+    /**
+     * Получение всех чатов пользователя.
+     *
+     * @param authUserId Id авторизованного пользователя
+     * @return Flow списка Domain-моделей чатов
+     */
     override fun getParticipantsChats(authUserId: String): Flow<List<ChatConservationDomain>> {
         return callbackFlow {
             val listener = fbFirestore
@@ -146,6 +169,12 @@ class MessengerRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Получение статуса участника чата.
+     *
+     * @param participantId Id участника
+     * @return Flow Domain-статуса пользователя
+     */
     override fun getParticipantStatus(participantId: String): Flow<UserStatusDomain> {
         return callbackFlow {
             val listener = fbFirestore
@@ -168,6 +197,13 @@ class MessengerRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Получение количества непрочитанных сообщений.
+     *
+     * @param authUserId Id авторизованного пользователя
+     * @param participantId Id участника
+     * @return Flow количества непрочитанных сообщений
+     */
     override fun getCountUnreadMessages(authUserId: String, participantId: String): Flow<Int> {
         return callbackFlow {
             val uniqueId = getUniqueId(authUserId, participantId)
@@ -192,7 +228,13 @@ class MessengerRepositoryImpl @Inject constructor(
         }
     }
 
-
+    /**
+     * Отметка сообщения как прочитанного.
+     *
+     * @param authUserId Id текущего пользователя
+     * @param participantId Id участника
+     * @param messageID Id сообщения
+     */
     override suspend fun markMessagesAsRead(
         authUserId: String,
         participantId: String,
@@ -211,10 +253,29 @@ class MessengerRepositoryImpl @Inject constructor(
     }
 }
 
+/**
+ * Генерация уникального идентификатора чата для двух пользователей.
+ *
+ * @param senderId Id отправителя
+ * @param receiverId Id получателя
+ * @return Уникальный идентификатор чата
+ */
 private fun getUniqueId(senderId: String, receiverId: String): String {
     return listOf(senderId, receiverId).sorted().joinToString("")
 }
 
+/**
+ * Генерация Id сообщения на основе времени отправки.
+ *
+ * @param timeSend Время отправки сообщения
+ * @return Id сообщения
+ */
 private fun buildMessageId(timeSend: Long) = "message_${timeSend}"
 
+/**
+ * Создание короткого имени пользователя.
+ *
+ * @receiver Domain-модель пользователя
+ * @return Короткое имя пользователя (Имя + первая буква фамилии)
+ */
 private fun User.createShortName() = "$firstName ${lastName[0]}."

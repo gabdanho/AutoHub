@@ -3,6 +3,12 @@ package com.example.autohub.presentation.mapper
 import com.example.autohub.presentation.model.messenger.ChatConservation
 import com.example.autohub.domain.model.chat.ChatConservation as ChatConservationDomain
 
+/**
+ * Конвертация [ChatConservation] в [ChatConservationDomain].
+ *
+ * @receiver Presentation-модель чата
+ * @return Domain-модель чата
+ */
 fun ChatConservation.toChatConservationDomain(): ChatConservationDomain {
     return ChatConservationDomain(
         lastMessage = lastMessage,
@@ -13,6 +19,12 @@ fun ChatConservation.toChatConservationDomain(): ChatConservationDomain {
     )
 }
 
+/**
+ * Конвертация [ChatConservationDomain] в [ChatConservation].
+ *
+ * @receiver Domain-модель чата
+ * @return Presentation-модель чата
+ */
 fun ChatConservationDomain.toChatConservationPresentation(): ChatConservation {
     return ChatConservation(
         lastMessage = lastMessage,

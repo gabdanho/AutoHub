@@ -27,6 +27,15 @@ import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.getImageInPagerWidth
 
+/**
+ * Список добавленных фотографий с возможностью добавить, удалить или открыть изображение.
+ *
+ * @param images Список Uri изображений.
+ * @param onAddImageClick Лямбда вызывается при добавлении нового изображения.
+ * @param onImageClick Лямбда вызывается при нажатии на изображение.
+ * @param onRemoveImageClick Лямбда вызывается при удалении изображения.
+ * @param modifier Модификатор для настройки компонента.
+ */
 @Composable
 fun ListAddedPhotos(
     images: List<Uri>,

@@ -6,6 +6,12 @@ import androidx.navigation.NavType
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
+/**
+ * Универсальный [NavType] для сериализации/десериализации объектов с использованием Kotlinx.serialization.
+ *
+ * @param T Тип передаваемого объекта
+ * @property serializer Сериализатор [KSerializer] для типа [T]
+ */
 open class NavTypeSerializer<T>(
     private val serializer: KSerializer<T>
 ) : NavType<T>(isNullableAllowed = true) {

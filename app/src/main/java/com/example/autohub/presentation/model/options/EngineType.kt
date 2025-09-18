@@ -6,6 +6,12 @@ import com.example.autohub.presentation.constants.CarOptionsTagsConstants.PETROL
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 
+/**
+ * Enum для типа двигателя автомобиля.
+ *
+ * @property textRes Ресурс строки для отображения типа двигателя
+ * @property tag Тег двигателя для хранения или передачи
+ */
 @Serializable
 enum class EngineType(
     override val textRes: StringResNamePresentation,
@@ -16,6 +22,12 @@ enum class EngineType(
     HYBRID(textRes = StringResNamePresentation.LABEL_HYBRID, tag = HYBRID_TAG);
 
     companion object {
+        /**
+         * Создает [EngineType] по переданному тегу.
+         *
+         * @param value Тег типа двигателя
+         * @return Enum значение или null, если тег не найден
+         */
         fun fromTag(value: String?): EngineType? {
             return when(value) {
                 PETROL_TAG -> PETROL

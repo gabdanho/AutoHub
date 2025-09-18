@@ -8,6 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Круговой индикатор загрузки.
+ *
+ * @param modifier Модификатор для настройки компонента.
+ */
 @Composable
 fun LoadingCircularIndicator(modifier: Modifier = Modifier) {
     Column(

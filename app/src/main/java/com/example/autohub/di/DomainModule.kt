@@ -70,6 +70,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Модуль для предоставления зависимостей уровня Domain
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DomainModule {

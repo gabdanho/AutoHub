@@ -38,6 +38,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel [MessengerScreen].
+ *
+ * @param navigator Навигационный объект для перехода между экранами.
+ * @param getParticipantStatusUseCase UseCase для получения статуса участника чата (онлайн/оффлайн).
+ * @param getParticipantsChatsUseCase UseCase для получения списка всех чатов текущего пользователя.
+ * @param getAuthUserIdUseCase UseCase для получения ID авторизованного пользователя.
+ * @param getCountUnreadMessagesUseCase UseCase для получения количества непрочитанных сообщений.
+ * @param getUserDataUseCase UseCase для получения данных пользователя по UID.
+ * @param getLocalUserIdUseCase UseCase для получения локального ID пользователя (кэш или shared prefs).
+ */
 @HiltViewModel
 class MessengerScreenViewModel @Inject constructor(
     private val navigator: Navigator,

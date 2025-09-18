@@ -42,6 +42,12 @@ import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.convertUriToBytes
 import com.example.autohub.presentation.utils.showUiMessage
 
+/**
+ * Экран создания объявления о продаже автомобиля.
+ *
+ * @param modifier Модификатор для кастомизации внешнего вида Composable.
+ * @param viewModel ViewModel экрана [AdCreateScreenViewModel].
+ */
 @Composable
 fun AdCreateScreen(
     modifier: Modifier = Modifier,

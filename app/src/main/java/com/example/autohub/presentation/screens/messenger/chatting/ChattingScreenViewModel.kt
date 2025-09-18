@@ -39,6 +39,19 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel для [ChattingScreen].
+ *
+ * @param navigator Навигационный контроллер для переходов между экранами.
+ * @param markMessagesAsReadUseCase UseCase для пометки сообщений как прочитанных.
+ * @param sendMessageUseCase UseCase для отправки сообщений.
+ * @param getMessagesUseCase UseCase для получения списка сообщений между пользователями.
+ * @param getParticipantStatusUseCase UseCase для получения текущего статуса участника.
+ * @param getAuthUserIdUseCase UseCase для получения идентификатора текущего пользователя.
+ * @param getUserDataUseCase UseCase для получения данных пользователя по ID.
+ * @param millisToTimeUseCase UseCase для конвертации времени в человекочитаемый формат.
+ * @param getLocalUserIdUseCase UseCase для получения локально сохранённого ID текущего пользователя.
+ */
 @HiltViewModel
 class ChattingScreenViewModel @Inject constructor(
     private val navigator: Navigator,

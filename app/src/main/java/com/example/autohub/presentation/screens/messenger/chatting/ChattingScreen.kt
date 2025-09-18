@@ -62,6 +62,13 @@ import com.example.autohub.presentation.utils.showUiMessage
 
 private const val MAX_LINES_MESSAGES = 6
 
+/**
+ * Экран чата [ChattingScreen].
+ *
+ * @param participant Пользователь, с которым ведется чат.
+ * @param modifier Модификатор для кастомизации внешнего вида Composable.
+ * @param viewModel ViewModel экрана [ChattingScreenViewModel].
+ */
 @Composable
 fun ChattingScreen(
     participant: User,

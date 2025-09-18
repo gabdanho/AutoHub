@@ -14,6 +14,12 @@ import com.example.autohub.presentation.constants.CarOptionsTagsConstants.VAN_TA
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 
+/**
+ * Enum для типа кузова автомобиля.
+ *
+ * @property textRes Ресурс строки для отображения типа кузова
+ * @property tag Тег типа кузова для хранения или передачи
+ */
 @Serializable
 enum class BodyType(
     override val textRes: StringResNamePresentation,
@@ -32,6 +38,12 @@ enum class BodyType(
     LIMOUSINE(textRes = StringResNamePresentation.LABEL_LIMOUSINE, tag = LIMOUSINE_TAG);
 
     companion object {
+        /**
+         * Создает [BodyType] по переданному тегу.
+         *
+         * @param value Тег типа кузова
+         * @return Enum значение или null, если тег не найден
+         */
         fun fromTag(value: String?): BodyType? {
             return when(value) {
                 SEDAN_TAG -> SEDAN

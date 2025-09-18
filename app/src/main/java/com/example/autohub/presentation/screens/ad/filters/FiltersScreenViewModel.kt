@@ -38,6 +38,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel для [FiltersScreen].
+ *
+ * @param navigator Навигатор для переходов между экранами.
+ */
 @HiltViewModel
 class FiltersScreenViewModel @Inject constructor(
     private val navigator: Navigator,

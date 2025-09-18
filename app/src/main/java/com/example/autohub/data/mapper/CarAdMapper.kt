@@ -3,6 +3,12 @@ package com.example.autohub.data.mapper
 import com.example.autohub.data.firebase.model.ad.CarAd
 import com.example.autohub.domain.model.ad.CarAd as CarAdDomain
 
+/**
+ * Конвертация [CarAdDomain] в [CarAd].
+ *
+ * @receiver Domain-модель объявления
+ * @return Data-модель объявления
+ */
 fun CarAdDomain.toCarAdData(): CarAd {
     return CarAd(
         userId = userId,
@@ -27,6 +33,12 @@ fun CarAdDomain.toCarAdData(): CarAd {
     )
 }
 
+/**
+ * Конвертация [CarAd] в [CarAdDomain].
+ *
+ * @receiver Data-модель объявления
+ * @return Domain-модель объявления
+ */
 fun CarAd.toCarAdDomain(): CarAdDomain {
     return CarAdDomain(
         userId = userId,

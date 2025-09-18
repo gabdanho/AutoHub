@@ -48,6 +48,12 @@ import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.convertUriToBytes
 import com.example.autohub.presentation.utils.showUiMessage
 
+/**
+ * Экран настроек аккаунта пользователя.
+ *
+ * @param modifier [Modifier] для кастомизации компоновки
+ * @param viewModel [AccountSettingsViewModel] для бизнес-логики и работы с данными
+ */
 @Composable
 fun AccountSettings(
     modifier: Modifier = Modifier,
@@ -259,6 +265,16 @@ fun AccountSettings(
     }
 }
 
+/**
+ * Диалог смены пароля.
+ *
+ * @param passwordValue текущий ввод пароля
+ * @param isInputError флаг ошибки валидации
+ * @param onPasswordValueChange колбэк для изменения пароля
+ * @param hideDialog скрытие диалога
+ * @param changePassword применение нового пароля
+ * @param modifier [Modifier] для кастомизации
+ */
 @Composable
 fun ChangePasswordDialog(
     passwordValue: String,

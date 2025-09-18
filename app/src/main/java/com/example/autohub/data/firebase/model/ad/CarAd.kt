@@ -1,5 +1,28 @@
 package com.example.autohub.data.firebase.model.ad
 
+/**
+ * Объявление автомобиля.
+ *
+ * @param userId ID пользователя
+ * @param adId ID объявления
+ * @param city Город
+ * @param brand Марка
+ * @param model Модель
+ * @param realiseYear Год выпуска
+ * @param price Цена
+ * @param body Тип кузова
+ * @param typeEngine Тип двигателя
+ * @param transmission Коробка передач
+ * @param drive Привод
+ * @param description Описание
+ * @param condition Состояние
+ * @param engineCapacity Объем двигателя
+ * @param steeringWheelSide Руль (левый/правый)
+ * @param mileage Пробег
+ * @param color Цвет
+ * @param timeMillis Время создания
+ * @param imagesUrl Ссылки на изображения
+ */
 data class CarAd(
     val userId: String = "",
     val adId: String = "",

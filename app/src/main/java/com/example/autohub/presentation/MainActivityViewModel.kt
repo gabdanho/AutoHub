@@ -9,6 +9,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * [ViewModel] для [MainActivity], отвечает за изменение статуса пользователя.
+ *
+ * @property changeUserStatusUseCase UseCase для изменения статуса пользователя в доменном слое
+ */
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val changeUserStatusUseCase: ChangeUserStatusUseCase

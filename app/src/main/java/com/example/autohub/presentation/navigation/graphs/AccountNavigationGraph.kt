@@ -12,6 +12,16 @@ import com.example.autohub.presentation.screens.account.auth_user.AuthUserAccoun
 import com.example.autohub.presentation.screens.account.settings.AccountSettings
 import kotlin.reflect.typeOf
 
+/**
+ * Навигационные экраны для графа аккаунта.
+ *
+ * Поддерживает:
+ * - Просмотр другого аккаунта ([AnotherAccountScreen])
+ * - Аккаунт авторизованного пользователя ([AuthUserAccountScreen])
+ * - Настройки аккаунта ([AccountSettings])
+ *
+ * @param modifier Модификатор Compose для экранов
+ */
 fun NavGraphBuilder.accountNavigationScreensGraph(
     modifier: Modifier = Modifier
 ) {

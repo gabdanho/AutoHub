@@ -3,6 +3,12 @@ package com.example.autohub.presentation.mapper
 import com.example.autohub.presentation.model.user.User
 import com.example.autohub.domain.model.user.User as UserDomain
 
+/**
+ * Конвертация [User] в [UserDomain].
+ *
+ * @receiver Presentation-модель пользователя
+ * @return Domain-модель пользователя
+ */
 fun User.toUserDomain(): UserDomain {
     return UserDomain(
         firstName = firstName,
@@ -17,6 +23,12 @@ fun User.toUserDomain(): UserDomain {
     )
 }
 
+/**
+ * Конвертация [UserDomain] в [User].
+ *
+ * @receiver Domain-модель пользователя
+ * @return Presentation-модель пользователя
+ */
 fun UserDomain.toUserPresentation(): User {
     return User(
         firstName = firstName,

@@ -20,12 +20,22 @@ import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+/**
+ * Репозиторий работы с аутентификацией пользователя и его статусом.
+ */
 class AuthUserRepositoryImpl @Inject constructor(
     private val fbAuth: FirebaseAuth,
     private val fbStore: FirebaseFirestore,
     private val fbMessaging: FirebaseMessaging
 ) : AuthUserRepository {
 
+    /**
+     * Вход пользователя по email и паролю.
+     *
+     * @param email Email пользователя
+     * @param password Пароль пользователя
+     * @return Результат операции
+     */
     override suspend fun loginUser(email: String, password: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.signInWithEmailAndPassword(email, password).await()
@@ -35,6 +45,14 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Регистрация нового пользователя.
+     *
+     * @param email Email пользователя
+     * @param password Пароль пользователя
+     * @param user Domain-модель пользователя
+     * @return Результат операции
+     */
     override suspend fun registerUser(
         email: String,
         password: String,
@@ -54,6 +72,13 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Повторная отправка письма для подтверждения email.
+     *
+     * @param email Email пользователя
+     * @param password Пароль пользователя
+     * @return Результат операции
+     */
     override suspend fun resendEmailVerification(email: String, password: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.signInWithEmailAndPassword(email, password).await()
@@ -64,6 +89,9 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Получение FCM токена и его сохранение в Firestore.
+     */
     override suspend fun getUserToken() {
         safeFirebaseCall {
             val fbStoreRef = fbStore.collection(USERS).document(getAuthUserId())
@@ -73,6 +101,9 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Выход пользователя из системы.
+     */
     override suspend fun signOut() {
         safeFirebaseCall {
             changeUserStatus(status = UserStatusDomain.Offline)
@@ -80,6 +111,11 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Изменение статуса пользователя.
+     *
+     * @param status Новый статус
+     */
     override suspend fun changeUserStatus(status: UserStatusDomain) {
         fbAuth.currentUser?.let {
             fbStore
@@ -90,18 +126,35 @@ class AuthUserRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Изменение пароля текущего пользователя.
+     *
+     * @param newPassword Новый пароль
+     * @return Результат операции
+     */
     override suspend fun changePassword(newPassword: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.currentUser?.updatePassword(newPassword)?.await()
         }
     }
 
+    /**
+     * Сброс пароля пользователя по email.
+     *
+     * @param email Email пользователя
+     * @return Результат операции
+     */
     override suspend fun forgotPassword(email: String): FirebaseResult<Unit> {
         return safeFirebaseCall {
             fbAuth.sendPasswordResetEmail(email).await()
         }
     }
 
+    /**
+     * Получение id текущего аутентифицированного пользователя.
+     *
+     * @return Id пользователя
+     */
     override fun getAuthUserId(): String =
         fbAuth.currentUser?.uid ?: throw HandledException(tag = HandleErrorTag.USER_NULL)
 

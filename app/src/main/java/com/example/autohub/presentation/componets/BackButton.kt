@@ -12,6 +12,15 @@ import androidx.compose.ui.res.stringResource
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Кнопка "Назад" в виде FloatingActionButton.
+ *
+ * @param onBackClick Лямбда вызывается при нажатии на кнопку.
+ * @param modifier Модификатор для настройки компонента.
+ * @param containerColor Цвет фона кнопки.
+ * @param contentColor Цвет иконки внутри кнопки.
+ * @param shape Форма кнопки.
+ */
 @Composable
 fun BackButton(
     onBackClick: () -> Unit,

@@ -4,6 +4,12 @@ import com.example.autohub.data.firebase.model.user.User
 import com.example.autohub.data.firebase.model.user.UserStatus
 import com.example.autohub.domain.model.user.User as UserDomain
 
+/**
+ * Конвертация [User] в [UserDomain].
+ *
+ * @receiver Data-модель пользователя
+ * @return Domain-модель пользователя
+ */
 fun User.toUserDomain(): UserDomain {
     return UserDomain(
         firstName = firstName,
@@ -20,6 +26,12 @@ fun User.toUserDomain(): UserDomain {
     )
 }
 
+/**
+ * Конвертация [UserDomain] в [User].
+ *
+ * @receiver Domain-модель пользователя
+ * @return Data-модель пользователя
+ */
 fun UserDomain.toUserData(): User {
     return User(
         firstName = firstName,

@@ -7,6 +7,12 @@ import com.example.autohub.presentation.constants.CarOptionsTagsConstants.VARIAT
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 
+/**
+ * Enum для типа трансмиссии автомобиля.
+ *
+ * @property textRes Ресурс строки для отображения типа трансмиссии
+ * @property tag Тег трансмиссии для хранения или передачи
+ */
 @Serializable
 enum class TransmissionType(
     override val textRes: StringResNamePresentation,
@@ -18,6 +24,12 @@ enum class TransmissionType(
     ROBOT(textRes = StringResNamePresentation.LABEL_ROBOT, tag = ROBOT_TAG);
 
     companion object {
+        /**
+         * Создает [TransmissionType] по переданному тегу.
+         *
+         * @param value Тег трансмиссии
+         * @return Enum значение или null, если тег не найден
+         */
         fun fromTag(value: String?): TransmissionType? {
             return when(value) {
                 MANUAL_TAG -> MANUAL

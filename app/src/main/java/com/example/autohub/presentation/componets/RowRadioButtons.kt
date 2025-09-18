@@ -23,6 +23,16 @@ import com.example.autohub.presentation.mapper.resources.StringToResourceIdMappe
 import com.example.autohub.presentation.model.options.CarOption
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Ряд радио-кнопок с названием опции.
+ *
+ * @param option Название группы опций.
+ * @param typesName Список опций.
+ * @param returnType Лямбда возвращает выбранный тип или null.
+ * @param modifier Модификатор для настройки компонента.
+ * @param currentType Текущий выбранный тип.
+ * @param isError Флаг ошибки заполнения.
+ */
 @Composable
 fun RowRadioButtons(
     option: String,

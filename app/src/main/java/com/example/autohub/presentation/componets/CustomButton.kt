@@ -12,6 +12,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Кастомная кнопка.
+ *
+ * @param text Текст на кнопке.
+ * @param onClick Лямбда вызывается при нажатии на кнопку.
+ * @param modifier Модификатор для настройки компонента.
+ * @param isEnabled Флаг активности кнопки.
+ * @param border Граница кнопки.
+ * @param colorButton Цвет кнопки.
+ * @param textColor Цвет текста.
+ * @param shape Форма кнопки.
+ */
 @Composable
 fun CustomButton(
     text: String,

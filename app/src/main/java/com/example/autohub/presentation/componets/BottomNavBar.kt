@@ -18,6 +18,14 @@ import androidx.compose.ui.res.stringResource
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Нижняя навигационная панель.
+ *
+ * @param modifier Модификатор для настройки компонента.
+ * @param onAdListClick Лямбда вызывается при нажатии на кнопку объявлений.
+ * @param onAccountClick Лямбда вызывается при нажатии на кнопку аккаунта.
+ * @param onMessageClick Лямбда вызывается при нажатии на кнопку сообщений.
+ */
 @Composable
 fun BottomNavBar(
     modifier: Modifier = Modifier,

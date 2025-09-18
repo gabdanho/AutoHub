@@ -24,6 +24,9 @@ import com.example.autohub.presentation.theme.MainTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
 
+/**
+ * Основная [Activity] приложения, которая отображает [MainScreen].
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 

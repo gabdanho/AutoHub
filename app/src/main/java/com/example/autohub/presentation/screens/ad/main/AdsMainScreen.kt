@@ -35,6 +35,13 @@ import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersN
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.showUiMessage
 
+/**
+ * Основной экран объявлений [AdsMainScreen].
+ *
+ * @param modifier Модификатор для кастомизации внешнего вида Composable.
+ * @param searchFilters Навигационный объект с фильтрами для поиска объявлений.
+ * @param viewModel ViewModel экрана [AdsMainScreenViewModel].
+ */
 @Composable
 fun AdsMainScreen(
     modifier: Modifier = Modifier,
@@ -132,6 +139,15 @@ fun AdsMainScreen(
         }
     }
 }
+/**
+ * Панель поиска объявлений с кнопкой фильтров.
+ *
+ * @param searchText Текущий текст поиска.
+ * @param onSearchTextChange Лямбда для обновления текста поиска.
+ * @param getAds Лямбда для запуска поиска объявлений.
+ * @param onFiltersClick Лямбда для открытия экрана фильтров.
+ * @param modifier Модификатор для кастомизации внешнего вида Composable.
+ */
 
 @Composable
 private fun SearchAdsBar(

@@ -24,6 +24,14 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Пейджер для отображения изображений по URL.
+ *
+ * @param images Список URL изображений.
+ * @param currentImageId Индекс текущего изображения.
+ * @param onClose Лямбда вызывается при закрытии пейджера.
+ * @param modifier Модификатор для настройки компонента.
+ */
 @Composable
 fun ImagePagerString(
     images: List<String>,
@@ -74,6 +82,14 @@ fun ImagePagerString(
     }
 }
 
+/**
+ * Пейджер для отображения изображений из Uri.
+ *
+ * @param images Список Uri изображений.
+ * @param currentImageId Индекс текущего изображения.
+ * @param onClose Лямбда вызывается при закрытии пейджера.
+ * @param modifier Модификатор для настройки компонента.
+ */
 @Composable
 fun ImagePagerUri(
     images: List<Uri>,

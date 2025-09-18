@@ -16,6 +16,19 @@ import androidx.compose.ui.res.stringResource
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Поле ввода для поиска с иконкой.
+ *
+ * @param searchText Текущий текст поиска.
+ * @param placeholder Плейсхолдер.
+ * @param onSearchTextChange Лямбда вызывается при изменении текста.
+ * @param onDoneClick Лямбда вызывается при нажатии "Done" на клавиатуре.
+ * @param modifier Модификатор для настройки компонента.
+ * @param textColor Цвет текста.
+ * @param iconColor Цвет иконки.
+ * @param shape Форма поля.
+ * @param colors Цвета поля.
+ */
 @Composable
 fun SearchInputField(
     searchText: String,

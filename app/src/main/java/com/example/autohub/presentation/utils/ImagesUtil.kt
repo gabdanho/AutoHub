@@ -13,6 +13,14 @@ import com.example.autohub.presentation.constants.WIDTH_DIVIDER
 import com.example.autohub.presentation.theme.AppTheme
 import java.io.ByteArrayOutputStream
 
+/**
+ * Конвертирует [Uri] изображения в массив байт.
+ *
+ * @receiver Контекст для получения контента
+ * @param uri Uri изображения
+ * @param quality Качество сжатия JPEG (по умолчанию 50)
+ * @return Массив байт изображения или null при ошибке
+ */
 fun Context.convertUriToBytes(uri: Uri, quality: Int = 50): ByteArray? {
     return try {
         contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -31,6 +39,11 @@ fun Context.convertUriToBytes(uri: Uri, quality: Int = 50): ByteArray? {
     }
 }
 
+/**
+ * Вычисляет оптимальную ширину изображения для отображения в ImagePager.
+ *
+ * @return Оптимальная ширина изображения в Dp
+ */
 @Composable
 fun getImageInPagerWidth(): Dp {
     val windowInfo = LocalWindowInfo.current

@@ -1,5 +1,6 @@
 package com.example.autohub.data.firebase.constants
 
+/** Названия полей Firestore */
 object FirestoreFields {
     const val IMAGES_URL_FIELD = "imagesUrl"
     const val STATUS_FIELD = "status"

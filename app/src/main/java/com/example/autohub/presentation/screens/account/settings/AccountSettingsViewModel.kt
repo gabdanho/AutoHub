@@ -29,6 +29,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel для экрана [AccountSettings].
+ */
 @HiltViewModel
 class AccountSettingsViewModel @Inject constructor(
     private val navigator: Navigator,

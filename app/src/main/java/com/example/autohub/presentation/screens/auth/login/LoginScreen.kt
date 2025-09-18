@@ -40,6 +40,13 @@ import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.showUiMessage
 
+/**
+ * Экран логина [LoginScreen].
+ *
+ * @param modifier Модификатор для кастомизации внешнего вида Composable.
+ * @param isShowSendEmailText Если true, отображает текст для повторной отправки письма подтверждения.
+ * @param viewModel ViewModel экрана [LoginScreenViewModel].
+ */
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
@@ -181,6 +188,15 @@ fun LoginScreen(
     }
 }
 
+/**
+ * Диалог смены пароля.
+ *
+ * @param email Email для восстановления пароля.
+ * @param changeEmailToNewPassword Лямбда для обновления email при вводе.
+ * @param onHideDialogClick Лямбда для скрытия диалога.
+ * @param forgotPassword Лямбда для вызова процесса восстановления пароля.
+ * @param modifier Модификатор для кастомизации внешнего вида Composable.
+ */
 @Composable
 private fun ChangePasswordDialog(
     email: String,

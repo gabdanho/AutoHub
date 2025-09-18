@@ -11,10 +11,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
+/**
+ * Репозиторий для отслеживания состояния интернет-соединения.
+ *
+ * @property context Контекст приложения, используется для получения системного сервиса [ConnectivityManager].
+ */
 class NetworkRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : NetworkRepository {
 
+    /**
+     * Возвращает поток состояний интернет-соединения.
+     *
+     * Эмиттит `true`, если соединение доступно, и `false`, если соединение потеряно.
+     */
     override fun hasInternetConnection(): Flow<Boolean> = callbackFlow {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

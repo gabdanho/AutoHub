@@ -1,5 +1,8 @@
 package com.example.autohub.presentation.model.messenger
 
+/**
+ * Локальные константы для логирования ошибок на экране чата.
+ */
 object ChatLog {
     const val TAG = "ChattingScreen"
 

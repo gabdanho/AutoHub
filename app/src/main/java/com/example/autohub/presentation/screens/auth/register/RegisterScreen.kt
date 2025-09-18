@@ -31,6 +31,13 @@ import com.example.autohub.presentation.model.LoadingState
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.showUiMessage
 
+
+/**
+ * Экран регистрации [RegisterScreen].
+ *
+ * @param modifier Модификатор для кастомизации внешнего вида Composable.
+ * @param viewModel ViewModel экрана [RegisterScreenViewModel].
+ */
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,

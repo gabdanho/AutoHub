@@ -36,6 +36,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Модуль для предоставления зависимостей уровня Data
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DataModule {

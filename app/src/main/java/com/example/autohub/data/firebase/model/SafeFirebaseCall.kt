@@ -7,6 +7,13 @@ import kotlinx.coroutines.withTimeout
 import java.io.IOException
 import java.net.SocketTimeoutException
 
+/**
+ * Безопасный вызов Firebase с обработкой ошибок.
+ *
+ * @param timeoutMillis Таймаут вызова (ms)
+ * @param apiCall Lambda с вызовом Firebase
+ * @return Результат [FirebaseResult]
+ */
 suspend fun <T> safeFirebaseCall(
     timeoutMillis: Long = 10000,
     apiCall: suspend () -> T,

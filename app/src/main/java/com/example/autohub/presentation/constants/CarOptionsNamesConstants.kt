@@ -1,5 +1,9 @@
 package com.example.autohub.presentation.constants
 
+/**
+ * Константы для названий полей автомобиля.
+ * Используются для идентификации конкретного свойства автомобиля при создании или фильтрации объявлений.
+ */
 object CarOptionsNamesConstants {
     const val FIELD_BRAND = "brand"
     const val FIELD_MODEL = "model"

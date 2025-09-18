@@ -21,6 +21,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel для [LoginScreen].
+ *
+ * @param navigator Навигатор для переходов между экранами.
+ * @param loginAndSaveUserIdUseCase Юзкейс для логина и сохранения идентификатора пользователя.
+ * @param resendEmailVerificationUseCase Юзкейс для повторной отправки письма подтверждения.
+ * @param forgotPasswordUseCase Юзкейс для восстановления пароля.
+ */
 @HiltViewModel
 class LoginScreenViewModel @Inject constructor(
     private val navigator: Navigator,

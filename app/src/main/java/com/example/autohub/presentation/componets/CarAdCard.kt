@@ -21,6 +21,17 @@ import com.example.autohub.R
 import com.example.autohub.presentation.model.ad.CarAd
 import com.example.autohub.presentation.theme.AppTheme
 
+
+/**
+ * Карточка объявления о продаже автомобиля.
+ *
+ * @param ad Объект объявления.
+ * @param onAdClick Лямбда вызывается при нажатии на карточку.
+ * @param modifier Модификатор для настройки компонента.
+ * @param shape Форма карточки.
+ * @param elevation Высота тени карточки.
+ * @param imageHeight Высота изображения внутри карточки.
+ */
 @Composable
 fun CarAdCard(
     ad: CarAd,

@@ -9,6 +9,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Контейнер с Pull-to-Refresh функционалом.
+ *
+ * @param isRefreshing Флаг состояния обновления.
+ * @param onRefresh Лямбда вызывается при pull-to-refresh.
+ * @param modifier Модификатор для настройки компонента.
+ * @param content Содержимое, которое будет отображаться внутри контейнера.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PullToRefreshContainer(

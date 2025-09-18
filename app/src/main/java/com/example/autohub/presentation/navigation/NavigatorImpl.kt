@@ -5,6 +5,11 @@ import com.example.autohub.presentation.navigation.model.graphs.destinations.Nav
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
+/**
+ * Реализация [Navigator].
+ *
+ * @param startDestination Стартовый экран приложения
+ */
 class NavigatorImpl(
     override val startDestination: NavigationDestination
 ) : Navigator {

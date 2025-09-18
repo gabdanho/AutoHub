@@ -1,5 +1,8 @@
 package com.example.autohub.presentation.constants
 
+/**
+ * Константы для тегов опций автомобиля.
+ */
 object CarOptionsTagsConstants {
     const val SEDAN_TAG = "sedan"
     const val COUPE_TAG = "coupe"

@@ -15,6 +15,13 @@ import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.getImageInPagerWidth
 
+/**
+ * Отображение списка изображений по URL без возможности добавления или удаления.
+ *
+ * @param imagesUrl Список URL изображений.
+ * @param onImageClick Лямбда вызывается при нажатии на изображение.
+ * @param modifier Модификатор для настройки компонента.
+ */
 @Composable
 fun ListPhotos(
     imagesUrl: List<String>,

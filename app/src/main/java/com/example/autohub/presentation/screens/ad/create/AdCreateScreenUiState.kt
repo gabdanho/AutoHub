@@ -10,6 +10,43 @@ import com.example.autohub.presentation.model.options.EngineType
 import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
 
+/**
+ * UI состояние экрана создания объявления.
+ *
+ * @property brandValue Марка автомобиля.
+ * @property modelValue Модель автомобиля.
+ * @property colorValue Цвет автомобиля.
+ * @property realiseYearValue Год выпуска.
+ * @property engineCapacityValue Объем двигателя в виде строки.
+ * @property mileageValue Пробег автомобиля.
+ * @property priceValue Цена автомобиля.
+ * @property descriptionValue Описание автомобиля.
+ * @property bodyTypeValue Выбранный тип кузова.
+ * @property engineTypeValue Выбранный тип двигателя.
+ * @property transmissionValue Выбранный тип трансмиссии.
+ * @property driveTypeValue Выбранный тип привода.
+ * @property steeringWheelSideValue Сторона руля.
+ * @property conditionValue Состояние автомобиля.
+ * @property images Список загруженных изображений.
+ * @property imageIdToShow Индекс текущего изображения для просмотра в пейджере.
+ * @property isShowImagePager Показывать ли пейджер изображений.
+ * @property isBrandValueError Ошибка в поле марки.
+ * @property isModelValueError Ошибка в поле модели.
+ * @property isColorValueError Ошибка в поле цвета.
+ * @property isRealiseYearValueError Ошибка в поле года выпуска.
+ * @property isEngineCapacityValue Ошибка в поле объема двигателя.
+ * @property isMileageValueError Ошибка в поле пробега.
+ * @property isPriceValueError Ошибка в поле цены.
+ * @property isBodyTypeValueError Ошибка выбора типа кузова.
+ * @property isEngineTypeValueError Ошибка выбора типа двигателя.
+ * @property isTransmissionValueError Ошибка выбора трансмиссии.
+ * @property isDriveTypeValueError Ошибка выбора типа привода.
+ * @property isSteeringWheelSideValueError Ошибка выбора стороны руля.
+ * @property isConditionValueError Ошибка выбора состояния.
+ * @property isDescriptionValueError Ошибка в поле описания.
+ * @property loadingState Состояние загрузки (Loading, Success, Error).
+ * @property uiMessage Сообщение для отображения пользователю.
+ */
 data class AdCreateScreenUiState(
     val brandValue: String = "",
     val modelValue: String = "",

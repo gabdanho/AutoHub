@@ -1,9 +1,18 @@
 package com.example.autohub.presentation.utils
 
+/**
+ * Проверяет, содержит ли строка только буквы.
+ */
 fun String.isOnlyLetters() = all { it.isLetter() }
 
+/**
+ * Проверяет, содержит ли строка только цифры и точки.
+ */
 fun String.isOnlyDigits(): Boolean = this.replace(".", "").all { it.isDigit() }
 
+/**
+ * Валидирует номер телефона.
+ */
 fun isValidPhoneNumber(number: String): Boolean {
     if (number.isBlank()) return false
 
@@ -12,6 +21,9 @@ fun isValidPhoneNumber(number: String): Boolean {
     return formattedNumber.length == 11 && formattedNumber.isOnlyDigits()
 }
 
+/**
+ * Валидирует email.
+ */
 fun isValidEmail(email: String): Boolean {
     if (email.isBlank()) return false
 
@@ -20,6 +32,9 @@ fun isValidEmail(email: String): Boolean {
     return !('@' !in email || email.count { it == '@' } > 1 || '.' !in email || email.contains(regex))
 }
 
+/**
+ * Валидирует название города.
+ */
 fun isValidCity(city: String): Boolean {
     if (city.isBlank()) return false
     if (city.count { it == '-' } > 1 || city.last() == '-') return false
@@ -27,6 +42,9 @@ fun isValidCity(city: String): Boolean {
     return city.replace("-", "").isOnlyLetters()
 }
 
+/**
+ * Валидирует пароль.
+ */
 fun isPasswordValid(password: String): Boolean {
     if (password.isBlank()) return false
 
@@ -38,6 +56,9 @@ fun isPasswordValid(password: String): Boolean {
     else true
 }
 
+/**
+ * Валидирует имя.
+ */
 fun isNameValid(name: String): Boolean {
     if (name.isBlank()) return false
     if (name.count { it == '-' } > 1 || name.last() == '-') return false

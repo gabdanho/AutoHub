@@ -21,6 +21,16 @@ import coil.compose.AsyncImage
 import com.example.autohub.R
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Отображение имени пользователя и аватара с городом.
+ *
+ * @param imageUrl URL изображения пользователя.
+ * @param firstName Имя пользователя.
+ * @param lastName Фамилия пользователя.
+ * @param city Город пользователя.
+ * @param modifier Модификатор для настройки компонента.
+ * @param onUserClick Лямбда вызывается при нажатии на компонент.
+ */
 @Composable
 fun UserNamesAndProfileImage(
     imageUrl: String,

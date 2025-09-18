@@ -4,6 +4,9 @@ import com.example.autohub.domain.model.ad.CarAd
 import com.example.autohub.domain.model.ad.SearchFilter
 import com.example.autohub.domain.model.result.FirebaseResult
 
+/**
+ * UseCase для получения списка объявлений с возможностью фильтрации и поиска.
+ */
 interface GetAdsUseCase {
     suspend operator fun invoke(
         searchText: String,

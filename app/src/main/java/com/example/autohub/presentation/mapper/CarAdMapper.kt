@@ -9,6 +9,12 @@ import com.example.autohub.presentation.model.options.SteeringWheelSideType
 import com.example.autohub.presentation.model.options.TransmissionType
 import com.example.autohub.domain.model.ad.CarAd as CarAdDomain
 
+/**
+ * Конвертация [CarAd] в [CarAdDomain].
+ *
+ * @receiver Presentation-модель объявления
+ * @return Domain-модель объявления
+ */
 fun CarAd.toCarAdDomain(): CarAdDomain {
     return CarAdDomain(
         userId = userId,
@@ -32,6 +38,12 @@ fun CarAd.toCarAdDomain(): CarAdDomain {
     )
 }
 
+/**
+ * Конвертация [CarAdDomain] в [CarAd].
+ *
+ * @receiver Domain-модель объявления
+ * @return Presentation-модель объявления
+ */
 fun CarAdDomain.toCarAdPresentation(): CarAd {
     return CarAd(
         userId = userId,
@@ -55,6 +67,13 @@ fun CarAdDomain.toCarAdPresentation(): CarAd {
     )
 }
 
+/**
+ * Конвертация списка [CarAdDomain] в список [CarAd] с форматированием даты публикации.
+ *
+ * @param ads Список объявлений
+ * @param millisToDate Функция форматирования времени в дату
+ * @return Список Presentation-моделей объявлений
+ */
 fun mapListCarAdDomainToPresentation(ads: List<CarAdDomain>, millisToDate: (Long) -> String): List<CarAd> {
     return ads.map { carAd ->
         carAd.toCarAdPresentation()

@@ -34,6 +34,13 @@ import com.example.autohub.presentation.theme.AppTheme
 import com.example.autohub.presentation.utils.launchDialIntent
 import com.example.autohub.presentation.utils.showUiMessage
 
+/**
+ * UI Screen для просмотра профиля другого пользователя и его объявлений.
+ *
+ * @param user Пользователь, профиль которого отображается
+ * @param modifier [Modifier] для кастомизации компоновки
+ * @param viewModel [AnotherAccountScreenViewModel], используемый для бизнес-логики
+ */
 @Composable
 fun AnotherAccountScreen(
     user: User,

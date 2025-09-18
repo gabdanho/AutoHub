@@ -13,6 +13,15 @@ import com.example.autohub.presentation.screens.messenger.chatting.ChattingScree
 import com.example.autohub.presentation.screens.messenger.main.MessengerScreen
 import kotlin.reflect.typeOf
 
+/**
+ * Навигационные экраны для графа мессенджера.
+ *
+ * Поддерживает:
+ * - Главный экран мессенджера ([MessengerScreen])
+ * - Экран чата с конкретным пользователем ([ChattingScreen])
+ *
+ * @param modifier Модификатор Compose для экранов
+ */
 fun NavGraphBuilder.messengerNavigationScreensGraph(
     modifier: Modifier = Modifier
 ) {

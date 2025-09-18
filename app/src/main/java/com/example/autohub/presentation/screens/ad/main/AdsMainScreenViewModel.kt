@@ -26,6 +26,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel для [AdsMainScreen].
+ *
+ * @param navigator Навигатор для переходов между экранами.
+ * @param getAdsUseCase Юзкейс для получения объявлений.
+ * @param millisToDateUseCase Юзкейс для конвертации миллисекунд в дату.
+ */
 @HiltViewModel
 class AdsMainScreenViewModel @Inject constructor(
     private val navigator: Navigator,

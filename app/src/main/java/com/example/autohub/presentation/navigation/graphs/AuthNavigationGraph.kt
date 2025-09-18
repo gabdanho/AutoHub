@@ -10,6 +10,15 @@ import com.example.autohub.presentation.navigation.model.graphs.NavigationGraph
 import com.example.autohub.presentation.screens.auth.login.LoginScreen
 import com.example.autohub.presentation.screens.auth.register.RegisterScreen
 
+/**
+ * Навигационные экраны для графа аутентификации.
+ *
+ * Поддерживает:
+ * - Экран логина ([LoginScreen])
+ * - Экран регистрации ([RegisterScreen])
+ *
+ * @param modifier Модификатор Compose для экранов
+ */
 fun NavGraphBuilder.authNavigationScreensGraph(
     modifier: Modifier = Modifier
 ) {

@@ -3,6 +3,11 @@ package com.example.autohub.presentation.mapper.resources
 import com.example.autohub.R
 import com.example.autohub.presentation.model.StringResNamePresentation
 
+/**
+ * Реализация маппера, которая сопоставляет все возможные
+ * идентификаторы из presentation слоя с конкретными ресурсами строк в R.string.
+ * Используется для отображения локализованных текстов в UI.
+ */
 class StringToResourceIdMapperImpl : StringToResourceIdMapper {
 
     private val resourceMapPresentation = mapOf(

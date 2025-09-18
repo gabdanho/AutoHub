@@ -9,6 +9,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
+/**
+ * Подписка на [Flow] в Compose и обработка событий через [onEvent].
+ *
+ * Использует [Lifecycle.State.STARTED], чтобы не собирать события вне активного состояния.
+ *
+ * @param T Тип события
+ * @param flow Поток событий [Flow]
+ * @param key1 Ключ для LaunchedEffect (опционально)
+ * @param key2 Ключ для LaunchedEffect (опционально)
+ * @param onEvent Lambda для обработки каждого события
+ */
 @Composable
 fun <T> ObserveAsEvents(
     flow: Flow<T>,

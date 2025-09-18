@@ -11,6 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Плейсхолдер для отображения информационного текста.
+ *
+ * @param textRes Ресурс текста.
+ * @param modifier Модификатор для настройки компонента.
+ */
 @Composable
 fun InfoPlaceholder(
     @StringRes textRes: Int,

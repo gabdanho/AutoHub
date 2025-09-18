@@ -25,6 +25,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel для [AnotherAccountScreen].
+ */
 @HiltViewModel
 class AnotherAccountScreenViewModel @Inject constructor(
     private val navigator: Navigator,

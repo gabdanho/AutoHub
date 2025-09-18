@@ -9,6 +9,12 @@ import com.example.autohub.presentation.mapper.resources.StringToResourceIdMappe
 import com.example.autohub.presentation.model.UiMessage
 import kotlinx.coroutines.delay
 
+/**
+ * Запускает телефон для набора указанного номера.
+ *
+ * @receiver Контекст, используемый для запуска интента
+ * @param phoneNumber Телефонный номер, который необходимо набрать
+ */
 fun Context.launchDialIntent(phoneNumber: String) {
     val intent = Intent(Intent.ACTION_DIAL).apply {
         data = "tel:$phoneNumber".toUri()
@@ -19,6 +25,13 @@ fun Context.launchDialIntent(phoneNumber: String) {
     }
 }
 
+/**
+ * Отображает [UiMessage] через Toast.
+ *
+ * @receiver Контекст, используемый для отображения Toast
+ * @param uiMessage Сообщение для отображения
+ * @param clearMessage Функция для очистки сообщения после показа
+ */
 suspend fun Context.showUiMessage(uiMessage: UiMessage, clearMessage: () -> Unit) {
     if (uiMessage.textResName != null) {
         val resId = StringToResourceIdMapperImpl().map(uiMessage.textResName)

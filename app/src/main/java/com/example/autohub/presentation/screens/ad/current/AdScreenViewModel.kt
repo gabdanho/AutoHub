@@ -21,6 +21,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel для [AdScreen].
+ *
+ * @param navigator Навигатор для переходов между экранами.
+ * @param getUserDataUseCase UseCase для получения данных пользователя по ID.
+ * @param getLocalUserIdUseCase UseCase для получения локального ID авторизованного пользователя.
+ */
 @HiltViewModel
 class AdScreenViewModel @Inject constructor(
     private val navigator: Navigator,

@@ -25,6 +25,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel для [RegisterScreen].
+ *
+ * @param navigator Навигатор для переходов между экранами.
+ * @param registerUserUseCase Юзкейс для регистрации пользователя.
+ */
 @HiltViewModel
 class RegisterScreenViewModel @Inject constructor(
     private val navigator: Navigator,

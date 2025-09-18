@@ -19,12 +19,22 @@ import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+/**
+ * Репозиторий работы с объявлениями в Firebase.
+ */
 class AdDataRepositoryImpl @Inject constructor(
     private val fbFirestore: FirebaseFirestore,
     private val fbStorageUtils: FirebaseStorageUtils,
     private val timeProvider: TimeProvider
 ) : AdDataRepository {
 
+    /**
+     * Получает список объявлений с фильтрацией и поиском.
+     *
+     * @param searchText Текст для поиска
+     * @param filters Список фильтров
+     * @return Список Domain-моделей объявлений
+     */
     override suspend fun getAds(
         searchText: String,
         filters: List<SearchFilter>
@@ -61,6 +71,12 @@ class AdDataRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Получает объявления текущего пользователя.
+     *
+     * @param uid Id пользователя
+     * @return Список Domain-моделей объявлений
+     */
     override suspend fun getCurrentUserAds(uid: String): FirebaseResult<List<CarAdDomain>> {
         return safeFirebaseCall {
             val fbStoreRef = fbFirestore.collection(ADS)
@@ -74,6 +90,13 @@ class AdDataRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Создаёт новое объявление с загрузкой изображений.
+     *
+     * @param carAdInfo Domain-модель объявления
+     * @param images Список изображений
+     * @return Результат операции
+     */
     override suspend fun createAd(
         carAdInfo: CarAdDomain,
         images: List<ImageUploadData>
@@ -100,6 +123,13 @@ class AdDataRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Загружает изображения объявления в Firebase Storage.
+     *
+     * @param images Список изображений
+     * @param reference Идентификатор объявления
+     * @return Результат операции
+     */
     override suspend fun uploadAdsImagesToFirebase(
         images: List<ImageUploadData>,
         reference: String
@@ -121,4 +151,10 @@ class AdDataRepositoryImpl @Inject constructor(
     }
 }
 
+/**
+ * Преобразование [CarAd] в строку для поиска.
+ *
+ * @receiver Data-модель объявления
+ * @return Строка для поиска
+ */
 private fun CarAd.toSearchableString() = "$brand $model $realiseYear".lowercase()

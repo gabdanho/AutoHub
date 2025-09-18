@@ -36,6 +36,13 @@ import com.example.autohub.presentation.model.options.TransmissionType
 import com.example.autohub.presentation.navigation.model.nav_type.SearchFiltersNav
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Экран фильтров для поиска объявлений автомобилей.
+ *
+ * @param modifier Модификатор для кастомизации внешнего вида Composable.
+ * @param viewModel ViewModel экрана [FiltersScreenViewModel] для управления состоянием.
+ * @param searchFilters Навигационный объект, содержащий начальные значения фильтров.
+ */
 @Composable
 fun FiltersScreen(
     modifier: Modifier = Modifier,

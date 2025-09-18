@@ -9,6 +9,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Модуль для предоставления зависимостей уровня Presentation
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object PresentationModule {

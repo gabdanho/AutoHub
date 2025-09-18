@@ -1,5 +1,6 @@
 package com.example.autohub.data.firebase.constants
 
+/** Названия коллекций Firestore */
 object FirestoreCollections {
     const val ADS = "ads"
     const val USERS = "users"

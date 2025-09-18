@@ -35,6 +35,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel для [AdCreateScreen].
+ */
 @HiltViewModel
 class AdCreateScreenViewModel @Inject constructor(
     private val navigator: Navigator,

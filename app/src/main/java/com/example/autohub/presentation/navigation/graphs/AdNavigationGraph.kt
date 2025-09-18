@@ -15,6 +15,17 @@ import com.example.autohub.presentation.screens.ad.filters.FiltersScreen
 import com.example.autohub.presentation.screens.ad.main.AdsMainScreen
 import kotlin.reflect.typeOf
 
+/**
+ * Навигационные экраны для графа объявлений.
+ *
+ * Поддерживает:
+ * - Создание объявления ([AdCreateScreen])
+ * - Просмотр конкретного объявления ([AdScreen])
+ * - Фильтры поиска ([FiltersScreen])
+ * - Главный экран с объявлениями ([AdsMainScreen])
+ *
+ * @param modifier Модификатор Compose для экранов
+ */
 fun NavGraphBuilder.adNavigationScreensGraph(
     modifier: Modifier = Modifier
 ) {

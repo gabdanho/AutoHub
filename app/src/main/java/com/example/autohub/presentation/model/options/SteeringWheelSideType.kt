@@ -5,6 +5,12 @@ import com.example.autohub.presentation.constants.CarOptionsTagsConstants.RIGHT_
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 
+/**
+ * Enum для стороны руля автомобиля.
+ *
+ * @property textRes Ресурс строки для отображения стороны руля
+ * @property tag Тег стороны руля для хранения или передачи
+ */
 @Serializable
 enum class SteeringWheelSideType(
     override val textRes: StringResNamePresentation,
@@ -14,6 +20,12 @@ enum class SteeringWheelSideType(
     LEFT(textRes = StringResNamePresentation.LABEL_LEFT_WHEEL, tag = LEFT_STEERING_WHEEL_TAG);
 
     companion object {
+        /**
+         * Создает [SteeringWheelSideType] по переданному тегу.
+         *
+         * @param value Тег стороны руля
+         * @return Enum значение или null, если тег не найден
+         */
         fun fromTag(value: String?): SteeringWheelSideType? {
             return when(value) {
                 RIGHT_STEERING_WHEEL_TAG -> RIGHT

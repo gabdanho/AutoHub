@@ -5,12 +5,18 @@ import com.example.autohub.presentation.model.ad.SearchFilter
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
+/**
+ * Класс-обертка для фильтров поиска.
+ */
 @Serializable
 @Immutable
 data class SearchFiltersNav(
     val filters: List<SearchFilter> = emptyList()
 )
 
+/**
+ * [NavType] для передачи [SearchFiltersNav] между экранами.
+ */
 class SearchFilterNavType(serializer: KSerializer<SearchFiltersNav> = SearchFiltersNav.serializer()) :
     NavTypeSerializer<SearchFiltersNav>(
         serializer = serializer

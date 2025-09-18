@@ -48,6 +48,12 @@ import com.example.autohub.presentation.utils.showUiMessage
 
 private const val CHAT_MAX_LINES = 1
 
+/**
+ * Основной экран мессенджера.
+ *
+ * @param modifier Modifier для кастомизации внешнего вида Composable.
+ * @param viewModel ViewModel для управления состоянием экрана.
+ */
 @Composable
 fun MessengerScreen(
     modifier: Modifier = Modifier,
@@ -150,6 +156,14 @@ fun MessengerScreen(
     }
 }
 
+/**
+ * Карточка чата в списке.
+ *
+ * @param chatConservation Данные чата.
+ * @param chatStatus Статус участника и количество непрочитанных сообщений.
+ * @param onAnswerClick Лямбда, вызываемая при клике на карточку для перехода в чат.
+ * @param modifier Modifier для кастомизации внешнего вида Composable.
+ */
 @Composable
 private fun ChatCard(
     chatConservation: ChatConservation,

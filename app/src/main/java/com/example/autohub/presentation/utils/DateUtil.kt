@@ -5,14 +5,23 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+/**
+ * Конвертирует объект [Date] в строку формата "dd/MM/yyyy HH:mm".
+ *
+ * @receiver Дата для форматирования
+ * @return Строковое представление даты
+ */
 fun Date.toFullString(): String {
     val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
     sdf.timeZone = TimeZone.getTimeZone("Europe/Moscow")
     return sdf.format(this)
 }
 
-// ToDo Рефакторинг
-
+/**
+ * Получает текущий системный час и минуты в виде строки "HH:mm".
+ *
+ * @return Строковое представление текущего времени
+ */
 fun getTimeString(): String {
     val time = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Moscow")
@@ -21,6 +30,12 @@ fun getTimeString(): String {
     return time
 }
 
+/**
+ * Конвертирует строку формата "HH:mm" в миллисекунды.
+ *
+ * @receiver Время в строковом формате
+ * @return Время в миллисекундах с начала эпохи
+ */
 fun String.toMillis(): Long {
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
         timeZone = TimeZone.getTimeZone("Europe/Moscow")

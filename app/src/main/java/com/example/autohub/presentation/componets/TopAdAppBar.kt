@@ -13,6 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.example.autohub.presentation.theme.AppTheme
 
+/**
+ * Верхняя панель приложения для объявлений с заголовком и кнопкой "Назад".
+ *
+ * @param titleText Текст заголовка.
+ * @param onBackButtonClick Лямбда вызывается при нажатии на кнопку "Назад".
+ * @param modifier Модификатор для настройки компонента.
+ */
 @Composable
 fun TopAdAppBar(
     titleText: String,

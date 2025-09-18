@@ -12,6 +12,11 @@ import com.example.autohub.presentation.navigation.graphs.adNavigationScreensGra
 import com.example.autohub.presentation.navigation.graphs.authNavigationScreensGraph
 import com.example.autohub.presentation.navigation.graphs.messengerNavigationScreensGraph
 
+/**
+ * Главный экран приложения, содержащий навигационный хост.
+ *
+ * @param viewModel ViewModel экрана [MainScreenViewModel]. По умолчанию создается через Hilt.
+ */
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel = hiltViewModel<MainScreenViewModel>()
