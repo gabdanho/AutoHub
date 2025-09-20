@@ -12,7 +12,7 @@ import javax.inject.Inject
  * @property context Контекст приложения, необходим для получения [SharedPreferences].
  */
 class UserSharedPreferences @Inject constructor(
-    private val context: Context,
+    context: Context,
 ) : UserDataSource {
 
     /** [SharedPreferences] для хранения данных пользователя. */
