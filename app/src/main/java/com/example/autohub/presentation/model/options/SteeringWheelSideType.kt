@@ -1,7 +1,7 @@
 package com.example.autohub.presentation.model.options
 
-import com.example.autohub.presentation.constants.CarOptionsTagsConstants.LEFT_STEERING_WHEEL_TAG
-import com.example.autohub.presentation.constants.CarOptionsTagsConstants.RIGHT_STEERING_WHEEL_TAG
+import com.example.autohub.presentation.constants.CarOptionsTags.LEFT_STEERING_WHEEL_TAG
+import com.example.autohub.presentation.constants.CarOptionsTags.RIGHT_STEERING_WHEEL_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 

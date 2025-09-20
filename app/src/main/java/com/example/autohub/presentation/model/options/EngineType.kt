@@ -1,8 +1,8 @@
 package com.example.autohub.presentation.model.options
 
-import com.example.autohub.presentation.constants.CarOptionsTagsConstants.DIESEL_TAG
-import com.example.autohub.presentation.constants.CarOptionsTagsConstants.HYBRID_TAG
-import com.example.autohub.presentation.constants.CarOptionsTagsConstants.PETROL_TAG
+import com.example.autohub.presentation.constants.CarOptionsTags.DIESEL_TAG
+import com.example.autohub.presentation.constants.CarOptionsTags.HYBRID_TAG
+import com.example.autohub.presentation.constants.CarOptionsTags.PETROL_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 

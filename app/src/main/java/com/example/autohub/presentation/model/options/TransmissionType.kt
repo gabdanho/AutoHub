@@ -1,9 +1,9 @@
 package com.example.autohub.presentation.model.options
 
-import com.example.autohub.presentation.constants.CarOptionsTagsConstants.AUTOMATIC_TAG
-import com.example.autohub.presentation.constants.CarOptionsTagsConstants.MANUAL_TAG
-import com.example.autohub.presentation.constants.CarOptionsTagsConstants.ROBOT_TAG
-import com.example.autohub.presentation.constants.CarOptionsTagsConstants.VARIATOR_TAG
+import com.example.autohub.presentation.constants.CarOptionsTags.AUTOMATIC_TAG
+import com.example.autohub.presentation.constants.CarOptionsTags.MANUAL_TAG
+import com.example.autohub.presentation.constants.CarOptionsTags.ROBOT_TAG
+import com.example.autohub.presentation.constants.CarOptionsTags.VARIATOR_TAG
 import com.example.autohub.presentation.model.StringResNamePresentation
 import kotlinx.serialization.Serializable
 
