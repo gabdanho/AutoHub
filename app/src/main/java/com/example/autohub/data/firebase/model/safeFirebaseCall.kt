@@ -4,8 +4,8 @@ import com.example.autohub.domain.model.result.HandledException
 import com.example.autohub.domain.model.result.FirebaseResult
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
+import retrofit2.HttpException
 import java.io.IOException
-import java.net.SocketTimeoutException
 
 /**
  * Безопасный вызов Firebase с обработкой ошибок.
@@ -27,8 +27,8 @@ suspend fun <T> safeFirebaseCall(
         FirebaseResult.Error.HandledError(tag = e.tag)
     } catch (e: TimeoutCancellationException) {
         FirebaseResult.Error.TimeoutError(timeoutMessage = e.toString())
-    } catch (e: SocketTimeoutException) {
-        FirebaseResult.Error.TimeoutError(timeoutMessage = e.toString())
+    } catch (e: HttpException) {
+        FirebaseResult.Error.ServerError(serverMessage = e.toString())
     } catch (e: IOException) {
         FirebaseResult.Error.ConnectionError(connectionMessage = e.toString())
     } catch (e: Exception) {
