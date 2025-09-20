@@ -3,7 +3,7 @@ package com.example.autohub.domain.interfaces.repository.local
 /**
  * Репозиторий для работы с локальными настройками пользователя.
  */
-interface UserPreferencesRepository {
+interface UserDataSource {
 
     /** Сохраняет идентификатор пользователя. */
     fun insertUserId(uid: String)

@@ -1,7 +1,7 @@
 package com.example.autohub.di
 
 import com.example.autohub.domain.interfaces.repository.local.NetworkRepository
-import com.example.autohub.domain.interfaces.repository.local.UserPreferencesRepository
+import com.example.autohub.domain.interfaces.repository.local.UserDataSource
 import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository
 import com.example.autohub.domain.interfaces.repository.remote.MessengerRepository
@@ -213,15 +213,15 @@ object DomainModule {
     @Provides
     @Singleton
     fun provideInsertLocalUserIdUseCase(
-        userPreferences: UserPreferencesRepository,
+        userDataSource: UserDataSource,
     ): InsertLocalUserIdUseCase {
-        return InsertLocalUserIdUseCaseImpl(userPreferences = userPreferences)
+        return InsertLocalUserIdUseCaseImpl(userDataSource = userDataSource)
     }
 
     @Provides
     @Singleton
-    fun provideGetLocalUserIdUseCase(userPreferences: UserPreferencesRepository): GetLocalUserIdUseCase {
-        return GetLocalUserIdUseCaseImpl(userPreferences = userPreferences)
+    fun provideGetLocalUserIdUseCase(userDataSource: UserDataSource): GetLocalUserIdUseCase {
+        return GetLocalUserIdUseCaseImpl(userDataSource = userDataSource)
     }
 
     @Provides
@@ -246,8 +246,8 @@ object DomainModule {
 
     @Provides
     @Singleton
-    fun provideClearUserIdUseCase(userPreferences: UserPreferencesRepository): ClearUserIdUseCase {
-        return ClearUserIdUseCaseImpl(userPreferences = userPreferences)
+    fun provideClearUserIdUseCase(userDataSource: UserDataSource): ClearUserIdUseCase {
+        return ClearUserIdUseCaseImpl(userDataSource = userDataSource)
     }
 
     @Provides

@@ -1,19 +1,19 @@
-package com.example.autohub.data.repository.impl.preferences
+package com.example.autohub.data.local.datasource
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.autohub.domain.interfaces.repository.local.UserPreferencesRepository
-import javax.inject.Inject
 import androidx.core.content.edit
+import com.example.autohub.domain.interfaces.repository.local.UserDataSource
+import javax.inject.Inject
 
 /**
  * Репозиторий для работы с локальными данными пользователя через [SharedPreferences].
  *
  * @property context Контекст приложения, необходим для получения [SharedPreferences].
  */
-class UserPreferencesRepositoryImpl @Inject constructor(
+class UserSharedPreferences @Inject constructor(
     private val context: Context,
-) : UserPreferencesRepository {
+) : UserDataSource {
 
     /** [SharedPreferences] для хранения данных пользователя. */
     private val prefs: SharedPreferences by lazy {
