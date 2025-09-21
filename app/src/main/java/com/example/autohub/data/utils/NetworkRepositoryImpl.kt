@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import com.example.autohub.domain.interfaces.repository.NetworkRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -17,7 +16,7 @@ import javax.inject.Inject
  * @property context Контекст приложения, используется для получения системного сервиса [ConnectivityManager].
  */
 class NetworkRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val context: Context,
 ) : NetworkRepository {
 
     /**
