@@ -1,6 +1,6 @@
 package com.example.autohub.di
 
-import com.example.autohub.domain.interfaces.repository.local.NetworkRepository
+import com.example.autohub.domain.interfaces.repository.NetworkRepository
 import com.example.autohub.domain.interfaces.repository.local.UserDataSource
 import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository

@@ -1,4 +1,4 @@
-package com.example.autohub.domain.interfaces.repository.local
+package com.example.autohub.domain.interfaces.repository
 
 import kotlinx.coroutines.flow.Flow
 

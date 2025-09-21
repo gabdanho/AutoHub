@@ -9,7 +9,7 @@ import com.example.autohub.data.repository.impl.firebase.MessengerRepositoryImpl
 import com.example.autohub.data.repository.impl.firebase.UserDataRepositoryImpl
 import com.example.autohub.data.utils.NetworkRepositoryImpl
 import com.example.autohub.data.utils.SystemTimeProvider
-import com.example.autohub.domain.interfaces.repository.local.NetworkRepository
+import com.example.autohub.domain.interfaces.repository.NetworkRepository
 import com.example.autohub.domain.interfaces.repository.local.UserDataSource
 import com.example.autohub.domain.interfaces.repository.remote.AdDataRepository
 import com.example.autohub.domain.interfaces.repository.remote.AuthUserRepository

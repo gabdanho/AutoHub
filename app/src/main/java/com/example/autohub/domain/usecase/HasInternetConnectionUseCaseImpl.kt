@@ -1,6 +1,6 @@
 package com.example.autohub.domain.usecase
 
-import com.example.autohub.domain.interfaces.repository.local.NetworkRepository
+import com.example.autohub.domain.interfaces.repository.NetworkRepository
 import com.example.autohub.domain.interfaces.usecase.HasInternetConnectionUseCase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
