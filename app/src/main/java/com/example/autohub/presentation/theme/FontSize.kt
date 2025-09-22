@@ -7,8 +7,11 @@ import androidx.compose.ui.unit.sp
  * Представляет размеры шрифтов
  */
 data class FontSizes(
-    val message: TextUnit = 15.sp,
-    val date: TextUnit = 10.sp
+    val message: TextUnit,
+    val date: TextUnit,
 )
 
-val defaultFontSizes = FontSizes()
+val defaultFontSizes = FontSizes(
+    message = 15.sp,
+    date = 10.sp,
+)
